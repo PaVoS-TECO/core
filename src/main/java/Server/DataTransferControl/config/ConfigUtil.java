@@ -1,4 +1,4 @@
-package DataTransferControl.config;
+package server.dataTransferControl.config;
 
 /**
  * A utility class with all sorts of useful features for Config classes in this package.

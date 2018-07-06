@@ -1,4 +1,4 @@
-package ExportDownloadCommunication;
+package server.exportDownloadCommunication;
 
 import java.util.*;
 

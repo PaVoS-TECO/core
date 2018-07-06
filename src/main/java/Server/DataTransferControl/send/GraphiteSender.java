@@ -1,4 +1,4 @@
-package DataTransferControl.send;
+package server.dataTransferControl.send;
 
 import java.io.IOException;
 import java.io.OutputStream;

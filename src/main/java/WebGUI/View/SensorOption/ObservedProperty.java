@@ -1,4 +1,4 @@
-package View.SensorOption;
+package webGUI.View.sensorOption;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package Download;
+package server.download;
 
 import java.util.*;
 

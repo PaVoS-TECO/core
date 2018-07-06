@@ -1,4 +1,4 @@
-package CommandRequestPattern;
+package server.core.commandRequestPattern;
 
 import java.util.*;
 

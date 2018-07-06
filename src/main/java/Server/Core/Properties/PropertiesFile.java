@@ -1,4 +1,4 @@
-package Properties;
+package server.core.properties;
 
 import java.util.*;
 

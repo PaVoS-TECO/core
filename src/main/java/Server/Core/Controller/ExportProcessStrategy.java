@@ -1,4 +1,4 @@
-package Controller;
+package server.core.controller;
 
 import java.util.*;
 

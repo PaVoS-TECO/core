@@ -1,4 +1,4 @@
-package DataTransferControl;
+package server.dataTransferControl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

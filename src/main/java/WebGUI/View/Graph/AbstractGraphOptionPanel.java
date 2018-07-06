@@ -1,4 +1,4 @@
-package View.Graph;
+package webGUI.View.graph;
 
 import java.util.*;
 

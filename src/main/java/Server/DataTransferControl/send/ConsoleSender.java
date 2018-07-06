@@ -1,4 +1,4 @@
-package DataTransferControl.send;
+package server.dataTransferControl.send;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.python.core.PyList;

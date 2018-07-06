@@ -1,4 +1,4 @@
-package DataTransferControl;
+package server.dataTransferControl;
 
 import java.util.*;
 

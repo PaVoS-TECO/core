@@ -1,4 +1,4 @@
-package View.Map;
+package webGUI.View.map;
 
 import java.util.*;
 

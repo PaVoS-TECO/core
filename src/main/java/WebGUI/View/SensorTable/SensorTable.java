@@ -1,4 +1,4 @@
-package View.SensorTable;
+package webGUI.View.sensorTable;
 
 import java.util.*;
 

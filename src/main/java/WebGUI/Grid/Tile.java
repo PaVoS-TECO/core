@@ -1,4 +1,4 @@
-package Grid;
+package webGUI.grid;
 
 import java.util.*;
 

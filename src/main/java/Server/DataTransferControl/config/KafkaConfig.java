@@ -1,4 +1,4 @@
-package DataTransferControl.config;
+package server.dataTransferControl.config;
 
 /**
  * The specified configuration-object that stores all needed configurations for the connection from Kafka to another specified component
