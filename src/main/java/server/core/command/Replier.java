@@ -1,6 +1,6 @@
 package server.core.command;
 
-import java.util.*;
+import java.sql.Connection;
 
 /**
  * This Class handels the Requests and Replies to them

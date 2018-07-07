@@ -1,7 +1,5 @@
 package server.database;
 
-import java.util.*;
-
 /**
  * This class maintains the list of sensors saved in the StorageSolution.
  */

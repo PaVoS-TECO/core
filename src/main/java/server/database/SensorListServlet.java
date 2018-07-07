@@ -1,6 +1,7 @@
 package server.database;
 
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * An HTTPServlet for requesting a list of sensors.

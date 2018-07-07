@@ -1,6 +1,6 @@
 package bridge;
 
-import java.util.*;
+import java.util.Properties;
 
 /**
  * A class that reads properties from the configuration file (jmkb.properties) and provides a method for getting a property by key.

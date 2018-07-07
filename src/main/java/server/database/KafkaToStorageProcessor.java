@@ -1,7 +1,5 @@
 package server.database;
 
-import java.util.*;
-
 /**
  * This class converts KafkaStream records to data that can be inserted into the StorageSolution.
  */

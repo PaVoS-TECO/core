@@ -1,6 +1,7 @@
 package web.grid;
 
-import java.util.*;
+import java.awt.Color;
+import java.util.AbstractMap;
 
 /**
  * A graphical structure that can be displayed on an AbstractMap.

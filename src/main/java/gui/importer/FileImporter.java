@@ -1,7 +1,5 @@
 package gui.importer;
 
-import java.util.*;
-
 /**
  * Importer for the Data contained in a File. Takes the Data and sends them to the FROST-Server.
  */

@@ -1,6 +1,6 @@
 package gui.importer;
 
-import java.util.*;
+import kafka.utils.json.JsonObject;
 
 /**
  * sends Data to the FROST-Server.

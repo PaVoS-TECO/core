@@ -1,7 +1,5 @@
 package web.grid;
 
-import java.util.*;
-
 /**
  * Encapsulates the width and height of a component in float precision.
  */

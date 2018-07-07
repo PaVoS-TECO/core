@@ -1,6 +1,6 @@
 package server.export;
 
-import java.util.*;
+import server.download.DownloadID;
 
 /**
  * Abstract Exporter of Data to a File.

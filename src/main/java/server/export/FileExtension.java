@@ -1,7 +1,5 @@
 package server.export;
 
-import java.util.*;
-
 /**
  * Represents the FileExtension of a File. Is used to match the right FileFormat for an export or import.
  */

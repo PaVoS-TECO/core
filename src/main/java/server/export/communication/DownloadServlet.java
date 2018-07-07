@@ -1,6 +1,9 @@
 package server.export.communication;
 
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import server.download.DownloadID;
 
 /**
  * Servlet to let the WebGUI download a finished Export.

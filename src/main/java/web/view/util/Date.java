@@ -1,7 +1,5 @@
 package web.view.util;
 
-import java.util.*;
-
 /**
  * Represents a specific point in time.
  */

@@ -1,7 +1,5 @@
 package web.view.map;
 
-import java.util.*;
-
 /**
  * An implementation of AbstractMapOptionPanel.
  */

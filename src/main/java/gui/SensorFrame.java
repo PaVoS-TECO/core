@@ -1,6 +1,7 @@
 package gui;
 
-import java.util.*;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 /**
  * This Frame hold the data of all possible Sensors in the System.

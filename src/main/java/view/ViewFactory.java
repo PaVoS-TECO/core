@@ -1,7 +1,5 @@
 package view;
 
-import java.util.*;
-
 /**
  * An Implementation of AbstractViewFactory.
  */

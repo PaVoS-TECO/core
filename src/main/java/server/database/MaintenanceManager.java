@@ -1,7 +1,5 @@
 package server.database;
 
-import java.util.*;
-
 /**
  * This class manages the way the methods of Maintainers are called to make sure the StorageSolution content is maintained.
  */

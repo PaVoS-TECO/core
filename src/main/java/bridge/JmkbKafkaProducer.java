@@ -1,6 +1,6 @@
 package bridge;
 
-import java.util.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
 
 /**
  * This class creates a Kafka producer using defined settings and publishes records to the Kafka Cluster.

@@ -1,6 +1,6 @@
 package server.export;
 
-import java.util.*;
+import java.util.Set;
 
 /**
  * Utility class that provides static methods to get all supported FileExtensions and one to get a new Instance of the FileWriter associated with a given FileExtension. If a new FileWriter is added to PaVoS, this class needs some changed to be able to return the new FileWriter.

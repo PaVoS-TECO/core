@@ -1,6 +1,6 @@
 package bridge;
 
-import java.util.*;
+import java.net.URL;
 
 /**
  * Convenience class which provides methods for interacting with the schema registry.

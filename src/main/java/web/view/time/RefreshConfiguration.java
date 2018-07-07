@@ -1,7 +1,5 @@
 package web.view.time;
 
-import java.util.*;
-
 /**
  * Encapsulates the preferences about the fetching of live data and the loop mode of historical data.
  */

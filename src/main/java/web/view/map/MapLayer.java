@@ -1,6 +1,6 @@
 package web.view.map;
 
-import java.util.*;
+import web.grid.Grid;
 
 /**
  * A map layer that can be displayed on an AbstractMap.

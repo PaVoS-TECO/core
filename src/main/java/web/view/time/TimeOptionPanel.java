@@ -1,7 +1,5 @@
 package web.view.time;
 
-import java.util.*;
-
 /**
  * An implementation of AbstractTimeOptionPanel.
  */

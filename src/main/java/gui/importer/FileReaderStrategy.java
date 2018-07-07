@@ -1,7 +1,5 @@
 package gui.importer;
 
-import java.util.*;
-
 /**
  * Interface for the FileReaderStrategy classes. Realization of a Strategy to be able to swap out the way a File has to be read.
  */

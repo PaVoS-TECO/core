@@ -1,7 +1,5 @@
 package web.view.sensor;
 
-import java.util.*;
-
 /**
  * An observer that is meant to observe changes in the SensorOptionPanel.
  */

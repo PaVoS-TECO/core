@@ -1,6 +1,9 @@
 package web.view.graph;
 
-import java.util.*;
+import java.util.Set;
+
+import view.ViewComponent;
+import web.view.util.TimeFrame;
 
 /**
  * A panel for handling user input, that deals with which time segment of the graphs dataset is being displayed, how that is done and notifying all observers about changes in its state.

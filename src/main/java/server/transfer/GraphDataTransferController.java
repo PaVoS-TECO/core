@@ -1,6 +1,6 @@
 package server.transfer;
 
-import java.util.*;
+import java.util.Collection;
 
 /**
  * The Control-Unit in charge of creating and destroying KafkaToGraphiteConsumer as well as passing on the users request.

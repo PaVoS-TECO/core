@@ -1,6 +1,8 @@
 package gui;
 
-import java.util.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 /**
  * This Frame is the Delete Frame, where you delete Topics out of the Programm

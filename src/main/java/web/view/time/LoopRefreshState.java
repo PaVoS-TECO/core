@@ -1,6 +1,6 @@
 package web.view.time;
 
-import java.util.*;
+import java.util.Date;
 
 /**
  * In this state the refresh function simulates the loop data mode. Depending on the loopTimeFrame value and the RefreshConfiguration, the refresh method modifies the submitted timeStamp which can be submitted to other ViewComponents to iterate to the next dataset entries.

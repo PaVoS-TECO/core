@@ -1,7 +1,5 @@
 package server.core.command;
 
-import java.util.*;
-
 /**
  * All CommandsRequest implements this Interface. CommandRequest are sendet form the View to request something out of the System.
  */

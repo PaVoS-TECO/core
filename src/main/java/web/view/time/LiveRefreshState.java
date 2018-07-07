@@ -1,6 +1,6 @@
 package web.view.time;
 
-import java.util.*;
+import java.util.Date;
 
 /**
  * In this state the refresh function simulates the live data mode. Depending on the RefreshConfiguration the refresh function fetches live data. The timeStamp parameter isn't altered.

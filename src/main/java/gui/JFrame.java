@@ -1,7 +1,5 @@
 package gui;
 
-import java.util.*;
-
 /**
  * This is the Basic Interface from Java for building a Frame.
  */

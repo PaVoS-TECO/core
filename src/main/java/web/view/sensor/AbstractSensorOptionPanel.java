@@ -1,6 +1,8 @@
 package web.view.sensor;
 
-import java.util.*;
+import java.util.Set;
+
+import view.ViewComponent;
 
 /**
  * A panel for handling user input, that deals with setting a new ObservedProperty and notifying its observers about changes.

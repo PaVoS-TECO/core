@@ -1,7 +1,5 @@
 package server.export;
 
-import java.util.*;
-
 /**
  * Interface for the FileWriterStrategy classes. Realization of a Strategy to be able to swap out the way a File has to be saved.
  */

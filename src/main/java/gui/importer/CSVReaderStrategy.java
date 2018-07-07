@@ -1,7 +1,5 @@
 package gui.importer;
 
-import java.util.*;
-
 /**
  * Implementation of the FileReaderStrategy interface for CSV files.
  */

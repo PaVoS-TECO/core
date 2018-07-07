@@ -1,7 +1,5 @@
 package view;
 
-import java.util.*;
-
 /**
  * A factory for the creation of a View.
  */

@@ -1,6 +1,14 @@
 package view;
 
-import java.util.*;
+import java.util.AbstractMap;
+
+import web.view.export.AbstractExportOptionPanel;
+import web.view.graph.AbstractGraph;
+import web.view.graph.AbstractGraphOptionPanel;
+import web.view.map.AbstractMapOptionPanel;
+import web.view.sensor.AbstractSensorOptionPanel;
+import web.view.sensor.table.AbstractSensorTable;
+import web.view.time.AbstractTimeOptionPanel;
 
 /**
  * Encapsulates all ViewComponents created by the AbstractViewFactory into a single object.

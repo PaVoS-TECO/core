@@ -1,6 +1,11 @@
 package web.view.map;
 
-import java.util.*;
+import java.util.Date;
+
+import server.core.command.RequestCommand;
+import view.ViewComponent;
+import web.view.sensor.SensorOptionPanelObserver;
+import web.view.time.TimeOptionPanelObserver;
 
 /**
  * A world map with displayable and hideable MapLayers, move and zoom function. It notifies its observers about changes in its state.

@@ -1,7 +1,5 @@
 package view;
 
-import java.util.*;
-
 /**
  * Initializes and runs the AbstractView.
  */

@@ -1,7 +1,5 @@
 package server.export;
 
-import java.util.*;
-
 /**
  * Implementation of the FileWriterStrategy interface for CSV files.
  */

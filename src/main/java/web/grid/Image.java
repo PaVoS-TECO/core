@@ -1,7 +1,5 @@
 package web.grid;
 
-import java.util.*;
-
 /**
  * Represents a graphical image.
  */

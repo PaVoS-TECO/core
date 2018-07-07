@@ -1,6 +1,7 @@
 package server.export.communication;
 
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Servlet, to let the WebGUI ask for the available FileExtensions for the Export.

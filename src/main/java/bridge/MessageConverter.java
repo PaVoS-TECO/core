@@ -1,7 +1,5 @@
 package bridge;
 
-import java.util.*;
-
 /**
  * This convenience class provides static methods to convert a given message to another format.
  */

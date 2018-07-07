@@ -1,6 +1,6 @@
 package web.view.time;
 
-import java.util.*;
+import java.util.Date;
 
 /**
  * In this state the refresh function simulates the historical data mode. The timeStamp parameter isn't altered and the currently selected dataset entries stay the same.

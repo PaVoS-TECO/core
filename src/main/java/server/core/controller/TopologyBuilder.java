@@ -1,6 +1,6 @@
 package server.core.controller;
 
-import java.util.*;
+import server.core.command.StreamProcessingStrategy;
 
 /**
  * A component that is used to build a ProcessorTopology. A topology contains an acyclic graph of sources, processors, and sinks. A source is a node in the graph that consumes one or more Kafka topics and forwards them to its child nodes. A processor is a node in the graph that receives input records from upstream nodes, processes that records, and optionally forwarding new records to one or all of its children. Finally, a sink is a node in the graph that receives records from upstream nodes and writes them to a Kafka topic. This builder allows you to construct an acyclic graph of these nodes, and the builder is then passed into a new KafkaStreams instance that will then begin consuming, processing, and producing records
@@ -21,7 +21,7 @@ public class TopologyBuilder {
      * @param name name of the Input Topic Stream
      * @param topicPattern topicPattern is a Pattern to filter the data from the Input Topic Stream
      */
-    public void addSource(String name, topic topicPattern) {
+    public void addSource(String name, Topic topicPattern) {
         // TODO implement here
     }
 

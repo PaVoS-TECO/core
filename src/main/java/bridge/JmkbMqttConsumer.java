@@ -1,7 +1,5 @@
 package bridge;
 
-import java.util.*;
-
 /**
  * This class serves as an MqttClient that consumes messages from the specified FROST-Server address. On message arrival, it will initiate the conversion of the message to a desired format via MqttMessageConverter and supply the converted message to a JmkbKafkaProducer.
  * 

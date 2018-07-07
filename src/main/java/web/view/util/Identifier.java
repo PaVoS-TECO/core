@@ -1,7 +1,5 @@
 package web.view.util;
 
-import java.util.*;
-
 /**
  * Represents an identifier made up of a String.
  */

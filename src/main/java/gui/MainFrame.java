@@ -1,6 +1,13 @@
 package gui;
 
-import java.util.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JTable;
+import javax.swing.JToggleButton;
+
+import server.core.controller.Controller;
 
 /**
  * This Class holds the main functionality of the PaVoS program. It starts/stops the whole System and manages the export/import.

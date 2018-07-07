@@ -1,7 +1,5 @@
 package server.export;
 
-import java.util.*;
-
 /**
  * Is used to store a FileExtension information and give  the right  FileWriter for this FileExtension.
  */

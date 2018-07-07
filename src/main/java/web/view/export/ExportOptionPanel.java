@@ -1,7 +1,5 @@
 package web.view.export;
 
-import java.util.*;
-
 /**
  * An implementation of AbstractExportOptionPanel.
  */

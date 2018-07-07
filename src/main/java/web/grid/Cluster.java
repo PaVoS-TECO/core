@@ -1,6 +1,9 @@
 package web.grid;
 
-import java.util.*;
+import java.util.Set;
+
+import web.view.sensor.ObservedProperty;
+import web.view.util.SensorID;
 
 /**
  * Encapsulates multiple sensors into a single object by using their specific SensorIDs and provides a graphical representation of their values average by using a Tile.

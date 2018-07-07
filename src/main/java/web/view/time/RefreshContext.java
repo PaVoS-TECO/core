@@ -1,6 +1,8 @@
 package web.view.time;
 
-import java.util.*;
+import java.util.Date;
+
+import web.view.util.TimeFrame;
 
 /**
  * Encapsulates the logic of switching between historical and live data mode and starting and stopping the loop mode. Through LiveRefreshConfiguration it also encapsulates whether live data is fetched automatically or manually and in which interval.

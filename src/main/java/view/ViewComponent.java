@@ -1,7 +1,5 @@
 package view;
 
-import java.util.*;
-
 /**
  * A view component which the View is made up of.
  */

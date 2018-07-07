@@ -1,6 +1,6 @@
 package server.export;
 
-import java.util.*;
+import server.download.DownloadID;
 
 /**
  * Exporter of Data from Kafka to a File.

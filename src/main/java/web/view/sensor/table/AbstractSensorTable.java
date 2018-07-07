@@ -1,6 +1,13 @@
 package web.view.sensor.table;
 
-import java.util.*;
+import java.util.Date;
+
+import server.core.command.RequestCommand;
+import view.ViewComponent;
+import web.view.map.MapObserver;
+import web.view.sensor.SensorOptionPanelObserver;
+import web.view.time.TimeOptionPanelObserver;
+import web.view.util.SensorID;
 
 /**
  * A table that visualizes the data in its dataset and enables the selection of a Sensor by using its SensorID.

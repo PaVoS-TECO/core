@@ -1,6 +1,8 @@
 package web.grid;
 
-import java.util.*;
+import java.util.Set;
+
+import web.view.map.MapLayer;
 
 /**
  * Encapsulates multiple Clusters into a single object.

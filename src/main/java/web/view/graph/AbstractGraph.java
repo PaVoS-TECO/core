@@ -1,6 +1,13 @@
 package web.view.graph;
 
-import java.util.*;
+import java.util.Date;
+
+import server.core.command.RequestCommand;
+import view.ViewComponent;
+import web.view.map.MapObserver;
+import web.view.sensor.SensorOptionPanelObserver;
+import web.view.time.TimeOptionPanelObserver;
+import web.view.util.TimeFrame;
 
 /**
  * A graph that visualizes the data in its dataset.

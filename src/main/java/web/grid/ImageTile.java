@@ -1,7 +1,5 @@
 package web.grid;
 
-import java.util.*;
-
 /**
  * A Tile whose graphical representation consists of an image.
  */

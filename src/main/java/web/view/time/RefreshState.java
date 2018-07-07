@@ -1,6 +1,6 @@
 package web.view.time;
 
-import java.util.*;
+import java.util.Date;
 
 /**
  * A state

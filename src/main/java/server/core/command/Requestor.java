@@ -1,6 +1,6 @@
 package server.core.command;
 
-import java.util.*;
+import java.sql.Connection;
 
 /**
  * The Implemente this class and request something to the System and a Replier answer to it.

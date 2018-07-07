@@ -1,7 +1,5 @@
 package server.download;
 
-import java.util.*;
-
 /**
  * Verifies for the State of a Download. Can also change it.
  */
@@ -28,7 +26,7 @@ public class AlterableDownloadState extends DownloadState {
      * Defines the FilePath for the DownloadID.
      * @param path Is the FilePath to be set.
      */
-    public void setFilePath(void path) {
+    public void setFilePath(FilePath path) {
         // TODO implement here
     }
 

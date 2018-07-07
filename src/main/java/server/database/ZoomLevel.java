@@ -1,7 +1,5 @@
 package server.database;
 
-import java.util.*;
-
 /**
  * This class describes a zoom level for the map.
  */

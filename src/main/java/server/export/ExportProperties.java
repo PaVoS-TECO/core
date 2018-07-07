@@ -1,6 +1,10 @@
 package server.export;
 
-import java.util.*;
+import java.util.Set;
+
+import web.view.sensor.ObservedProperty;
+import web.view.util.SensorID;
+import web.view.util.TimeFrame;
 
 /**
  * Contains the Properties of an Export Request.

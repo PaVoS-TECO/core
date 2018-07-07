@@ -1,6 +1,7 @@
 package server.core.controller;
 
-import java.util.*;
+import server.core.command.StreamProcessingStrategy;
+import server.database.ZoomLevel;
 
 /**
  * This Class does combinate the Clusters to bigger Cluster for the Different Zoom Levels
@@ -16,7 +17,7 @@ public class CombinerProcessStrategy implements StreamProcessingStrategy {
     /**
      * This Attribute definietes the Zoomlevel of the Cluster
      */
-    private Zoomlevel zoom;
+    private ZoomLevel zoom;
 
     /**
      * This Method is used to explicitly start the Kafka Stream thread. So that theProcessing need to get started.

@@ -1,7 +1,5 @@
 package web.view.util;
 
-import java.util.*;
-
 /**
  * A point representing a location in (x,y) coordinate space, specified in float precision.
  */

@@ -1,7 +1,5 @@
 package server.core.command;
 
-import java.util.*;
-
 /**
  * This Command request a Tile in the System.
  */

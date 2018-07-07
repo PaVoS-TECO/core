@@ -1,7 +1,5 @@
 package server.download;
 
-import java.util.*;
-
 /**
  * Verifies for the State of a Download.
  */

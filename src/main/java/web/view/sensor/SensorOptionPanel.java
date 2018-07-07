@@ -1,7 +1,5 @@
 package web.view.sensor;
 
-import java.util.*;
-
 /**
  * An implementation of AbstractSensorOptionPanel.
  */
