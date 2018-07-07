@@ -11,7 +11,7 @@ import org.python.core.PyString;
 import org.python.core.PyTuple;
 import org.slf4j.Logger;
 
-import DataTransferControl.SerializationDeserialization.KafkaObservationData;
+import server.transfer.serialization.KafkaObservationData;
 
 /**
  * Provides the functionality to create python metrics and log the results

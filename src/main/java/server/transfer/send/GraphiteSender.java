@@ -4,13 +4,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.python.core.PyList;
 import org.python.core.PyString;
 import org.python.modules.cPickle;
-import DataTransferControl.SerializationDeserialization.KafkaObservationData;
-import DataTransferControl.config.GraphiteConfig;
-import DataTransferControl.send.conversion.GraphiteConverter;
+
+import server.transfer.config.GraphiteConfig;
+import server.transfer.send.conversion.GraphiteConverter;
+import server.transfer.serialization.KafkaObservationData;
 
 /**
  * Reformats the data and sends it to Graphite

@@ -1,17 +1,19 @@
 package server.transfer.consumer;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 
-import DataTransferControl.SerializationDeserialization.KafkaObservationData;
-import DataTransferControl.SerializationDeserialization.ObservationDataDeserializer;
-import DataTransferControl.config.KafkaConfig;
-import DataTransferControl.config.GraphiteConfig;
-import DataTransferControl.send.Sender;
+import server.transfer.config.GraphiteConfig;
+import server.transfer.config.KafkaConfig;
+import server.transfer.send.Sender;
+import server.transfer.serialization.KafkaObservationData;
+import server.transfer.serialization.ObservationDataDeserializer;
 
 /**
  * Receives the data from Kafka and sends it to Graphite

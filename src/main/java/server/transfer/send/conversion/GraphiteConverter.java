@@ -4,7 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.python.core.PyList;
 import org.slf4j.Logger;
 
-import DataTransferControl.SerializationDeserialization.KafkaObservationData;
+import server.transfer.serialization.KafkaObservationData;
 
 /**
  * Converts different observed properties to python metrics

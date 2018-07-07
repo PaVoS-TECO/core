@@ -5,8 +5,8 @@ import org.python.core.PyList;
 import org.python.core.PyString;
 import org.python.modules.cPickle;
 
-import DataTransferControl.SerializationDeserialization.KafkaObservationData;
-import DataTransferControl.send.conversion.GraphiteConverter;
+import server.transfer.send.conversion.GraphiteConverter;
+import server.transfer.serialization.KafkaObservationData;
 
 
 /**

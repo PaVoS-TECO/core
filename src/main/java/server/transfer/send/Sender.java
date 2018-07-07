@@ -4,7 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import DataTransferControl.SerializationDeserialization.KafkaObservationData;
+import server.transfer.serialization.KafkaObservationData;
 
 /**
  * Reformats the data and sends it to another component

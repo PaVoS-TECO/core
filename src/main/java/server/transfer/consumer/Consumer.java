@@ -1,13 +1,15 @@
 package server.transfer.consumer;
 
-import java.util.*;
+import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
+
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import DataTransferControl.SerializationDeserialization.KafkaObservationData;
-import DataTransferControl.send.Sender;
+import server.transfer.send.Sender;
+import server.transfer.serialization.KafkaObservationData;
 
 /**
  * Consumes data from Kafka
