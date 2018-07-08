@@ -3,6 +3,7 @@ package server.transfer.serialization;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.kafka.common.serialization.Deserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,8 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Deserializes KafkaObservationData objects
+ * @param <T>
  */
-public class ObservationDataDeserializer<T extends KafkaObservationData> implements org.apache.kafka.common.serialization.Deserializer {
+public class ObservationDataDeserializer implements Deserializer<KafkaObservationData> {
 
     /**
      * Default constructor
@@ -31,17 +33,17 @@ public class ObservationDataDeserializer<T extends KafkaObservationData> impleme
     public void close() {
         // TODO implement here
     }
-
-    /**
+    
+	/**
      * Configures the deserializer
      * @param configs The Configuration
      * @param isKey A variable, telling us whether we want to configure the key or the value
      */
 	@Override
-	public void configure(Map configs, boolean isKey) {
+	public void configure(Map<String, ?> configs, boolean isKey) {
 		// TODO Auto-generated method stub
 	}
-
+	
 	/**
      * Deserializes an object
      * @param topic Kafka-Topic

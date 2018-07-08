@@ -7,6 +7,7 @@ import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 
 import server.transfer.config.GraphiteConfig;
@@ -35,12 +36,12 @@ public class KafkaToGraphiteConsumer extends Consumer {
      */
     public void run() {
     	Properties consumerProperties = getConsumerProperties();
-        consumer = new KafkaConsumer<>(consumerProperties);
+        consumer = new KafkaConsumer<String, KafkaObservationData>(consumerProperties);
         consumer.subscribe(topics);
 
         if (GraphiteConfig.getStartFromBeginning()) {
             consumer.poll(100);
-            consumer.seekToBeginning(Collections.emptyList());
+            consumer.seekToBeginning(Collections.<TopicPartition>emptyList());
         }
 
         try {
