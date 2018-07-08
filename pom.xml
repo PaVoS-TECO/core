@@ -4,6 +4,17 @@
   <artifactId>pavos</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   
+  <repositories>
+  	<repository>
+      <id>Eclipse Paho Repo</id>
+      <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
+    </repository>
+    <repository>
+      <id>Confluent Repo</id>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
+
   <dependencies>
   
     <dependency>
@@ -13,6 +24,30 @@
       <scope>test</scope>
     </dependency>
     
+	<dependency>
+      <groupId>org.eclipse.paho</groupId>
+      <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+  	  <version>1.8.2</version>
+	</dependency>
+
+	<dependency>
+      <groupId>com.googlecode.json-simple</groupId>
+      <artifactId>json-simple</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.confluent</groupId>
+      <artifactId>kafka-avro-serializer</artifactId>
+      <version>4.1.1</version>
+  	</dependency>
+
     <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
 	<dependency>
       <groupId>org.apache.kafka</groupId>
@@ -34,7 +69,6 @@
       <version>4.0.1</version>
       <scope>provided</scope>
 	</dependency>
-	
 	
   </dependencies>
 </project>

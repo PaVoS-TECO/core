@@ -1,5 +1,7 @@
 package bridge;
 
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
 /**
  * This convenience class provides static methods to convert a given message to another format.
  */
