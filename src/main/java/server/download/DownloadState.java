@@ -6,26 +6,26 @@ package server.download;
 public class DownloadState {
 
     /**
-     * Default constructor
-     */
-    public DownloadState() {
-    }
-
-    /**
      * Is an Identifier for a specific Download.
      */
-    public DownloadID downloadID;
+    private DownloadID downloadID;
+    private File filePath;
+    private boolean ready;
 
-
-
+    /**
+     * Default constructor
+     */
+    public DownloadState(DownloadID id) {
+        this.downloadID = id;
+        // Set filePath and ready
+    }
 
     /**
      * Gives the FilePath associated with this DownloadID.
      * @return The FilePath of the File for the Download.
      */
-    public FilePath getFilePath() {
-        // TODO implement here
-        return null;
+    public File getFilePath() {
+        return this.filePath;
     }
 
     /**
@@ -33,8 +33,7 @@ public class DownloadState {
      * @return A boolean whether the file is downloadable or not.
      */
     public boolean isFileReadyForDownload() {
-        // TODO implement here
-        return false;
+        return this.ready;
     }
 
 }
