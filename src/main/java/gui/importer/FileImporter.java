@@ -1,5 +1,7 @@
 package gui.importer;
 
+import java.io.File;
+
 /**
  * Importer for the Data contained in a File. Takes the Data and sends them to the FROST-Server.
  */
@@ -11,18 +13,42 @@ public class FileImporter {
     public FileImporter() {
     }
 
-
-
-
-
+    /**
+     * Adds the Data of a File at a specified FilePath to the FROST-Server. To do so, the FileExtension
+     * of the File is determined.With help of the readerTypeClass the matching implementation of the
+     * FileReaderStrategy interface for the FileExtension is generated and can be used to get the Data
+     * from then File.
+     * @param file Is the File to Import.
+     */
+    public void addFileData(File file) {
+    	String extension = this.getFileExtension(file.getAbsolutePath());
+    	//FileReaderStrategy reader;
+		try {
+			FileReaderStrategy reader = ReaderType.getFileReaderForFileExtension(extension);
+			reader.sendFileData(file);
+		} catch (IllegalFileExtensionException e) {
+			// TODO Could return boolean if was successful
+			e.printStackTrace();
+		}
+    }
 
     /**
-     * Adds the Data of a File at a specified FilePath to the FROST-Server. To do so, the FileExtension of the File is determined.With help of the readerTypeClass the matching implementation of the FileReaderStrategy interface for the FileExtension is generated and can be used to get the Data from then File.
-     * @param path Is the FilePath of the File to Import.
-     * @param froster Is the FrostSender instance that will be used to send the files data to the Frost-Server.
+     * generates a file extension from a Path.
+     * @param path to get the extension from.
+     * @return String of the extension.
      */
-    public void addFileData(FilePath path, FrostSender froster) {
-        // TODO implement here
+    private String getFileExtension(String path) {
+        try {
+        	int i = path.lastIndexOf('.');
+        	int p = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+        	if (i > p) {
+        	    return path.substring(i + 1);
+        	}
+        	return "";
+        } catch (IndexOutOfBoundsException e) {
+        	System.out.println(e.getLocalizedMessage());
+        	return "";
+        }
     }
 
 }
