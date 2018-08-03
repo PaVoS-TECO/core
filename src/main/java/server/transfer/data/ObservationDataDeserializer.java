@@ -1,4 +1,4 @@
-package server.transfer.serialization;
+package server.transfer.data;
 
 import java.io.IOException;
 import java.util.Map;
@@ -11,25 +11,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Deserializes KafkaObservationData objects
- * @param <T>
  */
-public class ObservationDataDeserializer implements Deserializer<KafkaObservationData> {
+public class ObservationDataDeserializer implements Deserializer<ObservationData> {
 
+	private Logger logger = null;
+	
     /**
      * Default constructor
      */
     public ObservationDataDeserializer() {
-    	
+    	this.logger = LoggerFactory.getLogger(this.getClass());
     }
-
-    /**
-     * Documents the deserialization of our objects
-     */
-    private static Logger logger = LoggerFactory.getLogger(ObservationDataDeserializer.class);
-
-    /**
-     * Closes this object
-     */
+    
     public void close() {
         // TODO implement here
     }
@@ -39,7 +32,6 @@ public class ObservationDataDeserializer implements Deserializer<KafkaObservatio
      * @param configs The Configuration
      * @param isKey A variable, telling us whether we want to configure the key or the value
      */
-	@Override
 	public void configure(Map<String, ?> configs, boolean isKey) {
 		// TODO Auto-generated method stub
 	}
@@ -50,13 +42,12 @@ public class ObservationDataDeserializer implements Deserializer<KafkaObservatio
      * @param data These are our serialized bytes
      * @return A serializable object that contains the observed data from kafka
      */
-	@Override
-	public KafkaObservationData deserialize(String topic, byte[] data) {
-		KafkaObservationData observationData = null;
+	public ObservationData deserialize(String topic, byte[] data) {
+		ObservationData observationData = null;
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            observationData = mapper.readValue(data, KafkaObservationData.class);
+            observationData = mapper.readValue(data, ObservationData.class);
         } catch (IOException e) {
         	logger.error("Failed to deserialize object: " + data.toString(), e);
         }

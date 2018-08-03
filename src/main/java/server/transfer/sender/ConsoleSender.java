@@ -1,25 +1,25 @@
-package server.transfer.send;
+package server.transfer.sender;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.python.core.PyList;
 import org.python.core.PyString;
 import org.python.modules.cPickle;
 
-import server.transfer.send.conversion.GraphiteConverter;
-import server.transfer.serialization.KafkaObservationData;
+import server.transfer.converter.GraphiteConverter;
+import server.transfer.data.ObservationData;
 
 
 /**
- * Reformats the data and outputs it into the console
+ * Sends data to the console in a readable format.
  */
 public class ConsoleSender extends Sender {
 
 	@Override
-	public void send(ConsumerRecords<String, KafkaObservationData> records) {
+	public void send(ConsumerRecords<String, ObservationData> records) {
 		PyList list = new PyList();
 
 		records.forEach(record -> {
-			GraphiteConverter.addPM(record, list, logger);
+			GraphiteConverter.addObservations(record, list);
 		});
 
 		PyString payload = cPickle.dumps(list);

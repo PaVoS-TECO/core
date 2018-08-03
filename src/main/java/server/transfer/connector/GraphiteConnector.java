@@ -1,4 +1,4 @@
-package server.transfer.consumer;
+package server.transfer.connector;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,21 +12,23 @@ import org.apache.kafka.common.errors.WakeupException;
 
 import server.transfer.config.GraphiteConfig;
 import server.transfer.config.KafkaConfig;
-import server.transfer.send.Sender;
-import server.transfer.serialization.KafkaObservationData;
-import server.transfer.serialization.ObservationDataDeserializer;
+import server.transfer.data.ObservationData;
+import server.transfer.data.ObservationDataDeserializer;
+import server.transfer.sender.Sender;
 
 /**
- * Receives the data from Kafka and sends it to Graphite
+ * Consumes data from Kafka and sends it to Graphite
  */
-public class KafkaToGraphiteConsumer extends Consumer {
+public class GraphiteConnector extends Connector {
 	
 	private boolean sendLoop = true;
 
     /**
      * Default constructor
+     * @param topics The topics that the consumer should subscribe to
+     * @param sender Sends the data to a specified component, normally a {@link GraphiteSender}
      */
-	public KafkaToGraphiteConsumer(List<String> topics, Sender sender) {
+	public GraphiteConnector(List<String> topics, Sender sender) {
     	this.topics = topics;
     	this.sender = sender;
     }
@@ -36,7 +38,7 @@ public class KafkaToGraphiteConsumer extends Consumer {
      */
     public void run() {
     	Properties consumerProperties = getConsumerProperties();
-        consumer = new KafkaConsumer<String, KafkaObservationData>(consumerProperties);
+        consumer = new KafkaConsumer<String, ObservationData>(consumerProperties);
         consumer.subscribe(topics);
 
         if (GraphiteConfig.getStartFromBeginning()) {
@@ -46,21 +48,19 @@ public class KafkaToGraphiteConsumer extends Consumer {
 
         try {
             while (sendLoop) {
-                ConsumerRecords<String, KafkaObservationData> records = consumer.poll(100);
+                ConsumerRecords<String, ObservationData> records = consumer.poll(100);
 
                 if (!records.isEmpty()) {
                     sender.send(records);
                 }
             }
-        }
-        catch(WakeupException ex) {
-            logger.info("Consumer has received instruction to wake up");
-        }
-        finally {
-            logger.info("Consumer closing...");
+        } catch (WakeupException ex) {
+            logger.info("Connector has received instruction to wake up");
+        } finally {
+            logger.info("Connector closing...");
             consumer.close();
             shutdownLatch.countDown();
-            logger.info("Consumer has closed successfully");
+            logger.info("Connector has closed successfully");
         }
     }
 
@@ -68,26 +68,24 @@ public class KafkaToGraphiteConsumer extends Consumer {
      * Stops the process
      */
     public void stop() {
-    	logger.info("Waking up consumer...");
+    	logger.info("Waking up connector...");
         consumer.wakeup();
 
         try {
-            logger.info("Waiting for consumer to shutdown...");
+            logger.info("Waiting for connector to shutdown...");
             shutdownLatch.await();
         } catch (InterruptedException e) {
             logger.error("Exception thrown waiting for shutdown", e);
         }
     }
-
-    /**
-     * Gathers the nessecary properties, that are required for data-reception and data-processing
-     * @return The nessecary properties, that are required for data-reception and data-processing
-     */
+    
     private Properties getConsumerProperties() {
     	Properties configProperties = new Properties();
         configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConfig.getKafkaHostName());
-        configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-        configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ObservationDataDeserializer.class.getName());
+        configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, 
+        		"org.apache.kafka.common.serialization.StringDeserializer");
+        configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, 
+        		ObservationDataDeserializer.class.getName());
         configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, "GraphiteConsumers");
         configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "GraphiteConsumer");
         configProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");

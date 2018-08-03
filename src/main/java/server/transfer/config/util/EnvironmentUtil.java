@@ -1,9 +1,13 @@
-package server.transfer.config;
+package server.transfer.config.util;
 
 /**
- * A utility class with all sorts of useful features for Config classes in this package.
+ * A utility class, providing information about the system environment.
  */
-public class ConfigUtil {
+public final class EnvironmentUtil {
+	
+	private EnvironmentUtil() {
+		
+	}
 	
 	/**
      * Returns an environment-variable
@@ -11,7 +15,7 @@ public class ConfigUtil {
      * @param defaultValue The default-value of the environment-variable
      * @return value The currently set value of the environment-variable
      */
-    protected static String getEnvironmentVariable(String name, String defaultValue) {
+    public static String getEnvironmentVariable(String name, String defaultValue) {
     	String value = System.getenv(name);
         if (value == null || "".equals(value)) {
             return defaultValue;
