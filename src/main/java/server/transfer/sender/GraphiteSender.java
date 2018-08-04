@@ -19,6 +19,7 @@ import org.python.modules.cPickle;
 import server.transfer.config.GraphiteConfig;
 import server.transfer.converter.GraphiteConverter;
 import server.transfer.data.ObservationData;
+import server.transfer.sender.connection.SocketManager;
 
 /**
  * Sends data to Graphite
@@ -48,9 +49,7 @@ public class GraphiteSender extends Sender {
 	 */
 	@Override
 	public void send(ConsumerRecords<String, ObservationData> records) {
-		if (socket == null) {
-			som.connect(this.socket, GraphiteConfig.getGraphiteHostName(), GraphiteConfig.getGraphitePort());
-		} else if (!socket.isConnected()) {
+		if (socket == null || socket.isClosed()) {
 			som.reconnect(this.socket);
 		}
 		
@@ -92,6 +91,15 @@ public class GraphiteSender extends Sender {
 		records = new ConsumerRecords<String, ObservationData>(recordsMap);
 
 		this.send(records);
+	}
+
+	@Override
+	public void close() {
+		try {
+			socket.close();
+		} catch (IOException e) {
+			logger.error("Could not close socket.", e);
+		}
 	}
 	
 }

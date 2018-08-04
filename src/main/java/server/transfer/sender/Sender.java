@@ -18,5 +18,10 @@ public abstract class Sender {
      * @param records Multiple records of data from Kafka
      */
     public abstract void send(ConsumerRecords<String, ObservationData> records);
+    
+    /**
+     * Closes the sender and the connection
+     */
+    public abstract void close();
 
 }

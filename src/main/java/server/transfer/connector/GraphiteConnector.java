@@ -28,15 +28,16 @@ public class GraphiteConnector extends Connector {
      * @param topics The topics that the consumer should subscribe to
      * @param sender Sends the data to a specified component, normally a {@link GraphiteSender}
      */
-	public GraphiteConnector(List<String> topics, Sender sender) {
+	public GraphiteConnector(List<String> topics) {
     	this.topics = topics;
-    	this.sender = sender;
     }
 
     /**
      * Starts the process of consumation and readying the sender object
      */
-    public void run() {
+    public void run(Sender sender) {
+    	this.sender = sender;
+    	
     	Properties consumerProperties = getConsumerProperties();
         consumer = new KafkaConsumer<String, ObservationData>(consumerProperties);
         consumer.subscribe(topics);
@@ -68,11 +69,13 @@ public class GraphiteConnector extends Connector {
      * Stops the process
      */
     public void stop() {
-    	logger.info("Waking up connector...");
+    	
+    	this.sender.close();
+    	logger.info("Waking up consumer...");
         consumer.wakeup();
 
         try {
-            logger.info("Waiting for connector to shutdown...");
+            logger.info("Waiting for consumer to shutdown...");
             shutdownLatch.await();
         } catch (InterruptedException e) {
             logger.error("Exception thrown waiting for shutdown", e);

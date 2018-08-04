@@ -53,8 +53,8 @@ public class TransferManager {
     }
 
 	private void startGraphiteTransfer(List<String> topics) {
-    	connector = new GraphiteConnector(topics, new GraphiteSender());
-    	connector.run();
+    	connector = new GraphiteConnector(topics);
+    	connector.run(new GraphiteSender());
     }
     
 }

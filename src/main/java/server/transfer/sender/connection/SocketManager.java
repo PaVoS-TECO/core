@@ -1,4 +1,4 @@
-package server.transfer.sender;
+package server.transfer.sender.connection;
 
 import java.io.IOException;
 import java.net.Socket;

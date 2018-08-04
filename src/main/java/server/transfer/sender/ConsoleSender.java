@@ -26,4 +26,9 @@ public class ConsoleSender extends Sender {
 		System.out.println(payload.asString());
 	}
 
+	@Override
+	public void close() {
+		
+	}
+
 }

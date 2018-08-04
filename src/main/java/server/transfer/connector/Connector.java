@@ -43,7 +43,7 @@ public abstract class Connector {
     /**
      * Starts the transferring-process
      */
-    public abstract void run();
+    public abstract void run(Sender sender);
 
     /**
      * Stops the transferring-process
