@@ -433,7 +433,7 @@ function calculateGridLevel(zoom) {
   array = [4, 7, 10, 13, 17];
 
   var tempGridLevel = 0;
-  for (index; index < array.length; index++) {
+  for (index = 0; index < array.length; index++) {
     tempGridLevel++;
     if (zoom <= array[index]) {
       return tempGridLevel;
