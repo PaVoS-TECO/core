@@ -429,9 +429,9 @@ function handleZoom(map) {
   }
 }
 
-array = [4, 7, 10, 13, 17];
-
 function calculateGridLevel(zoom) {
+  array = [4, 7, 10, 13, 17];
+
   var tempGridLevel = 0;
   for (index; index < array.length; index++) {
     tempGridLevel++;
@@ -439,7 +439,7 @@ function calculateGridLevel(zoom) {
       return tempGridLevel;
     }
   }
-  return 0; // Error
+  return tempGridLevel; // Error
 }
 
 // function calculateGridLevel(zoom) {
