@@ -429,27 +429,40 @@ function handleZoom(map) {
   }
 }
 
+array = [4, 7, 10, 13, 17];
+
 function calculateGridLevel(zoom) {
-  switch(true) {
-    case zoom <= 4:
-      return 1;
-      break;
-    case zoom <= 7:
-      return 2;
-      break;
-    case zoom <= 10:
-      return 3;
-      break;
-    case zoom <= 13:
-      return 4;
-      break;
-    case zoom <= 17:
-      return 5;
-      break;
-    default:
-      break;
+  var tempGridLevel = 0;
+  for (index; index < array.length; index++) {
+    tempGridLevel++;
+    if (zoom <= array[index]) {
+      return tempGridLevel;
+    }
   }
+  return 0; // Error
 }
+
+// function calculateGridLevel(zoom) {
+//   switch(true) {
+//     case zoom <= 4:
+//       return 1;
+//       break;
+//     case zoom <= 7:
+//       return 2;
+//       break;
+//     case zoom <= 10:
+//       return 3;
+//       break;
+//     case zoom <= 13:
+//       return 4;
+//       break;
+//     case zoom <= 17:
+//       return 5;
+//       break;
+//     default:
+//       break;
+//   }
+// }
 
 function resetGrid(map) {
   map.removeLayer(gridLayerGroup);
