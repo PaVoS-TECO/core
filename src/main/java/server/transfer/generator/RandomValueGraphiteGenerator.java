@@ -58,9 +58,6 @@ public final class RandomValueGraphiteGenerator {
 				int value_PM10 = (int) (Math.random() * maxValue);
 				int value_PM2p5 = (int) (Math.random() * maxValue);
 				data = new ObservationData();
-				data.locationElevation = "";
-				data.locationID = "";
-				data.locationName = "";
 				data.observationDate = TimeUtil.getUTCDateTimeString();
 				data.observations.put(ObservationType.PARTICULATE_MATTER_PM10.toString(), String.valueOf(value_PM10));
 				data.observations.put(ObservationType.PARTICULATE_MATTER_PM2P5.toString(), String.valueOf(value_PM2p5));

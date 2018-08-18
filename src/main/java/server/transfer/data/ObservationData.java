@@ -24,21 +24,6 @@ public class ObservationData implements java.io.Serializable {
      */
     public String observationDate;
 
-    /**
-     * The name of the observations location
-     */
-    public String locationName;
-
-    /**
-     * The height of the observations location
-     */
-    public String locationElevation;
-
-    /**
-     * The id of the observations location
-     */
-    public String locationID;
-
     // Attributes listed below here are observed properties //
     
     /**

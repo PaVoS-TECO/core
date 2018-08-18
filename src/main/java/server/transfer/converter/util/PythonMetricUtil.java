@@ -32,10 +32,11 @@ public final class PythonMetricUtil {
      * @param record The record of data that will be sent
      * @param list The list of metrics that were created from our data with python
      * @param observations Maps each set observed property to a value
+     * @param graphTopic 
      * @param logger The logger documents 
      */
     public static void addFloatMetric(ConsumerRecord<String, ObservationData> record, 
-    		PyList list, Map<String, String> observations) {
+    		PyList list, Map<String, String> observations, String graphTopic) {
 		for (Map.Entry<String, String> entry : observations.entrySet()) {
 			String key = entry.getKey();
 			String value = entry.getValue();
@@ -43,7 +44,7 @@ public final class PythonMetricUtil {
 				
 				LocalDateTime dateTime = LocalDateTime.parse(record.value().observationDate);
 
-				PyString metricName = new PyString(record.topic() + "." + key);
+				PyString metricName = new PyString(graphTopic + "." + key);
 				PyInteger timestamp = new PyInteger((int) dateTime.toEpochSecond(ZoneOffset.UTC));
 				PyFloat metricValue = new PyFloat(Double.parseDouble(value));
 				PyTuple metric = new PyTuple(metricName, new PyTuple(timestamp, metricValue));

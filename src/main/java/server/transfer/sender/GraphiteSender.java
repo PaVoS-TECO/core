@@ -2,7 +2,6 @@ package server.transfer.sender;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +29,6 @@ public class GraphiteSender extends Sender {
 	private List<ConsumerRecord<String, ObservationData>> recordList;
 	private ConsumerRecord<String, ObservationData> record;
 	private ConsumerRecords<String, ObservationData> records;
-	private Socket socket;
 	private SocketManager som;
 
 	/**
@@ -38,7 +36,7 @@ public class GraphiteSender extends Sender {
 	 */
 	public GraphiteSender() {
 		this.som = new SocketManager(); 
-		som.connect(this.socket, GraphiteConfig.getGraphiteHostName(), GraphiteConfig.getGraphitePort());
+		som.connect(GraphiteConfig.getGraphiteHostName(), GraphiteConfig.getGraphitePort());
 	}
 
 	/**
@@ -48,22 +46,22 @@ public class GraphiteSender extends Sender {
 	 * {@link ConsumerRecords}<{@link String}, {@link ObservationData}> records
 	 */
 	@Override
-	public void send(ConsumerRecords<String, ObservationData> records) {
-		if (socket == null || socket.isClosed()) {
-			som.reconnect(this.socket);
+	public void send(ConsumerRecords<String, ObservationData> records, String graphTopic) {
+		if (som.isConnectionClosed()) {
+			som.reconnect();
 		}
 		
 		PyList list = new PyList();
 
 		records.forEach(record -> {
-			GraphiteConverter.addObservations(record, list);
+			GraphiteConverter.addObservations(record, list, graphTopic);
 		});
 
 		PyString payload = cPickle.dumps(list);
 		byte[] header = ByteBuffer.allocate(4).putInt(payload.__len__()).array();
 
 		try {
-			OutputStream outputStream = socket.getOutputStream();
+			OutputStream outputStream = som.getOutputStream();
 			outputStream.write(header);
 			outputStream.write(payload.toBytes());
 			outputStream.flush();
@@ -81,25 +79,21 @@ public class GraphiteSender extends Sender {
 	 * @param topic The name of the topic that this data belongs to
 	 * @param data  The data that will be sent to Graphite
 	 */
-	public void send(String topic, ObservationData data) {
+	public void send(String singleTopic, ObservationData data) {
 		recordsMap = new HashMap<TopicPartition, List<ConsumerRecord<String, ObservationData>>>();
 		recordList = new ArrayList<ConsumerRecord<String, ObservationData>>();
-		record = new ConsumerRecord<String, ObservationData>(topic, 0, 0, null, data);
+		record = new ConsumerRecord<String, ObservationData>(singleTopic, 0, 0, null, data);
 
 		recordList.add(record);
-		recordsMap.put(new TopicPartition(topic, 0), recordList);
+		recordsMap.put(new TopicPartition(singleTopic, 0), recordList);
 		records = new ConsumerRecords<String, ObservationData>(recordsMap);
 
-		this.send(records);
+		this.send(records, singleTopic);
 	}
 
 	@Override
 	public void close() {
-		try {
-			socket.close();
-		} catch (IOException e) {
-			logger.error("Could not close socket.", e);
-		}
+		som.closeSocket();
 	}
 	
 }

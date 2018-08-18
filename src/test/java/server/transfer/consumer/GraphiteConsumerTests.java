@@ -48,7 +48,7 @@ public class GraphiteConsumerTests {
 		
 		ArrayList<String> topics = new ArrayList<String>();
 		topics.add(topic);
-		final GraphiteConnector consumer = new GraphiteConnector(topics);
+		final GraphiteConnector consumer = new GraphiteConnector(topics, topic);
 		
 		KafkaProducer<String, String> producer = new KafkaProducer<>(getProducerProperties());
 		producer.send(new ProducerRecord<String, String>(topic, sData));
@@ -82,9 +82,6 @@ public class GraphiteConsumerTests {
 	
 	private ObservationData setupData(ObservationData data, String locationElevation
 			, String locationID, String locationName, String date, String pM10, String pM2p5) {
-		data.locationElevation = locationElevation;
-		data.locationID = locationID;
-		data.locationName = locationName;
 		data.observationDate = date;
 		data.observations.put(ObservationType.PARTICULATE_MATTER_PM10.toString(), pM10);
 		data.observations.put(ObservationType.PARTICULATE_MATTER_PM2P5.toString(), pM2p5);

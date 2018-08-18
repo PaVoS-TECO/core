@@ -11,7 +11,7 @@ import server.transfer.data.ObservationData;
 import server.transfer.sender.Sender;
 
 /**
- * Consumes data from Kafka
+ * Connects Kafka to a specified Component.
  */
 public abstract class Connector {
 
@@ -24,6 +24,11 @@ public abstract class Connector {
      * Kafka-Topics that should be subscribed
      */
     List<String> topics;
+    
+    /**
+     * The Graphite / Grafana topic name, where all data will be sent to
+     */
+    String graphTopic;
 
     /**
      * Monitors the correct shutdown of the Consumer

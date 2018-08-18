@@ -51,18 +51,12 @@ public class ObservationDataDeserializerTests {
 		
 		if (print) {
 		System.out.println("\nThe mapping-result is shown below:");
-		System.out.println("locationElevation: " + result.locationElevation);
-		System.out.println("locationID: " + result.locationID);
-		System.out.println("locationName: " + result.locationName);
 		System.out.println("observationDate: " + result.observationDate);
 		System.out.println("particulateMatter: " + result.observations.get(
 				ObservationType.PARTICULATE_MATTER_PM10.toString()));
 		}
 		
-		assert(result.locationElevation.equals(data.locationElevation)
-				&& result.locationID.equals(data.locationID)
-				&& result.locationName.equals(data.locationName)
-				&& result.observationDate.equals(data.observationDate)
+		assert(result.observationDate.equals(data.observationDate)
 				&& result.observations.get(ObservationType.PARTICULATE_MATTER_PM10.toString())
 				.equals(data.observations.get(ObservationType.PARTICULATE_MATTER_PM10.toString())));
 	}
@@ -72,9 +66,6 @@ public class ObservationDataDeserializerTests {
 	}
 	
 	private ObservationData setupData(ObservationData data, String locationElevation, String locationID, String locationName, String date, String pM10) {
-		data.locationElevation = locationElevation;
-		data.locationID = locationID;
-		data.locationName = locationName;
 		data.observationDate = date;
 		data.observations.put(ObservationType.PARTICULATE_MATTER_PM10.toString(), pM10);
 		return data;

@@ -1,18 +1,33 @@
 package server.transfer.sender.connection;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The {@code SocketManager} class manages basic operations that require a {@link Socket}.
+ * It encapsulates management of a connection and stores data, so you can reconnect at any given time,
+ * as well as providing information about the socket.
+ */
 public class SocketManager {
 	
 	private Logger logger = LoggerFactory.getLogger(SocketManager.class);
 	private String host;
 	private int port;
+	private Socket socket;
 	
-	public void connect(Socket socket, String host, int port) {
+	/**
+	 * Connects to the address that is described via the host and port.
+	 * @param host {@link String}
+	 * @param port {@link int}
+	 */
+	public void connect(String host, int port) {
+		this.host = host;
+		this.port = port;
+		
 		try {
 			socket = new Socket(host, port);
 		} catch (IOException e) {
@@ -20,11 +35,42 @@ public class SocketManager {
 		}
 	}
 	
-	public void reconnect(Socket socket) {
-		if (socket != null) {
-			connect(socket, this.host, this.port);
-		} else {
-			logger.error("Could not reconnect to socket. Socket is not initialized.");
+	/**
+	 * Reconnects to the previously connected address.
+	 */
+	public void reconnect() {
+		connect(this.host, this.port);
+	}
+	
+	/**
+	 * Closes the socket.
+	 */
+	public void closeSocket() {
+		try {
+			socket.close();
+		} catch (IOException e) {
+			logger.error("Could not close socket.", e);
+		}
+	}
+	
+	/**
+	 * Returns {@code true}, if the connetion is closed.
+	 * @return isConnectionClosed {@link boolean}
+	 */
+	public boolean isConnectionClosed() {
+		return socket.isClosed();
+	}
+	
+	/**
+	 * Returns the {@link OutputStream} of the {@link Socket}.
+	 * @return outputStream {@link OutputStream}
+	 */
+	public OutputStream getOutputStream() {
+		try {
+			return socket.getOutputStream();
+		} catch (IOException e) {
+			logger.error("Failed creating OutputStream.", e);
+			return null;
 		}
 	}
 	

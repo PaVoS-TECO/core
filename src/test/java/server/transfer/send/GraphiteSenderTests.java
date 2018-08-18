@@ -49,7 +49,7 @@ public class GraphiteSenderTests {
 		}
 		
 		GraphiteSender sender = new GraphiteSender();
-		sender.send(records);
+		sender.send(records, topic);
 	}
 	
 	@Test
@@ -95,9 +95,6 @@ public class GraphiteSenderTests {
 	}
 	
 	private ObservationData setupData(ObservationData data, String locationElevation, String locationID, String locationName, String date, String pM10) {
-		data.locationElevation = locationElevation;
-		data.locationID = locationID;
-		data.locationName = locationName;
 		data.observationDate = date;
 		data.observations.put(ObservationType.PARTICULATE_MATTER_PM10.toString(), pM10);
 		return data;

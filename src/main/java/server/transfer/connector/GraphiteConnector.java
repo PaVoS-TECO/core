@@ -17,7 +17,8 @@ import server.transfer.data.ObservationDataDeserializer;
 import server.transfer.sender.Sender;
 
 /**
- * Consumes data from Kafka and sends it to Graphite
+ * Connects Kafka to Graphite.
+ * Consumes data from Kafka and sends it to Graphite.
  */
 public class GraphiteConnector extends Connector {
 	
@@ -26,14 +27,16 @@ public class GraphiteConnector extends Connector {
     /**
      * Default constructor
      * @param topics The topics that the consumer should subscribe to
+     * @param graphTopic The Graphite / Grafana topic name, where all data will be sent to
      * @param sender Sends the data to a specified component, normally a {@link GraphiteSender}
      */
-	public GraphiteConnector(List<String> topics) {
+	public GraphiteConnector(List<String> topics, String graphTopic) {
     	this.topics = topics;
+    	this.graphTopic = graphTopic;
     }
 
     /**
-     * Starts the process of consumation and readying the sender object
+     * Starts the process of consumption and prepares the {@link Sender}, then starts to send data to Graphite.
      */
     public void run(Sender sender) {
     	this.sender = sender;
@@ -52,7 +55,7 @@ public class GraphiteConnector extends Connector {
                 ConsumerRecords<String, ObservationData> records = consumer.poll(100);
 
                 if (!records.isEmpty()) {
-                    sender.send(records);
+                    sender.send(records, graphTopic);
                 }
             }
         } catch (WakeupException ex) {
@@ -66,7 +69,7 @@ public class GraphiteConnector extends Connector {
     }
 
     /**
-     * Stops the process
+     * Stops the process of consumption and sending.
      */
     public void stop() {
     	
