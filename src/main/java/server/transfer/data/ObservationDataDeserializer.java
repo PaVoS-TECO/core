@@ -14,44 +14,47 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class ObservationDataDeserializer implements Deserializer<ObservationData> {
 
-	private Logger logger = null;
-	
-    /**
-     * Default constructor
-     */
-    public ObservationDataDeserializer() {
-    	this.logger = LoggerFactory.getLogger(this.getClass());
-    }
-    
-    public void close() {
-        // TODO implement here
-    }
-    
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	/**
-     * Configures the deserializer
-     * @param configs The Configuration
-     * @param isKey A variable, telling us whether we want to configure the key or the value
-     */
-	public void configure(Map<String, ?> configs, boolean isKey) {
-		// TODO Auto-generated method stub
+	 * Default constructor
+	 */
+	public ObservationDataDeserializer() {
+
 	}
-	
+
 	/**
-     * Deserializes an object
-     * @param topic Kafka-Topic
-     * @param data These are our serialized bytes
-     * @return A serializable object that contains the observed data from kafka
-     */
+	 * Configures the deserializer
+	 * 
+	 * @param configs The Configuration
+	 * @param isKey   A variable, telling us whether we want to configure the key or
+	 *                the value
+	 */
+	public void configure(Map<String, ?> configs, boolean isKey) {
+
+	}
+
+	/**
+	 * Deserializes an object
+	 * 
+	 * @param topic Kafka-Topic
+	 * @param data  These are our serialized bytes
+	 * @return A serializable object that contains the observed data from kafka
+	 */
 	public ObservationData deserialize(String topic, byte[] data) {
 		ObservationData observationData = null;
 
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            observationData = mapper.readValue(data, ObservationData.class);
-        } catch (IOException e) {
-        	logger.error("Failed to deserialize object: " + data.toString(), e);
-        }
-        return observationData;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			observationData = mapper.readValue(data, ObservationData.class);
+		} catch (IOException e) {
+			logger.error("Failed to deserialize object: " + data.toString(), e);
+		}
+		return observationData;
+	}
+
+	public void close() {
+
 	}
 
 }

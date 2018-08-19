@@ -21,7 +21,7 @@ import server.transfer.data.ObservationData;
 import server.transfer.data.ObservationType;
 import server.transfer.sender.ConsoleSender;
 
-public class GraphiteConsumerTests {
+public class GraphiteConnectorTests {
 
 	private static boolean print = false;
 	private static final String topic = "GraphiteConsumerTest";
