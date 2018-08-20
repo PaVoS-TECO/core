@@ -5,14 +5,17 @@
   <version>0.0.1-SNAPSHOT</version>
   
   <repositories>
+  
   	<repository>
       <id>Eclipse Paho Repo</id>
       <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
     </repository>
+    
     <repository>
       <id>Confluent Repo</id>
-      <url>https://packages.confluent.io/maven/</url>
+      <url>http://packages.confluent.io/maven/</url>
     </repository>
+    
   </repositories>
 
 	<build>
@@ -59,7 +62,13 @@
     <dependency>
       <groupId>io.confluent</groupId>
       <artifactId>kafka-avro-serializer</artifactId>
-      <version>4.1.1</version>
+      <version>5.0.0</version>
+  	</dependency>
+  	
+  	<dependency>
+      <groupId>io.confluent</groupId>
+      <artifactId>kafka-streams-avro-serde</artifactId>
+      <version>5.0.0</version>
   	</dependency>
 
     <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
@@ -104,7 +113,27 @@
 		<artifactId>jackson-annotations</artifactId>
 		<version>2.9.6</version>
 	</dependency>
-	
+
+	<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+	<dependency>
+		<groupId>com.google.code.gson</groupId>
+		<artifactId>gson</artifactId>
+		<version>2.8.5</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka -->
+	<dependency>
+		<groupId>org.springframework.kafka</groupId>
+		<artifactId>spring-kafka</artifactId>
+		<version>2.1.8.RELEASE</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+	<dependency>
+		<groupId>joda-time</groupId>
+		<artifactId>joda-time</artifactId>
+		<version>2.10</version>
+	</dependency>
 	
   </dependencies>
 </project>

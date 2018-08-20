@@ -5,24 +5,25 @@ package server.core.command;
  */
 public class GetClusterCommand implements RequestCommand {
 
-    /**
-     * Default constructor
-     */
-    public GetClusterCommand() {
-    }
+	/**
+	 * Default constructor
+	 */
+	public GetClusterCommand() {
+	}
 
-    /**
-     * This is the Execution form the requested Command. So it will search for the Cluster
-     */
-    public void execute() {
-        // TODO implement here
-    }
+	/**
+	 * This is the Execution form the requested Command. So it will search for the
+	 * Cluster
+	 */
+	public void execute() {
+		// TODO implement here
+	}
 
-    /**
-     * This Method Return the Requested Cluster as a KStream
-     */
-    public void getObject() {
-        // TODO implement here
-    }
+	/**
+	 * This Method Return the Requested Cluster as a KStream
+	 */
+	public void getObject() {
+		// TODO implement here
+	}
 
 }

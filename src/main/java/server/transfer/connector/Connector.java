@@ -18,7 +18,7 @@ public abstract class Connector {
     /**
      * Documents the activity of the Consumer
      */
-    Logger logger = LoggerFactory.getLogger(this.getClass());;
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Kafka-Topics that should be subscribed
