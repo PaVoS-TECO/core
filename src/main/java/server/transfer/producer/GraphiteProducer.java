@@ -1,5 +1,6 @@
 package server.transfer.producer;
 
+import java.util.Collection;
 import java.util.Properties;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -16,8 +17,15 @@ public class GraphiteProducer {
 	
 	public void produceMessage(String topic, ObservationData data) {
 		producer = new KafkaProducer<>(getProducerProperties());
-		
 		producer.send(new ProducerRecord<String, ObservationData>(topic, data));
+		producer.close();
+	}
+	
+	public void produceMessages(String topic, Collection<ObservationData> dataSet) {
+		producer = new KafkaProducer<>(getProducerProperties());
+		for (ObservationData data : dataSet) {
+			producer.send(new ProducerRecord<String, ObservationData>(topic, data));
+		}
 		producer.close();
 	}
 	

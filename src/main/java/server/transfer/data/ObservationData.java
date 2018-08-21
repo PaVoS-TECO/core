@@ -19,6 +19,10 @@ public class ObservationData implements java.io.Serializable {
     public ObservationData() {
     }
 
+    public String sensorID;
+    
+    public String clusterID;
+    
     /**
      * The date of the observation
      */
