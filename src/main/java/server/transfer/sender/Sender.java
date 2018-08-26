@@ -17,8 +17,9 @@ public abstract class Sender {
      * Sends the recorded data
      * @param records Multiple records of data from Kafka
      * @param graphTopic The Graphite / Grafana topic name, where all data will be sent to
+     * @return 
      */
-    public abstract void send(ConsumerRecords<String, ObservationData> records, String graphTopic);
+    public abstract boolean send(ConsumerRecords<String, ObservationData> records);
     
     /**
      * Closes the sender and the connection

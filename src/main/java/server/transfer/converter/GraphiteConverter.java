@@ -26,9 +26,9 @@ public final class GraphiteConverter {
 	 * @param graphTopic The Graphite / Grafana topic name, where all data will be sent to
      * @param logger Documents the metrics created by the {@link PythonMetricUtil}
      */
-    public static void addObservations(ConsumerRecord<String, ObservationData> record, PyList list, String graphTopic) {
-    	if (!isDataReadable(record, list, graphTopic)) return;
-    	PythonMetricUtil.addFloatMetric(record, list, record.value().observations, graphTopic);
+    public static void addObservations(ConsumerRecord<String, ObservationData> record, PyList list) {
+    	if (!isDataReadable(record, list)) return;
+    	PythonMetricUtil.addFloatMetric(record, list, record.value().observations);
     }
     
     private static boolean isDataReadable(Object...objects) {

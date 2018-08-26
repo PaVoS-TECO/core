@@ -44,9 +44,10 @@ public class GraphiteSender extends Sender {
 	 * Uses a record of multiple data objects.
 	 * <p>
 	 * {@link ConsumerRecords}<{@link String}, {@link ObservationData}> records
+	 * @return 
 	 */
 	@Override
-	public void send(ConsumerRecords<String, ObservationData> records, String graphTopic) {
+	public boolean send(ConsumerRecords<String, ObservationData> records) {
 		if (som.isConnectionClosed()) {
 			som.reconnect();
 		}
@@ -54,7 +55,7 @@ public class GraphiteSender extends Sender {
 		PyList list = new PyList();
 
 		records.forEach(record -> {
-			GraphiteConverter.addObservations(record, list, graphTopic);
+			GraphiteConverter.addObservations(record, list);
 		});
 
 		PyString payload = cPickle.dumps(list);
@@ -67,7 +68,10 @@ public class GraphiteSender extends Sender {
 			outputStream.flush();
 		} catch (IOException e) {
 			logger.error("Failed writing to Graphite.", e);
+			return false;
 		}
+		
+		return true;
 	}
 
 	/**
@@ -75,11 +79,12 @@ public class GraphiteSender extends Sender {
 	 * Uses a single data object.
 	 * <p>
 	 * {@link String} topic, {@link ObservationData} data
-	 * 
+	 * @param singleTopic The {@link String} topic. A KafkaTopic representing the source of the data.
 	 * @param topic The name of the topic that this data belongs to
 	 * @param data  The data that will be sent to Graphite
+	 * @return 
 	 */
-	public void send(String singleTopic, ObservationData data) {
+	public boolean send(String singleTopic, ObservationData data) {
 		recordsMap = new HashMap<TopicPartition, List<ConsumerRecord<String, ObservationData>>>();
 		recordList = new ArrayList<ConsumerRecord<String, ObservationData>>();
 		record = new ConsumerRecord<String, ObservationData>(singleTopic, 0, 0, null, data);
@@ -88,7 +93,7 @@ public class GraphiteSender extends Sender {
 		recordsMap.put(new TopicPartition(singleTopic, 0), recordList);
 		records = new ConsumerRecords<String, ObservationData>(recordsMap);
 
-		this.send(records, singleTopic);
+		return this.send(records);
 	}
 
 	@Override

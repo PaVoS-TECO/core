@@ -2,7 +2,6 @@ package server.transfer.serialization;
 
 import static org.junit.Assert.fail;
 
-import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.kafka.common.serialization.Deserializer;
@@ -14,10 +13,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import server.transfer.data.ObservationData;
 import server.transfer.data.ObservationDataDeserializer;
 import server.transfer.data.ObservationType;
+import server.transfer.sender.util.TimeUtil;
 
 public class ObservationDataDeserializerTests {
 
-	private static boolean print = false;
+	private static boolean print = true;
 	
 	@Test
 	public void deserialize_serializedObjectCheck_returnKafkaObservationData() {
@@ -62,7 +62,7 @@ public class ObservationDataDeserializerTests {
 	}
 	
 	private ObservationData setupCorrectData(ObservationData data) {
-		return setupData(data, "8848", "Mt.Everest_27-59-16_86-55-29", "Mt.Everest", new Date().toString(), "0");
+		return setupData(data, "8848", "Mt.Everest_27-59-16_86-55-29", "Mt.Everest", TimeUtil.getUTCDateTimeNowString(), "0");
 	}
 	
 	private ObservationData setupData(ObservationData data, String locationElevation, String locationID, String locationName, String date, String pM10) {

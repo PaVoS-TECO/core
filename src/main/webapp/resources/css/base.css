@@ -1,0 +1,20 @@
+@charset "utf-8";
+
+:root {
+	--darkgreen: #31b236;
+	--green: #38c43d;
+	--lightgreen: #7cc136;
+	
+	--limegreen: #daff39;
+	
+	--darkgray: #b2b2b2;
+	--gray: #c0c0c0;
+	--lightgray: #dddddd;
+	
+	--min-map-height: 350px;
+	--min-upper-optionpanel-height: 125px;
+	--min-sensortable-height: 225px;
+	--min-slider-height: 45px;
+	--min-middle-optionpanel-height: 45px;
+	--min-graph-height: 200px;
+}

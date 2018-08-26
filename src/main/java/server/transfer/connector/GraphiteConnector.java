@@ -21,8 +21,6 @@ import server.transfer.sender.Sender;
  * Consumes data from Kafka and sends it to Graphite.
  */
 public class GraphiteConnector extends Connector {
-	
-	private boolean sendLoop = true;
 
     /**
      * Default constructor
@@ -30,15 +28,14 @@ public class GraphiteConnector extends Connector {
      * @param graphTopic The Graphite / Grafana topic name, where all data will be sent to
      * @param sender Sends the data to a specified component, normally a {@link GraphiteSender}
      */
-	public GraphiteConnector(List<String> topics, String graphTopic) {
+	public GraphiteConnector(List<String> topics) {
     	this.topics = topics;
-    	this.graphTopic = graphTopic;
     }
 
     /**
      * Starts the process of consumption and prepares the {@link Sender}, then starts to send data to Graphite.
      */
-    public void run(Sender sender) {
+    public boolean run(Sender sender) {
     	this.sender = sender;
     	
     	Properties consumerProperties = getConsumerProperties();
@@ -51,13 +48,11 @@ public class GraphiteConnector extends Connector {
         }
 
         try {
-            while (sendLoop) {
-                ConsumerRecords<String, ObservationData> records = consumer.poll(100);
+			ConsumerRecords<String, ObservationData> records = consumer.poll(10000);
 
-                if (!records.isEmpty()) {
-                    sender.send(records, graphTopic);
-                }
-            }
+			if (!records.isEmpty()) {
+				return sender.send(records);
+			}
         } catch (WakeupException ex) {
             logger.info("Connector has received instruction to wake up");
         } finally {
@@ -66,6 +61,7 @@ public class GraphiteConnector extends Connector {
             shutdownLatch.countDown();
             logger.info("Connector has closed successfully");
         }
+        return false;
     }
 
     /**

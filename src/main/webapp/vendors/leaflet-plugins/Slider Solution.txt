@@ -1,0 +1,3 @@
+https://github.com/consbio/Leaflet.Range
+https://github.com/dwilhelm89/LeafletSlider
+https://github.com/Eclipse1979/leaflet-slider

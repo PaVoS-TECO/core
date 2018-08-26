@@ -15,17 +15,18 @@ import server.transfer.data.ObservationData;
 public class ConsoleSender extends Sender {
 
 	@Override
-	public void send(ConsumerRecords<String, ObservationData> records, String graphTopic) {
+	public boolean send(ConsumerRecords<String, ObservationData> records) {
 		PyList list = new PyList();
 
 		records.forEach(record -> {
-			GraphiteConverter.addObservations(record, list, graphTopic);
+			GraphiteConverter.addObservations(record, list);
 		});
 
 		PyString payload = cPickle.dumps(list);
 		System.out.println(payload.asString());
+		return true;
 	}
-
+	
 	@Override
 	public void close() {
 		

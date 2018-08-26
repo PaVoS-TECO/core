@@ -5,15 +5,20 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import server.core.grid.converter.GeoJsonConverter;
+import org.joda.time.DateTime;
+
+import server.core.grid.exceptions.ClusterNotFoundException;
+import server.core.grid.geojson.GeoJsonConverter;
 import server.core.grid.polygon.math.Tuple3D;
 import server.transfer.data.ObservationData;
 import server.transfer.producer.GraphiteProducer;
+import server.transfer.producer.util.GridTopicTranslator;
 import server.transfer.sender.util.TimeUtil;
 
 /**
@@ -36,7 +41,7 @@ public abstract class GeoPolygon {
 	public final int LEVELS_AFTER_THIS;
 	protected Path2D.Double path;
 	protected List<GeoPolygon> subPolygons;
-	protected List<ObservationData> sensorValues;
+	protected Map<String, ObservationData> sensorValues;
 	protected ObservationData observationData;
 	
 	/**
@@ -63,10 +68,7 @@ public abstract class GeoPolygon {
 		this.SCALE = 0;
 		this.LEVELS_AFTER_THIS = Math.max(levelsAfterThis, 0);;
 		
-		this.path = new Path2D.Double();
-		this.subPolygons = new ArrayList<>();
-		this.sensorValues = new ArrayList<>();
-		this.observationData = new ObservationData();
+		commonConstructor();
 	}
 	
 	/**
@@ -91,12 +93,31 @@ public abstract class GeoPolygon {
 		this.SCALE = scale;
 		this.LEVELS_AFTER_THIS = Math.max(levelsAfterThis, 0);
 		
-		this.path = new Path2D.Double();
-		this.subPolygons = new ArrayList<>();
-		this.sensorValues = new ArrayList<>();
-		this.observationData = new ObservationData();
+		commonConstructor();
 	} 
 	
+	private void commonConstructor() {
+		this.path = new Path2D.Double();
+		this.subPolygons = new ArrayList<>();
+		this.sensorValues = new HashMap<>();
+		this.observationData = new ObservationData();
+		setupObservationData();
+	}
+	
+	/**
+	 * Creates or overrides a map-entry with the new value in double-precision.
+	 * @param sensorID The {@link String} ID of the Sensor. Not a cluster.
+	 * @param data The {@link ObservationData} with the value.
+	 */
+	public void addObservation(ObservationData data) {
+		data.clusterID = this.ID;
+		this.sensorValues.put(data.sensorID, data);
+	}
+	
+	/**
+	 * Returns a cloned object of this {@link GeoPolygon}s {@link ObservationData} data.
+	 * @return observationData {@link ObservationData}
+	 */
 	public ObservationData cloneObservation() {
 		ObservationData result = new ObservationData();
 		result.observationDate = this.observationData.observationDate;
@@ -109,35 +130,52 @@ public abstract class GeoPolygon {
 	}
 	
 	/**
-	 * Returns the current {@link ObservationData} data as a {@link Set} over all sensors.
-	 * The new sensorID will consist of the {@link GeoPolygon}.ID and the original sensorID.
-	 * @return sensorDataSet {@code Set<ObservationData>}
+	 * Returns true if the current {@link GeoPolygon} contains the specified {@link Point2D.Double}.
+	 * If {@code checkBoundsFirst} is set to {@code true}, the method will check if the object is inside the boundaries first,
+	 * in order to reduce overhead on {@link GeoPolygon}s with a high amount of vertices.
+	 * @param point {@link Point2D.Double}
+	 * @param checkBoundsFirst {@link boolean}
+	 * @return containsPoint {@link boolean}
 	 */
-	public List<ObservationData> getSensorDataList() {
-		return this.sensorValues;
-	}
-	
-	/**
-	 * Produces messages for the output kafka-topic.
-	 * Each message contains a single {@link ObservationData} object.
-	 * This method Produces recursively and starts with the smallest clusters.
-	 */
-	public void produceSensorDataMessage(String topic) {
-		for (GeoPolygon polygon : subPolygons) {
-			polygon.produceSensorDataMessage(topic);
+	public boolean contains(Point2D.Double point, boolean checkBoundsFirst) {
+		if (checkBoundsFirst) {
+			if (!path.getBounds2D().contains(point)) {
+				return false;
+			}
 		}
-		GraphiteProducer producer = new GraphiteProducer();
-		producer.produceMessages(topic, sensorValues);
+		return path.contains(point);
 	}
 	
 	/**
-	 * Creates or overrides a map-entry with the new value in double-precision.
-	 * @param sensorID The {@link String} ID of the Sensor. Not a cluster.
-	 * @param observationData The {@link Double} value
+	 * Returns the current {@link String} sensorIDs that are inside this cluster as a {@link Collection} over all sensors.
+	 * This includes sensors from all sub-{@link GeoPolygon}s until the last level.
+	 * @return sensorDataSet {@code Collection<String>}
 	 */
-	public void addObservation(ObservationData data) {
-		data.clusterID = this.ID;
-		this.sensorValues.add(data);
+	public Collection<String> getAllSensorIDs() {
+		Collection<String> result = new HashSet<>();
+		result.addAll(getDirectSensorIDs());
+		for (GeoPolygon subPolygon : this.subPolygons) {
+			result.addAll(subPolygon.getAllSensorIDs());
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns the current {@link String} sensorIDs that are inside this cluster as a {@link Collection} over all sensors.
+	 * This does not include sensors from sub-{@link GeoPolygon}s.
+	 * @return sensorDataSet {@code Collection<String>}
+	 */
+	public Collection<String> getDirectSensorIDs() {
+		return this.sensorValues.keySet();
+	}
+	
+	/**
+	 * Returns the current {@link GeoPolygon} as JSON-String
+	 * @param property The {@link String} representing an observation-type.
+	 * @return json {@link String}
+	 */
+	public String getJson(String property) {
+		return GeoJsonConverter.convert(this, property);
 	}
 	
 	/**
@@ -156,26 +194,8 @@ public abstract class GeoPolygon {
 	}
 	
 	/**
-	 * Returns the number of sensors in this {@link GeoPolygon} that send data about a specific property.
-	 * @return numberOfSensors {@link int}
-	 */
-	public int getNumberOfSensors(String property) {
-		int sum = 0;
-		
-		for (GeoPolygon entry : this.subPolygons) {
-			sum += entry.getNumberOfSensors(property);
-		}
-		for (ObservationData data : this.sensorValues) {
-			if (data.observations.containsKey(property)) {
-				sum++;
-			}
-		}
-		
-		return sum;
-	}
-	
-	/**
 	 * Returns the number of sensors in this {@link GeoPolygon} that send data about a specific {@link Collection} of properties.
+	 * @param properties The {@link Collection} of {@link String}s representing different observation-types.
 	 * @return numberOfSensors {@link int}
 	 */
 	public int getNumberOfSensors(Collection<String> properties) {
@@ -184,7 +204,7 @@ public abstract class GeoPolygon {
 		for (GeoPolygon entry : this.subPolygons) {
 			sum += entry.getNumberOfSensors(properties);
 		}
-		for (ObservationData data : this.sensorValues) {
+		for (ObservationData data : this.sensorValues.values()) {
 			boolean containsAll = true;
 			for (String property : properties) {
 				if (!data.observations.containsKey(property)) {
@@ -198,105 +218,23 @@ public abstract class GeoPolygon {
 	}
 	
 	/**
-	 * Updates all values of this {@link GeoPolygon} and it's sub-{@link GeoPolygon}s.<p>
-	 * The process takes into account that sub-{@link GeoPolygon} may have more or less data
-	 * about a certain property.
-	 * It sums up all values (that were factored by the amount of data) and finally divides it
-	 * by the total amount of data.
-	 * This way, we achieve the most realistic representation of our data.
+	 * Returns the number of sensors in this {@link GeoPolygon} that send data about a specific property.
+	 * @param property The {@link String} representing an observation-type.
+	 * @return numberOfSensors {@link int}
 	 */
-	public void updateObservations() {
+	public int getNumberOfSensors(String property) {
+		int sum = 0;
 		
-		//create entries for sub-polygons & sensors
 		for (GeoPolygon entry : this.subPolygons) {
-			entry.updateObservations();
+			sum += entry.getNumberOfSensors(property);
 		}
-		
-		ObservationData obs = new ObservationData();
-		obs.observationDate = TimeUtil.getUTCDateTimeString();
-		Set<Tuple3D<String, Integer, Double>> values = new HashSet<>();
-		Set<String> properties = new HashSet<>();
-		
-		// save properties found in sub-GeoPolygons and sensors
-		for (GeoPolygon entry : this.subPolygons) {
-			Map<String, String> obsTemp = entry.observationData.observations;
-			for (String property : obsTemp.keySet()) {
-				values.add(new Tuple3D<String, Integer, Double>(property
-						, Integer.valueOf(entry.getNumberOfSensors(property)), Double.valueOf(obsTemp.get(property))));
-				properties.add(property);
-			}
-		}
-		for (ObservationData entry : this.sensorValues) {
-			Map<String, String> obsTemp = entry.observations;
-			for (String property : obsTemp.keySet()) {
-				values.add(new Tuple3D<String, Integer, Double>(property
-						, Integer.valueOf(1), Double.valueOf(obsTemp.get(property))));
-				properties.add(property);
+		for (ObservationData data : this.sensorValues.values()) {
+			if (data.observations.containsKey(property)) {
+				sum++;
 			}
 		}
 		
-		// save data in ObservationData obs after calculation
-		for (String property : properties) {
-			double value = 0;
-			int totalSensors = 0;
-			
-			for (Tuple3D<String, Integer, Double> tuple : values) {
-				if (tuple.getFirstValue().equals(property)) {
-					value += tuple.getThirdValue().doubleValue() * tuple.getSecondValue().doubleValue();
-					totalSensors += tuple.getSecondValue().intValue();
-				}
-			}
-			
-			value = value / (double) totalSensors;
-			obs.observations.put(property, String.valueOf(value));
-		}
-		obs.clusterID = this.ID;
-		this.observationData = obs;
-	}
-	
-	/**
-	 * Generates and sets the {@link Path2D.Double} of this {@link GeoPolygon}
-	 */
-	protected abstract void generatePath();
-	
-	/**
-	 * Generates {@link GeoPolygon}s inside of this {@link GeoPolygon}.<p>
-	 * Uses {@code SCALE}.
-	 * @param subdivisions The amount of subdivisions
-	 */
-	protected abstract void generateSubPolygons(int subdivisions);
-	
-	/**
-	 * Generates {@link GeoPolygon}s inside of this {@link GeoPolygon}.<p>
-	 * Uses {@code WIDTH} and  {@code HEIGHT}
-	 * @param xSubdivisions The amount of horizontal subdivisions
-	 * @param ySubdivisions The amount of vertical subdivisions
-	 */
-	protected abstract void generateSubPolygons(int xSubdivisions, int ySubdivisions);
-	
-	/**
-	 * Returns the current {@link GeoPolygon} as JSON-String
-	 * @return json {@link String}
-	 */
-	public String getJson() {
-		return GeoJsonConverter.convert(getPoints());
-	}
-	
-	/**
-	 * Returns true if the current {@link GeoPolygon} contains the specified {@link Point2D.Double}.
-	 * If {@code checkBoundsFirst} is set to {@code true}, the method will check if the object is inside the boundaries first,
-	 * in order to reduce overhead on {@link GeoPolygon}s with a high amount of vertices.
-	 * @param point {@link Point2D.Double}
-	 * @param checkBoundsFirst {@link boolean}
-	 * @return containsPoint {@link boolean}
-	 */
-	public boolean contains(Point2D.Double point, boolean checkBoundsFirst) {
-		if (checkBoundsFirst) {
-			if (!path.getBounds2D().contains(point)) {
-				return false;
-			}
-		}
-		return path.contains(point);
+		return sum;
 	}
 	
 	/**
@@ -322,19 +260,211 @@ public abstract class GeoPolygon {
 	}
 	
 	/**
-	 * Returns the ID of this {@link GeoPolygon}
-	 * @return id {@link String}
+	 * Returns the current {@link ObservationData} data as a {@link Collection} over all sensors.
+	 * The new sensorID will consist of the {@link GeoPolygon}.ID and the original sensorID.
+	 * @return sensorDataSet {@code Collection<ObservationData>}
 	 */
-	public String getID() {
-		return this.ID;
+	public Collection<ObservationData> getSensorDataList() {
+		return this.sensorValues.values();
+	}
+	
+	public Collection<ObservationData> getSubObservations() {
+		Collection<ObservationData> observations = new ArrayList<>();
+		for (GeoPolygon polygon : subPolygons) {
+			observations.addAll(polygon.getSubObservations());
+			observations.add(polygon.cloneObservation());
+		}
+		return observations;
+	}
+	
+	/**
+	 * Returns the sub-{@link GeoPolygon} that is associated with the specified {@link String} clusterID.
+	 * @param clusterID {@link String}
+	 * @return polygon {@link GeoPolygon}
+	 * @throws ClusterNotFoundException 
+	 */
+	public GeoPolygon getSubPolygon(String clusterID) throws ClusterNotFoundException {
+		for (GeoPolygon polygon : this.subPolygons) {
+			if (polygon.ID == clusterID) {
+				return polygon;
+			}
+		}
+		throw new ClusterNotFoundException(clusterID);
 	}
 	
 	/**
 	 * Returns a {@link Collection} of all {@link GeoPolygon}s inside this {@link GeoPolygon}.
 	 * @return subPolygons {@code Set<Entry<String, GeoPolygon>>}
 	 */
-	public Collection<GeoPolygon> getSubPolygons() {
+	public List<GeoPolygon> getSubPolygons() {
 		return subPolygons;
+	}
+	
+	/**
+	 * Produces messages for the output kafka-topic.
+	 * This method Produces recursively and starts with the smallest clusters.
+	 * @param topic {@link String}
+	 * @param producer {@link GraphiteProducer}
+	 * @return topics {@link List} of {@link String}s that define KafkaTopics
+	 */
+	public List<String> produceSensorDataMessages(GraphiteProducer producer) {
+		List<String> topics = new ArrayList<>();
+		
+		for (GeoPolygon subPolygon : subPolygons) {
+			topics.addAll(subPolygon.produceSensorDataMessages(producer));
+		}
+		
+		if (!sensorValues.isEmpty()) {
+			Collection<String> sensorIDs = sensorValues.keySet();
+			Map<String, String> sensorTopicMap = GridTopicTranslator.getTopic(sensorIDs, this);
+			for (String sensorID : sensorIDs) {
+				String topic = sensorTopicMap.get(sensorID);
+				producer.produceMessage(topic, sensorValues.get(sensorID));
+				topics.add(topic);
+			}
+		}
+		return topics;
+	}
+	
+	public Collection<String> getAllProperties() {
+		Collection<String> properties = new HashSet<>();
+		
+		for (GeoPolygon entry : this.subPolygons) {
+			Map<String, String> obsTemp = entry.observationData.observations;
+			for (String property : obsTemp.keySet()) {
+				properties.add(property);
+			}
+		}
+		for (ObservationData entry : this.sensorValues.values()) {
+			Map<String, String> obsTemp = entry.observations;
+			for (String property : obsTemp.keySet()) {
+				properties.add(property);
+			}
+		}
+		
+		return properties;
+	}
+	
+	/**
+	 * Updates all values of this {@link GeoPolygon} and it's sub-{@link GeoPolygon}s.<p>
+	 * The process takes into account that sub-{@link GeoPolygon} may have more or less data
+	 * about a certain property.
+	 * It sums up all values (that were factored by the amount of data) and finally divides it
+	 * by the total amount of data.
+	 * This way, we achieve the most realistic representation of our data.
+	 */
+	public void updateObservations() {
+		
+		//create entries for sub-polygons & sensors
+		for (GeoPolygon entry : this.subPolygons) {
+			entry.updateObservations();
+		}
+		
+		boolean anyEntry = false;
+		ObservationData obs = new ObservationData();
+		obs.observationDate = TimeUtil.getUTCDateTimeNowString();
+		Set<Tuple3D<String, Integer, Double>> values = new HashSet<>();
+		Set<String> properties = new HashSet<>();
+		DateTime dt = null;
+		// save properties found in sub-GeoPolygons and sensors
+		for (GeoPolygon entry : this.subPolygons) {
+			Map<String, String> obsTemp = entry.observationData.observations;
+			for (String property : obsTemp.keySet()) {
+				values.add(new Tuple3D<String, Integer, Double>(property
+						, Integer.valueOf(entry.getNumberOfSensors(property)), Double.valueOf(obsTemp.get(property))));
+				properties.add(property);
+			}
+			DateTime dtCheck = TimeUtil.getUTCDateTime(entry.observationData.observationDate).toDateTime();
+			if (dt == null || dt.isBefore(dtCheck)) {
+				dt = dtCheck;
+			}
+		}
+		for (ObservationData entry : this.sensorValues.values()) {
+			Map<String, String> obsTemp = entry.observations;
+			for (String property : obsTemp.keySet()) {
+				values.add(new Tuple3D<String, Integer, Double>(property
+						, Integer.valueOf(1), Double.valueOf(obsTemp.get(property))));
+				properties.add(property);
+			}
+			DateTime dtCheck = TimeUtil.getUTCDateTime(entry.observationDate).toDateTime();
+			if (dt == null || dt.isBefore(dtCheck)) {
+				dt = dtCheck;
+			}
+		}
+		
+		// save data in ObservationData obs after calculation
+		for (String property : properties) {
+			double value = 0;
+			int totalSensors = 0;
+			
+			for (Tuple3D<String, Integer, Double> tuple : values) {
+				if (tuple.getFirstValue().equals(property)) {
+					if (!anyEntry) anyEntry = true;
+					value += tuple.getThirdValue().doubleValue() * tuple.getSecondValue().doubleValue();
+					totalSensors += tuple.getSecondValue().intValue();
+				}
+			}
+			
+			value = value / (double) totalSensors;
+			if (anyEntry) {
+				obs.observations.put(property, String.valueOf(value));
+			} else {
+				obs.observations.put(property, null);
+			}
+		}
+		if (anyEntry) {
+			obs.clusterID = this.ID;
+			this.observationData = obs;
+			obs.observationDate = TimeUtil.getUTCDateTimeString(dt.toLocalDateTime());
+		}
+	}
+	
+	public void resetObservations() {
+		for (GeoPolygon subPolygon : subPolygons) {
+			subPolygon.resetObservations();
+		}
+		this.sensorValues.clear();
+	}
+	
+	private void setupObservationData() {
+		this.observationData.observationDate = TimeUtil.getUTCDateTimeNowString();
+		this.observationData.clusterID = this.ID;
+	}
+	
+	/**
+	 * Generates and sets the {@link Path2D.Double} of this {@link GeoPolygon}
+	 */
+	protected abstract void generatePath();
+	
+	/**
+	 * Generates {@link GeoPolygon}s inside of this {@link GeoPolygon}.<p>
+	 * Uses {@code SCALE}.
+	 * @param subdivisions The amount of subdivisions
+	 */
+	protected abstract void generateSubPolygons(int subdivisions);
+	
+	/**
+	 * Generates {@link GeoPolygon}s inside of this {@link GeoPolygon}.<p>
+	 * Uses {@code WIDTH} and  {@code HEIGHT}
+	 * @param xSubdivisions The amount of horizontal subdivisions
+	 * @param ySubdivisions The amount of vertical subdivisions
+	 */
+	protected abstract void generateSubPolygons(int xSubdivisions, int ySubdivisions);
+	
+	/**
+	 * Produces messages for the output kafka-topic.
+	 * This method Produces recursively and starts with the smallest clusters.
+	 * Returns a {@link Collection} of {@link ObservationData}.
+	 * @param topic {@link String}
+	 * @param recursive {@link boolean}
+	 */
+	protected Collection<ObservationData> getClusterObservations() {
+		Collection<ObservationData> result = new HashSet<>();
+		for (GeoPolygon polygon : subPolygons) {
+			result.addAll(polygon.getClusterObservations());
+		}
+		result.add(cloneObservation());
+		return result;
 	}
 	
 }

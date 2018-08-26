@@ -24,11 +24,6 @@ public abstract class Connector {
      * Kafka-Topics that should be subscribed
      */
     List<String> topics;
-    
-    /**
-     * The Graphite / Grafana topic name, where all data will be sent to
-     */
-    String graphTopic;
 
     /**
      * Monitors the correct shutdown of the Consumer
@@ -47,8 +42,10 @@ public abstract class Connector {
 
     /**
      * Starts the transferring-process
+     * @param sender The {@link Sender} to use in this process.
+     * @return 
      */
-    public abstract void run(Sender sender);
+    public abstract boolean run(Sender sender);
 
     /**
      * Stops the transferring-process

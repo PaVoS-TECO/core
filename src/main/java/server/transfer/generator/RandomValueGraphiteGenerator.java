@@ -35,7 +35,7 @@ public final class RandomValueGraphiteGenerator {
 						data = generateRandomData(data, MAX_VALUE);
 						
 						try {
-							TimeUnit.MILLISECONDS.sleep(9900);;
+							TimeUnit.MILLISECONDS.sleep(9900);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -59,7 +59,7 @@ public final class RandomValueGraphiteGenerator {
 				int value_PM2p5 = (int) (Math.random() * maxValue);
 				data = new ObservationData();
 				data.sensorID = "exampleSensor";
-				data.observationDate = TimeUtil.getUTCDateTimeString();
+				data.observationDate = TimeUtil.getUTCDateTimeNowString();
 				data.observations.put(ObservationType.PARTICULATE_MATTER_PM10.toString(), String.valueOf(value_PM10));
 				data.observations.put(ObservationType.PARTICULATE_MATTER_PM2P5.toString(), String.valueOf(value_PM2p5));
 				return data;

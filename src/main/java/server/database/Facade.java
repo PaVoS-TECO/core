@@ -1,9 +1,7 @@
 package server.database;
 
-import java.util.Set;
-
-import org.apache.kafka.common.metrics.Sensor;
-
+import server.transfer.data.ObservationData;
+import server.transfer.data.ObservationDataDeserializer;
 import web.grid.Grid;
 
 /**
@@ -11,45 +9,63 @@ import web.grid.Grid;
  */
 public class Facade {
 
+	private ObservationDataToStorageProcessor storageProcessor;
+	
     /**
      * Default constructor
      */
     public Facade() {
+    	// TODO set host by property list
+    	storageProcessor = new ObservationDataToStorageProcessor("localhost");
     }
-
-
-
-
-
+    
     /**
-     * Subscribes to the given KafkaStream, which contains ZoomLevel-specific data and initiates processing of its records.
-     * @param stream The stream to subscribe to.
+     * Add an ObservationData object to the storage solution.
+     * @param observationData The ObservationData object.
      */
-    public void subscribeToZoomLevelStream(KStream stream) {
-        // TODO implement here
+    public void addObservationData(ObservationData observationData) {
+    	storageProcessor.add(observationData);
     }
-
+    
     /**
-     * Fetches all sensors from the given cluster that observe the given ObservedProperty and returns an array of sensors.
-     * @param type The ObservationType of the requested sensors.
-     * @param id The ID of the cluster.
-     * @return An array of sensors.
+     * Add a byte array (which represents a serialized ObservationData object)
+     * to the storage solution.
+     * @param observationData The serialized ObservationData object.
      */
-    public Set<Sensor> getSensors(ObservationType type, ClusterID id) {
-        // TODO implement here
-        return null;
+    public void addObservationData(byte[] observationData) {
+    	ObservationDataDeserializer deserializer = new ObservationDataDeserializer();
+    	ObservationData obsDataObject = deserializer.deserialize(null, observationData);
+    	deserializer.close();
+    	if (obsDataObject != null) {
+    		addObservationData(obsDataObject);
+    	}
     }
-
+    
     /**
-     * Returns an appropriate grid of clusters in the requested grid section for the specified ZoomLevel and time. The (first) two values of the ClusterID array define the grid section from which to get the data.
-     * @param clusters An array of ClusterIDs from which the first two entries are taken to compute the section of the Grid to get the data from.
-     * @param zoom The ZoomLevel from which to get the data.
-     * @param time The point in time.
-     * @return A grid with the computed data.
+     * Get the value of an observedProperty from a clusterID at or before the given timestamp.
+     * The returned value is guaranteed to come from an observation in the given cluster at or before
+     * the given timestamp (i.e. no values from the future).
+     * @param clusterID The cluster from which to get the value
+     * @param timestamp The time to check
+     * @param observedProperty The observedProperty needed
+     * @return The value to the observedProperty key. Returns {@code null} in any of the following cases:<br>
+     * - There is no entry for the cluster<br>
+     * - There is no entry for the cluster before or at the given timestamp<br>
+     * - There is no {@code observedProperty} key in the observations Map<br>
+     * - The value to the {@code observedProperty} key is literally {@code null}<br>
+     * - Any of the parameters is badly formatted (see logs)
      */
-    public Grid getGrid(ClusterID[] clusters, ZoomLevel zoom, Time time) {
-        // TODO implement here
-        return null;
+    public String getObservationData(String clusterID, String timestamp, String observedProperty) {
+    	return storageProcessor.get(clusterID, timestamp, observedProperty);
+    }
+    
+    /**
+	 * Add a memcached server to the server cluster.
+	 * @param address The address of the server
+	 * @param port The port for memcached
+	 */
+    public void addMemcachedServer(String address, int port) {
+    	storageProcessor.addServer(address, port);
     }
 
 }

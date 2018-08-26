@@ -26,10 +26,12 @@ public class TransferManager {
      * @param topics Kafka-Topics that should be subscribed
      * @param graphTopic The Graphite / Grafana topic name, where all data will be sent to
      * @param dest The destination the data should be sent to
+     * @return 
      */
-    public void startDataTransfer(List<String> topics, String graphTopic, Destination dest) {
+    public boolean startDataTransfer(List<String> topics, Destination dest) {
     	if (connector != null) stopDataTransfer();
-        if (dest.equals(Destination.GRAPHITE)) startGraphiteTransfer(topics, graphTopic);
+        if (dest.equals(Destination.GRAPHITE)) return transferToGraphite(topics);
+        return false;
     }
     
     /**
@@ -37,11 +39,12 @@ public class TransferManager {
      * @param topic Kafka-Topic that should be subscribed
      * @param graphTopic The Graphite / Grafana topic name, where all data will be sent to
      * @param dest The destination the data should be sent to
+     * @return 
      */
-    public void startDataTransfer(String topic, String graphTopic, Destination dest) {
+    public boolean startDataTransfer(String topic, Destination dest) {
     	List<String> topics = new ArrayList<>();
     	topics.add(topic);
-    	startDataTransfer(topics, graphTopic, dest);
+    	return startDataTransfer(topics, dest);
     }
     
     /**
@@ -52,9 +55,9 @@ public class TransferManager {
     	connector.stop();
     }
 
-	private void startGraphiteTransfer(List<String> topics, String graphTopic) {
-    	connector = new GraphiteConnector(topics, graphTopic);
-    	connector.run(new GraphiteSender());
+	private boolean transferToGraphite(List<String> topics) {
+    	connector = new GraphiteConnector(topics);
+    	return connector.run(new GraphiteSender());
     }
     
 }
