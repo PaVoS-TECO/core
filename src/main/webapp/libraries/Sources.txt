@@ -1,5 +1,0 @@
-Leaflet Fullscreen
-https://github.com/brunob/leaflet.fullscreen
-
-Leaflet Mouse Coordinates
-https://github.com/MrMufflon/Leaflet.Coordinates

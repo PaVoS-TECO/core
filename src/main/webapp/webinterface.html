@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html lang="en">
+<head>
+  
+  <title>PaVoS Webinterface</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- CSS -->
+  <!-- LIBRARIES -->
+  <link rel="stylesheet" href="vendors/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="vendors/bootstrap-plugins/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css">
+  <link rel="stylesheet" href="vendors/bootstrap-plugins/bootstrap-touchspin-master/src/jquery.bootstrap-touchspin.css">
+  <link rel="stylesheet" href="vendors/leaflet-plugins/leaflet.fullscreen-master/Control.FullScreen.css"/>
+  <link rel="stylesheet" href="vendors/leaflet-plugins/Leaflet.Coordinates-master/src/Control.Coordinates.css"/>
+  <link rel="stylesheet" href="vendors/leaflet-plugins/Leaflet.Coordinates-master/src/Control.Coordinates.ie.css"/>
+  <link rel="stylesheet" href="vendors/leaflet/leaflet.css"/>
+  <link rel="stylesheet" href="vendors/fontawesome/fontawesome-free-5.2.0-web/css/solid.min.css">
+  <!-- LIBRARIES -->
+
+  <!-- CUSTOM -->
+  <link rel="stylesheet" href="resources/css/default-theme.css"/>
+  <link rel="stylesheet" href="resources/css/base.css"/>
+  <!-- CUSTOM -->
+<!-- CSS -->
+
+<!-- JS -->
+  <script data-main="resources/js/main.js" src="vendors/require/2.3.5/require.min.js"></script>
+<!-- JS -->
+
+</head>
+<body>
+
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-sm-8">
+	    
+      <!-- LEAFLET MAP -->
+        <div class="row">
+          <div id='mapContainer' class="border"></div>
+        </div>
+      <!-- LEAFLET MAP -->
+	  
+      </div>
+      <div class="col-sm-4">
+	  
+      <!-- UPPER OPTIONPANEL -->
+        <div id='upperOptionpanelContainer'>
+      
+        <!-- EXPORT -->
+          <div class="row">
+            <div class="col-sm centered">	
+              <button class="btn btn-primary wide" data-toggle="modal" data-target="#exportModal">Export</button>
+
+            <!-- EXPORT MODAL -->
+              <div  id="exportModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exportModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header centered">
+                      <h1 class="modal-title"><b>Export</b></h1>
+                    </div>
+                    <div class="modal-body">
+          
+                    <!-- TIMEFRAME -->
+                      <div class="row modal-margin-bottom">
+                        <div class="col-sm-12">
+                          <div class="form-group no-margin-bottom">
+                            <label>Choose Export Timeframe</label>
+                            <div class="row">
+                              <div class="col-sm-6 col-offset-sm-1">
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                  <input type="text" class="form-control" placeholder="From" id="exportFrom-datetimepicker"/>
+                                </div>
+                              </div>
+                              <div class="col-sm-6 col-offset-sm-1">
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                  <input type="text" class="form-control" placeholder="To" id="exportTo-datetimepicker"/>
+                                </div>
+                              </div>
+                            </div>
+                            <small class="form-text text-muted">Choose the timeframe of your export.</small>
+                          </div>
+                        </div>
+                      </div>
+                    <!-- TIMEFRAME -->
+            
+                  <!-- Added Separator -->
+                    <hr>
+
+                    <!-- SELECTED CLUSTERS -->
+                      <div class="row modal-margin">
+                        <div class="col-sm-12 col-offset-sm-1">
+                          <div class="form-group no-margin-bottom">
+                            <label>Choose Clusters</label>
+                          <!-- CLUSTER DROPDOWN LIST -->
+                            <div class="input-group">
+                              <div class="input-group-btn">
+                                <button tabindex="-1" data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button">
+                                  <span class="caret"></span>
+                                </button>
+
+                                <div class="dropdown-menu">
+                                  <li><a id='exportModalselectedClustersDropdownInBounds' class="dropdown-item">All in Bounds</a></li>
+                                  <li><a id='exportModalselectedClustersDropdownSelected' class="dropdown-item">All Selected</a></li>
+                                  <li class="divider"></li>
+                                  <li><a id='exportModalselectedClustersDropdownReset' class="dropdown-item">Reset</a></li>
+                                </div>
+                              </div>
+                        
+                              <input id='selectedClusters-inputForm' type="text" placeholder="Clusters" class="form-control">
+                            </div>
+                          <!-- CLUSTER DROPDOWN LIST -->
+                            <small class="form-text text-muted">Choose the clusters of which you need the sensordata.</small>
+                          </div>
+                        </div>
+                      </div>
+                    <!-- SELECTED CLUSTERS -->
+
+                  <!-- Added Separator -->
+                    <hr>
+              
+                    <!-- SENSORTYPE -->
+                      <div class="row modal-margin">
+                        <div class="col-sm-12 col-offset-sm-1">
+                          <div class="form-group no-margin-bottom">
+                            <label>Choose Sensortype</label>
+                            <div class="centered">
+                              <div id='exportModalSensorTypeRadioButtons'></div>
+                            </div>
+                            <small class="form-text text-muted">Choose the type of sensordata you want to export.</small>
+                          </div>
+                        </div>
+                      </div>
+                    <!-- SENSORTYPE -->
+
+                  <!-- Added Separator -->
+                    <hr>
+
+                    <!-- EXPORTFORMAT -->
+                      <div class="row modal-margin">
+                        <div class="col-sm-12 col-offset-sm-1">
+                          <div class="form-group no-margin-bottom">
+                            <label>Choose Exportformat</label>
+                            <div class="centered">
+                              <div id='exportModalExportFormatRadioButtons'></div>
+                            </div>
+                            <small class="form-text text-muted">Choose the format that the export is supposed to have.</small>
+                          </div>
+                        </div>
+                      </div>
+                    <!-- EXPORTFORMAT -->
+
+                  <!-- Added Separator -->
+                    <hr>
+                      
+                    <!-- FAVORITES -->
+                      <div class="row modal-margin-top">
+                        <div class="col-sm-12">
+                          <div class="form-group no-margin-bottom">
+                            <label>Load / Save Favorite</label>
+                            <div class="btn-group btn-block centered">
+                              <button id='exportModalFavoritesButton' class="btn btn-primary wide">Favorites</button>
+                              <button id='exportModalAddFavoriteButton' class="btn btn-primary slim">
+                                <span class="glyphicon glyphicon-star"></span>
+                              </button>
+                            </div>
+                            <small class="form-text text-muted">Load an app state to export or save the current state as a new favorite.</small>
+                          </div>
+                        </div>
+                      </div>
+                    <!-- FAVORITES -->
+                      
+                    </div>
+                    <div class="modal-footer">
+                      <button id='exportModalCancelButton' type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <button id='exportModalApplyButton' type="button" class="btn btn-primary">Apply</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <!-- EXPORT MODAL -->
+          
+            </div>
+          </div>
+        <!-- EXPORT -->
+        
+        <!-- SENSORTYPE -->
+          <div class="row">
+            <div class="col-sm centered">
+              <button class="btn btn-primary wide" data-toggle="modal" data-target="#sensortypeModal">Sensortype</button>
+          
+            <!-- SENSORTYPE MODAL -->
+              <div  id="sensortypeModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="sensortypeModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header centered">
+                      <h1 class="modal-title"><b>Sensortype</b></h1>
+                    </div>
+                    <div class="modal-body">
+            
+                    <!-- SENSORTYPES -->
+                      <div class="row">
+                        <div class="col-sm-12 col-offset-sm-1">
+                          <label>Choose Sensortype</label>
+                          <div class="centered">
+                            <div id='sensorTypeModalRadioButtons'></div>
+                          </div>
+                          <small class="form-text text-muted">Choose the type of sensordata that is supposed to be displayed.</small>
+                        </div>
+                      </div>
+                    <!-- SENSORTYPES -->
+          
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <button id='sensortypeModalApplyButton' type="button" class="btn btn-primary">Apply</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <!-- SENSORTYPE MODAL -->
+          
+            </div>
+          </div>
+        <!-- SENSORTYPE -->
+        
+        <!-- FAVORITES -->
+          <div class="row">
+            <div class="col-sm text">
+              <div class="btn-group btn-block centered">
+          
+              <!-- VIEW FAVORITES -->
+                <button class="btn btn-primary favorites-button" data-toggle="modal" data-target="#favoritesModal">Favorites</button>
+          
+              <!-- FAVORITES MODAL -->
+                <div id='favoritesModal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="favoritesModal" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title text-center"><b>Favorites</b></h1>
+                      </div>
+                      <div class="modal-body">
+
+                        <div class="row modal-margin-bottom">
+                          <div class="col-sm-12 col-offset-sm-1">
+                            <div id='favoritesTableContainer' class="border">
+                              <table id='favoritesTable'></table>
+                            </div>
+                          </div>
+                        </div>
+  
+                        <div class="row modal-margin-top">
+                          <div class="col-sm-12 col-offset-sm-1">
+                            <label for="selectedFavoriteOutput">Selected Favorite</label>
+                            <input id="selectedFavoriteOutput" class="form-control" aria-describedby="selectedFavorite" placeholder="Selected Favorite">
+                            <small id="selectedFavorite" class="form-text text-muted">Your selected favorite is displayed here. To activate it press "Apply".</small>
+                          </div>
+                        </div>
+          
+                      </div>
+                      <div class="modal-footer">
+                        <button id='favoritesModalDeleteButton' type="button" class="btn btn-secondary float-left">Delete</button>
+                        <button id='favoritesModalEditButton' type="button" class="btn btn-secondary float-left">Edit</button>
+
+                        <button id='favoritesModalApplyButton' type="button" class="btn btn-primary float-right">Apply</button>
+                        <button id='favoritesModalCancelButton' type="button" class="btn btn-secondary float-right" data-dismiss="modal">Cancel</button>                    
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <!-- FAVORITES MODAL -->
+          
+              <!-- VIEW FAVORITES -->
+          
+          
+              <!-- ADD FAVORITE -->
+                <button id='addFavoriteButton' class="btn btn-primary save-button" data-toggle="modal" data-target="#addFavoriteModal">
+                  <span class="glyphicon glyphicon-star"></span>
+                </button>
+
+              
+              <!-- ADD FAVORITE MODAL -->
+                <div id="addFavoriteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addFavoriteModal" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title text-center"><b>Add Favorite</b></h1>
+                      </div>
+                      <div class="modal-body">
+
+                        <div class="row modal-margin-bottom">
+                          <div class="col-sm-12 col-offset-sm-1">
+                            <label for="addFavoriteInput">Enter Name</label>
+                            <input id="addFavoriteInput" class="form-control" aria-describedby="enterName" placeholder="Enter Name">
+                            <small id="enterName" class="form-text text-muted">Choose a name to identify your favorite later on.</small>
+                          </div>
+                        </div>
+
+                        <div class="row modal-margin-top">
+                          <div class="col-sm-12 col-offset-sm-1">
+                            <label for="yourFavoriteInput">Your Favorite</label>
+                            <input id="yourFavoriteInput" class="form-control" aria-describedby="yourFavorite" placeholder="Your Favorite">
+                            <small id="yourFavorite" class="form-text text-muted">You can modify your favorite before saving it here.</small>
+                          </div>
+                        </div>
+
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id='addFavoriteModalApplyButton' type="button" class="btn btn-primary">Apply</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <!-- ADD FAVORITE MODAL -->  
+
+              <!-- ADD FAVORITE -->
+          
+              </div>
+            </div>
+          </div>
+        <!-- FAVORITES -->
+        
+        </div>
+      <!-- UPPER OPTIONPANEL -->
+	  
+      <!-- SENSORTABLE -->
+        <div class="row">
+          <div class="col-sm">
+            <div id='sensortableContainer' class="border">
+              <table id='sensortable'></table>
+            </div>
+          </div>
+        </div>
+      <!-- SENSORTABLE -->
+	
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-sm-8">
+	  
+      <!-- SLIDER -->
+        <div class="row">
+          <div id='sliderContainer'>
+            <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+          </div>
+        </div>
+      <!-- SLIDER -->
+	
+      </div>
+      <div class="col-sm-4">
+	
+      <!-- MIDDLE OPTIONPANEL -->
+        <div id='middleOptionpanelContainer'>
+          <div class="row">
+            <div class="col-sm">
+              <div class="btn-group btn-group-justified">
+                
+              <!-- START / STOP / UPDATE BUTTON -->
+                <div id='startStopUpdateButtonContainer' data-toggle="buttons" class="btn-group form-group">
+                  <label id='startStopUpdateButton' class="btn btn-primary">
+                    <input type="checkbox"/>
+                    <span class="glyphicon glyphicon-play"></span>
+                  </label>
+                </div>
+              <!-- START / STOP / UPDATE BUTTON -->
+          
+              <!-- TIME SETTINGS MODAL -->
+                <div id='timeSettingsButtonContainer' class="btn-group form-group">
+                  <button class="btn btn-primary" data-toggle="modal" data-target="#timeSettingsModal">Settings</button>
+                </div> 
+                  
+                <div id="timeSettingsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="timeSettingsModal" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title text-center"><b>Settings</b></h1>
+                      </div>
+                      <div class="modal-body">
+          
+                      <!-- HISTORIC TIMEFRAME -->
+                        <div class="row modal-margin-bottom">
+                          <div class="col-sm-12">
+                            <label>Historical Timeframe</label>
+                            <div class="row">
+                              <div class="col-sm-6 col-offset-sm-1">
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                  <input type="text" class="form-control" placeholder="From" id="timeSettingsFrom-datetimepicker"/>
+                                </div>
+                              </div>
+                              <div class="col-sm-6 col-offset-sm-1">
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                  <input type="text" class="form-control" placeholder="To" id="timeSettingsTo-datetimepicker"/>
+                                </div>
+                              </div>
+                            </div>
+                            <small class="form-text text-muted">Choose a new timeframe for the historical mode.</small>
+                          </div>
+                        </div>
+                      <!-- HISTORIC TIMEFRAME -->
+
+                      <!-- Added separator -->
+                        <hr>
+
+                      <!-- LIVE AND HISTORICAL REFRESH INTERVAL SPINNER -->
+                        <div class="row modal-margin">
+                          <div class="col-sm-6 col-offset-sm-1 centered">
+                            <div class="form-group full-width no-margin-bottom">
+                              <label for="timeSettingsLiveRefreshIntervalSpinner">Live Refresh Interval</label>
+                              <input class="input-sm" id='timeSettingsLiveRefreshIntervalSpinner'>
+                              <small class="form-text text-muted">Choose a new refresh interval in milliseconds for the live mode.</small>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-offset-sm-1 centered">
+                            <div class="form-group full-width no-margin-bottom">
+                              <label for="timeSettingsHistoricalRefreshIntervalSpinner">Historical Refresh Interval</label>
+                              <input class="input-sm" id='timeSettingsHistoricalRefreshIntervalSpinner'>
+                              <small class="form-text text-muted">Choose a new refresh interval in milliseconds for the historical mode.</small>
+                            </div>
+                          </div>
+                        </div>
+                      <!-- LIVE AND HISTORICAL REFRESH INTERVAL SPINNER -->
+
+                      <!-- Added separator -->
+                        <hr>
+
+                      <!-- AUTOMATIC OR MANUAL REFRESH -->
+                        <div class="row modal-margin-top">
+                          <div class="col-sm-12 col-offset-sm-1 centered">
+                            <div class="form-group no-margin-bottom">
+                              <label for="timeSettingsAutomaticManualRefreshRadioButtons">Automatic / Manual Refresh</label>
+                              <div id='timeSettingsAutomaticManualRefreshRadioButtons' class="centered"></div>
+                              <small class="form-text text-muted">Choose whether the webinterface should be refreshed automatically according to the specified intervals or manually by you.</small>
+                            </div>
+                          </div>
+                        </div>
+                      <!-- AUTOMATIC OR MANUAL REFRESH -->
+          
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id='timeSettingsModalApplyButton' type="button" class="btn btn-primary">Apply</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <!-- TIME SETTINGS MODAL -->
+
+              <!-- LIVE / HISTORICAL BUTTON -->
+                <div id='liveHistoricalButtonContainer' class="btn-group form-group" data-toggle="buttons">
+                  <label id='liveHistoricalButton' class="btn btn-primary">
+                    <input type="checkbox"/>
+                    <span class="glyphicon glyphicon-hourglass"></span>
+                  </label>
+                </div>
+              <!-- LIVE / HISTORICAL BUTTON -->
+				
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- MIDDLE OPTIONPANEL -->
+	
+      </div>
+    </div>
+	
+    <div class="row">
+      <div class="col-sm-12">
+      
+      <!-- GRAPH -->
+        <div class="row">
+          <div id="graphContainer">
+          <!--  <iframe src="http://pavos-01.teco.edu/60080/render?from=15:24_20180718&until=15:54_20180718&target=GraphiteSenderTest.particulateMatter&title=particulate%20matter&lineMode=connected" width="100%" height="250px" frameborder="0"></iframe>  -->
+          <!--  <iframe src="http://play.grafana.org/dashboard-solo/db/graph-styles?from=1486459105942&to=1486462705942&panelId=3" width="100%" height="100%" frameborder="0"></iframe> -->
+          <!-- <iframe src="https://play.grafana.org/d-solo/000000012/grafana-play-home?panelId=2&&orgId=1&tab=general&from=1532479086142&to=1532486286143&theme=light" width="100%" height="100%" frameborder="0"></iframe> -->
+          <!-- <iframe src="http://localhost:3000/d-solo/Ex6xa3diz/test-pm?orgId=1&from=-10min&refresh=10s&panelId=3&theme=light" width="100%" height="100%" frameborder="0"></iframe> -->
+          <iframe src="http://localhost:3000/dashboard-solo/snapshot/YCpJ0umtZs9P8uvgwJhHtHQO8nn1cQAz?panelId=3orgId=0&from=-10min&to=now&refresh=10s&theme=light" width="100%" height="100%" frameborder="0"></iframe>
+          </div>
+        </div>
+      <!-- GRAPH -->
+        
+      </div>
+    </div>
+  </div>
+  
+  <!-- <div class="loading-icon">
+    <span style="font-size: 96px; color: var(--lightgreen)">
+      <i class="fas fa-spinner fa-spin"></i>
+    </span>
+  </div> -->
+
+  <!-- <div class="loader">
+    <span style="font-size: 96px; color: var(--lightgreen)">
+      <i class="fas fa-spinner fa-spin"></i>
+    </span>
+  </div> -->
+
+</body>
+</html>

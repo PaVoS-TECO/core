@@ -1,0 +1,365 @@
+.resizable {
+  resize: both;
+  overflow:auto;
+}
+
+.padding-0 {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+
+.colored {
+	background-color: black;
+}
+
+#mapContainer {
+	  width: 100%;
+	  height: var(--min-map-height);
+	  margin: 0;
+	  padding: 0;
+}
+
+#upperOptionpanelContainer {
+	width: 100%;
+	height: var(--min-upper-optionpanel-height);
+	margin: 0;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: 0;
+	padding-right: 0;
+	display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+#favoriteOptionpanelContainer {
+	width: 75%;
+	margin-left: auto;
+    margin-right: auto;
+	padding: 0;
+}
+
+#favoritesTableContainer {
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+	max-height: var(--min-sensortable-height);
+	overflow: auto;
+}
+
+#favoritesTable {
+	width: 100%;
+	height: 100%;
+}
+
+#favoritesTable th, td {
+	text-align: center;
+    border-bottom: 1px solid var(--darkgreen);
+}
+
+#favoritesTable th {
+	padding: 10px;
+	background-color: var(--darkgreen);
+	color: white;
+}
+
+#favoritesTable td {
+	padding: 1px;
+}
+
+#favoritesTable tr {
+	color: var(--darkgreen);
+	-webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+#favoritesTable tr:hover {
+	background-color: var(--green);
+	color: white;
+	box-shadow: 1px 1px 4px var(--lightgreen);
+}
+
+.favoritesTable-tr-clicked {
+  background-color: var(--limegreen) !important;
+  color: black !important;
+}
+
+.favoritesTable-tr-clicked:hover {
+  background-color: yellow !important;
+}
+
+#sensortableContainer {
+	width: 95%;
+	margin-left: auto;
+    margin-right: auto;
+	height: var(--min-sensortable-height);
+	overflow: auto;
+}
+
+#sliderContainer {
+	width: 100%;
+	height: var(--min-slider-height);
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 0;
+	padding-right: 0;
+	display: flex;
+	align-items: center;
+    justify-content: center;
+}
+
+#middleOptionpanelContainer {
+	width: 95%;
+	height: var(--min-middle-optionpanel-height);
+	margin: 0 auto;
+	padding: 0;
+	display: flex;
+    align-items: center;
+}
+
+#graphContainer {
+	width: 100%;
+	height: var(--min-graph-height);
+	margin: 0;
+	padding: 0;
+}
+
+.modal-margin-top {
+	margin-top: 20px;
+}
+
+.modal-margin-bottom {
+	margin-bottom: 20px;
+}
+
+.modal-margin {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.no-margin-bottom {
+	margin-bottom: 0px;
+}
+
+.float-left {
+	float: left;
+}
+
+.float-right {
+	float: right;
+}
+
+#startStopUpdateButtonContainer {
+	width: 20%;
+}
+
+#timeSettingsButtonContainer {
+	width: 60%;
+}
+
+#liveHistoricalButtonContainer {
+	width: 20%;
+}
+
+#sensortable {
+    width: 100%;
+	height: 100%;
+}
+
+#sensortable th, td {
+	text-align: center;
+    border-bottom: 1px solid var(--darkgreen);
+}
+
+#sensortable th {
+	padding: 10px;
+	background-color: var(--darkgreen);
+	color: white;
+}
+
+#sensortable td {
+	padding: 1px;
+}
+
+#sensortable tr {
+	color: var(--darkgreen);
+	-webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+#sensortable tr:hover {
+	background-color: var(--green);
+	color: white;
+	box-shadow: 1px 1px 4px var(--lightgreen);
+}
+
+.sensortable-tr-clicked {
+  background-color: var(--limegreen) !important;
+  color: black !important;
+}
+
+.sensortable-tr-clicked:hover {
+  background-color: yellow !important;
+}
+
+.border {
+	border: 2px solid var(--darkgreen);
+}
+
+/* The slider itself */
+.slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 12px; /* Specified height */
+    border-radius: 5px; 
+    background: var(--gray); /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 30px; /* Set a specific slider handle width */
+    height: 30px; /* Slider handle height */
+	border-radius: 50%;
+    background: var(--green); /* Green background */
+    cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+    width: 30px; /* Set a specific slider handle width */
+    height: 30px; /* Slider handle height */
+    border-radius: 50%;
+	border: var(--darkgreen);
+    background: var(--green); /* Green background */
+    cursor: pointer; /* Cursor on hover */
+}
+
+.button {
+    background-color: var(--darkgreen); /* Green */
+	border: 2px solid var(--darkgreen);
+    color: white;
+    padding: 6px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+	width: 75%;
+	-webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.btn-primary {
+	background-color: var(--green); /* Green */
+	border: 2px solid var(--darkgreen);
+	color: white;
+	-webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.btn-primary:active, .btn-primary.active {
+	background-color: var(--limegreen);
+	border: 2px solid var(--green);
+	color: var(--green);
+	box-shadow: inset 0 0 7px var(--darkgray);
+}
+
+.btn-primary:active:hover, .btn-primary:active.hover,
+.btn-primary.active:hover, .btn-primary.active.hover,
+.btn-primary:active:focus, .btn-primary:active.focus,
+.btn-primary.active:focus, .btn-primary.active.focus {
+	background-color: var(--limegreen);
+	border: 2px solid var(--darkgreen);
+	color: var(--darkgreen);
+	box-shadow: inset 0 0 7px var(--darkgray), 1px 1px 12px var(--lightgreen);
+}
+
+.btn-primary:hover, 
+.btn-primary:focus, .btn-primary.focus {
+	background-color: white;
+	border: 2px solid var(--darkgreen);
+    color: var(--darkgreen);
+	box-shadow: 1px 1px 12px var(--lightgreen);
+}
+
+.btn-secondary {
+	background-color: var(--gray); /* Green */
+	border: 2px solid var(--darkgray);
+	color: white;
+	-webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.btn-secondary:hover, 
+.btn-secondary:focus, .btn-secondary.focus, 
+.btn-secondary:active:focus, .btn-secondary:active.focus,
+.btn-secondary.active:focus, .btn-secondary.active.focus {
+	background-color: white;
+	border: 2px solid var(--darkgray);
+    color: var(--darkgray);
+}
+
+.slim {
+	width: 25%;
+}
+
+.medium {
+	width: 50%;
+}
+
+.favorites-button {
+	width: 80%;
+}
+
+.save-button {
+	width: 15%;
+}
+
+.wide {
+	width: 95%;
+}
+
+.full-width {
+	width: 100%;
+}
+
+.centered {
+	display: flex !important;
+	justify-content: center !important;
+}
+
+.form-control:focus, .form-control.focus, 
+.form-control:active:focus, .form-control:active.focus,
+.form-control.active:focus, .form-control.active.focus {
+	border: 1px solid var(--gray);
+	box-shadow: 1px 1px 5px var(--lightgray);
+}
+
+.datepicker-container {
+	padding: 30px;
+    text-align: center;
+}
+
+.datepicker-center {
+    display: inline-block;
+	margin: 0 auto;
+}
+
+.datepicker-inline-padding {
+  padding-right: 30px;
+}
+
+.datepicker-inline-padding + .glyphicon {
+  position: absolute;
+  right: 0;
+  padding: 8px 27px;
+}
