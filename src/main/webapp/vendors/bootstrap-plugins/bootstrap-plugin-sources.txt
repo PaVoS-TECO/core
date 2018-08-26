@@ -1,0 +1,8 @@
+Bootstrap Datepicker
+https://github.com/cdnjs/cdnjs/tree/master/ajax/libs/bootstrap-datepicker/1.4.1
+
+Bootstrap Datetimepicker
+https://www.malot.fr/bootstrap-datetimepicker/
+
+Bootstrap Touchspin
+https://github.com/istvan-ujjmeszaros/bootstrap-touchspin

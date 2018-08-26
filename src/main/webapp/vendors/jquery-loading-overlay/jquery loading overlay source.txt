@@ -1,0 +1,1 @@
+https://github.com/gasparesganga/jquery-loading-overlay
