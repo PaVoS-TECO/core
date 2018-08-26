@@ -22,13 +22,11 @@ public class FileImporter {
      */
     public void addFileData(File file) {
     	String extension = this.getFileExtension(file.getAbsolutePath());
-    	//FileReaderStrategy reader;
 		try {
 			FileReaderStrategy reader = ReaderType.getFileReaderForFileExtension(extension);
 			reader.sendFileData(file);
 		} catch (IllegalFileExtensionException e) {
-			// TODO Could return boolean if was successful
-			e.printStackTrace();
+        	System.out.println(e.getLocalizedMessage());
 		}
     }
 

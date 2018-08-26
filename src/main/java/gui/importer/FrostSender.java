@@ -1,9 +1,7 @@
 package gui.importer;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -41,22 +39,11 @@ public final class FrostSender {
                     http.connect();
                     try (DataOutputStream dos = new DataOutputStream(http.getOutputStream())) {
                         dos.write(bytes);
-
-                        BufferedReader in = new BufferedReader(new InputStreamReader(http.getInputStream()));
-                        String inputLine;
-                        StringBuilder response = new StringBuilder();
-                        while ((inputLine = in.readLine()) != null) {
-                            response.append(inputLine);
-                        }
-                        in.close();
-                        System.out.println(response.toString());
                     } catch (IOException e) {
-                        //TODO: Handle Exception
-                        e.printStackTrace();
+                    	System.out.println(e.getLocalizedMessage());
                     }
                 } catch (IOException ex) {
-                    //TODO: Handle Exception
-                    ex.printStackTrace();
+                	System.out.println(ex.getLocalizedMessage());
                 }
             }
         });
@@ -64,8 +51,7 @@ public final class FrostSender {
         try {
             actualThread.join();
         } catch (InterruptedException e) {
-            //TODO: unhandled Exception
-            e.printStackTrace();
+        	System.out.println(e.getLocalizedMessage());
         }
     }
 

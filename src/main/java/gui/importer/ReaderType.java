@@ -1,7 +1,5 @@
 package gui.importer;
 
-import server.export.FileExtension;
-
 /**
  * Is like a chooser for the right FileReaderStrategy. If a new Strategy is added,
  * this class needs some changes to use the new Strategy.

@@ -1,0 +1,357 @@
+observedPropertyϢ4202ϢHumidityϢs_h0Ϣhttp://dbpedia.org/page/Relative_humidity
+observedPropertyϢ4200ϢTemperatureϢs_t0Ϣhttp://www.qudt.org/qudt/owl/1.0.0/quantity/Instances.html#AreaTemperature
+observedPropertyϢ3499ϢPM2.5 ParticulatesϢs_d0Ϣhttps://en.wikipedia.org/wiki/Particulates
+sensorϢ90324ϢUnknown PM2.5 SensorϢUnknown PM2.5 SensorϢtext/plainϢN/A
+sensorϢ4197ϢDHT22 sensorϢDHT22 sensorϢapplication/pdfϢhttps://cdn-shop.adafruit.com/datasheets/DHT22.pdf
+sensorϢ3498ϢG3 dust sensor PM2.5ϢG3 dust sensor PM2.5Ϣtext/htmlϢhttp://www.plantower.com/content/?95.html
+locationϢ8773509ϢSU-NW-5ϢSU-NW-5Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.161904,51.086915],"type":"Point"}
+locationϢ8668535ϢVU-W-1ϢVU-W-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.264455,51.063471],"type":"Point"}
+locationϢ8480396ϢNAϢVU-SW-14Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.123579,50.913185],"type":"Point"}
+locationϢ6973350ϢSensorUp HQ2 #excludeϢSensorUp HQ2 #excludeϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.13,51.083],"type":"Point"}
+locationϢ6604000ϢVU-SW-13ϢVU-SW-13Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.084473,50.937999],"type":"Point"}
+locationϢ6535168ϢVU-SW-12ϢVU-SW-12Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.137429,51.042703],"type":"Point"}
+locationϢ6346678ϢVU-SW-11ϢVU-SW-11Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.107,51.023],"type":"Point"}
+locationϢ5773878ϢVU-SE-11 #inactiveϢVU-SE-11 #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.020607,51.040858],"type":"Point"}
+locationϢ3072031ϢVU-NE-5ϢVU-NE-5Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.045046,51.052362],"type":"Point"}
+locationϢ1520749ϢVU-SE-10ϢVU-SE-10Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-113.966135,50.915214],"type":"Point"}
+locationϢ1520409ϢVU-SE-9 #inactiveϢVU-SE-9 #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.031894,51.038228],"type":"Point"}
+locationϢ529158ϢVU-NW-21ϢVU-NW-21Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.090211,51.09206],"type":"Point"}
+locationϢ505402ϢVU-SE-8ϢVU-SE-8Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-113.961282,50.927332],"type":"Point"}
+locationϢ505328ϢVU-SW-10ϢVU-SW-10Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.133592,50.962807],"type":"Point"}
+locationϢ505261ϢVU-NE-4ϢVU-NE-4Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.004315,51.091686],"type":"Point"}
+locationϢ505187ϢVU-NW-20ϢVU-NW-20Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.14257,51.10927],"type":"Point"}
+locationϢ505146ϢVU-NW-19ϢVU-NW-19Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.108273,51.076237],"type":"Point"}
+locationϢ505112ϢVU-NW-18ϢVU-NW-18Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.213579,51.130482],"type":"Point"}
+locationϢ505061ϢVU-SW-9ϢVU-SW-9Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.086556,50.937376],"type":"Point"}
+locationϢ504972ϢVU-NW-17ϢVU-NW-17Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.085213,51.055872],"type":"Point"}
+locationϢ504887ϢVU-SE-7 #inactiveϢVU-SE-7 #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-113.966929,50.915674],"type":"Point"}
+locationϢ504822ϢVU-NW-16ϢVU-NW-16Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.158612,51.072698],"type":"Point"}
+locationϢ504790ϢVU-NE-3ϢVU-NE-3Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.058975,51.058975],"type":"Point"}
+locationϢ504714ϢVU-NW-15ϢVU-NW-15Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.181221,51.129692],"type":"Point"}
+locationϢ504537ϢVU-SW-8ϢVU-SW-8Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.081049,50.947028],"type":"Point"}
+locationϢ504484ϢVU-SW-7ϢVU-SW-7Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.177988,51.032242],"type":"Point"}
+locationϢ504425ϢVU-NW-14ϢVU-NW-14Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.158852,51.130326],"type":"Point"}
+locationϢ504367ϢVU-SE-6ϢVU-SE-6Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.069336,50.947193],"type":"Point"}
+locationϢ504326ϢVU-NW-13ϢVU-NW-13Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.14811,51.137476],"type":"Point"}
+locationϢ504264ϢVU-NW-12ϢVU-NW-12Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.111443,51.064137],"type":"Point"}
+locationϢ504194ϢVU-NW-11 #inactiveϢVU-NW-11 #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.08977,51.056222],"type":"Point"}
+locationϢ504127ϢVU-NW-10 #inactiveϢVU-NW-10 #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.091278,51.051976],"type":"Point"}
+locationϢ504055ϢVU-NW-9ϢVU-NW-9Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.197953,51.111712],"type":"Point"}
+locationϢ503994ϢVU-SW-6ϢVU-SW-6Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.078254,51.01316],"type":"Point"}
+locationϢ503932ϢVU-NW-8ϢVU-NW-8Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.205948,51.104001],"type":"Point"}
+locationϢ503853ϢVU-NE-2ϢVU-NE-2Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-113.932199,51.092914],"type":"Point"}
+locationϢ503792ϢVU-SW-5ϢVU-SW-5Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.138467,50.937265],"type":"Point"}
+locationϢ503733ϢVU-SE-5ϢVU-SE-5Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.028588,50.897608],"type":"Point"}
+locationϢ503681ϢVU-NW-7ϢVU-NW-7Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.100002,51.063928],"type":"Point"}
+locationϢ503640ϢVU-SW-4ϢVU-SW-4Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.131582,51.01876],"type":"Point"}
+locationϢ503584ϢVU-NW-6ϢVU-NW-6Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.148713,51.095083],"type":"Point"}
+locationϢ503515ϢVU-SE-4ϢVU-SE-4Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.039069,50.900087],"type":"Point"}
+locationϢ503485ϢVU-SE-3ϢVU-SE-3Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.021731,50.88699],"type":"Point"}
+locationϢ503462ϢVU-NE-1ϢVU-NE-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-113.961566,51.170639],"type":"Point"}
+locationϢ503399ϢVU-NW-5ϢVU-NW-5Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.100165,51.053126],"type":"Point"}
+locationϢ503343ϢVU-NW-4ϢVU-NW-4Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.064433,51.109348],"type":"Point"}
+locationϢ367110ϢVU-NW-3ϢVU-NW-3Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.135771,51.16326],"type":"Point"}
+locationϢ357690ϢVU-SW-3ϢVU-SW-3Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.183533,51.037387],"type":"Point"}
+locationϢ354821ϢVU-FNW-1ϢVU-FNW-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.140001,51.208701],"type":"Point"}
+locationϢ316593ϢVU-SE-2 #inactiveϢVU-SE-2 #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.033878,50.901267],"type":"Point"}
+locationϢ308215ϢVU-SW-2 #inactiveϢVU-SW-2 #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.095999,50.907466],"type":"Point"}
+locationϢ302487ϢVU-SW-1 #inactiveϢVU-SW-1 #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.083163,51.037016],"type":"Point"}
+locationϢ267118ϢVU-SE-1ϢVU-SE-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-113.973302,50.92069],"type":"Point"}
+locationϢ259560ϢVU-NW-2ϢVU-NW-2Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.069408,51.074717],"type":"Point"}
+locationϢ141008ϢVU-NW-1ϢVU-NW-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[[[-114.158953,51.086535],[-114.159935,51.086871],[-114.159907,51.086964],[-114.159917,51.087692],[-114.158796,51.087409],[-114.158953,51.086535]]],"type":"Polygon"}
+locationϢ116528ϢSU-NW-1ϢSU-NW-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.239528,51.134141],"type":"Point"}
+locationϢ103132ϢSU-NW-4 #inactiveϢSU-NW-4 #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.154805,51.128732],"type":"Point"}
+locationϢ103064ϢSU-NW-3ϢSU-NW-3Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.078305,51.059207],"type":"Point"}
+locationϢ103059ϢSU-NW-2 #inactiveϢSU-NW-2 #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.191938,51.130021],"type":"Point"}
+locationϢ90299Ϣ620 7th Avenue SW, Calgary, Alberta #inactiveϢ620 7th Avenue SW, Calgary, Alberta #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.0731477,51.0471506],"type":"Point"}
+locationϢ90295Ϣ49th Avenue & 15th Street SE, Calgary, Alberta #inactiveϢ49th Avenue & 15th Street SE, Calgary, Alberta #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-113.969742,50.955122],"type":"Point"}
+locationϢ90288Ϣ39th Street & 29th Avenue NW, Calgary, Alberta #inactiveϢ39th Street & 29th Avenue NW, Calgary, Alberta #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.1452723,51.0801475],"type":"Point"}
+locationϢ7745ϢSU-W-1 Balcony #inactiveϢSU-W-1 Balcony #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.136,51.042],"type":"Point"}
+locationϢ4235ϢSU-SW-2 Balcony #inactiveϢSU-SW-2 Balcony #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.108,51.022],"type":"Point"}
+locationϢ4230ϢSU-SW-1 Backyard #inactiveϢSU-SW-1 Backyard #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.084,50.938],"type":"Point"}
+locationϢ4225ϢSensorUp HQ #excludeϢSensorUp HQ #excludeϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.13,51.083],"type":"Point"}
+locationϢ4220ϢEdgemont Ravine #inactiveϢEdgemont Ravine, more information can be found here: http://www.calgary.ca/CSPS/Parks/Pages/Locations/NW-parks/Edgemont-Ravine.aspx #inactiveϢapplication/vnd.geo+jsonϢ{"coordinates":[[[-114.1544508934021,51.12912815830016],[-114.15423095226288,51.128842002065504],[-114.1539466381073,51.12865347463615],[-114.15365695953369,51.12875110500812],[-114.15385007858276,51.129000229849694],[-114.15423095226288,51.12919212239254],[-114.1544508934021,51.12912815830016]]],"type":"Polygon"}
+featureOfInterestϢ8828643ϢNAϢGenerated using location details: VU-SW-14Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.123579,50.913185],"type":"Point"}
+featureOfInterestϢ8773576ϢVU-NW-22ϢGenerated using location details: VU-NW-22Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.161904,51.086915],"type":"Point"}
+featureOfInterestϢ8724358ϢVU-W-1ϢGenerated using location details: VU-W-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.264455,51.063471],"type":"Point"}
+featureOfInterestϢ6703691ϢVU-SW-13ϢGenerated using location details: VU-SW-13Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.084473,50.937999],"type":"Point"}
+featureOfInterestϢ6535226ϢVU-SW-12ϢGenerated using location details: VU-SW-12Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.137429,51.042703],"type":"Point"}
+featureOfInterestϢ6354881ϢVU-SW-11ϢGenerated using location details: VU-SW-11Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.107,51.023],"type":"Point"}
+featureOfInterestϢ5774245ϢVU-SE-11ϢGenerated using location details: VU-SE-11Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.020607,51.040858],"type":"Point"}
+featureOfInterestϢ5773995ϢVU-SE-11ϢGenerated using location details: VU-SE-11Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.020519,51.040443],"type":"Point"}
+featureOfInterestϢ4650189ϢNAϢGenerated using location details: VU-NE-5Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.045046,51.052362],"type":"Point"}
+featureOfInterestϢ1798858ϢNAϢGenerated using location details: VU-SE-10Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-113.966135,50.915214],"type":"Point"}
+featureOfInterestϢ1531673ϢNAϢGenerated using location details: VU-NW-13Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.14811,51.137476],"type":"Point"}
+featureOfInterestϢ1520513ϢNAϢGenerated using location details: VU-SE-9Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.031894,51.038228],"type":"Point"}
+featureOfInterestϢ1256616ϢNAϢGenerated using location details: VU-NE-2Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-113.932199,51.092914],"type":"Point"}
+featureOfInterestϢ985944ϢNAϢGenerated using location details: VU-NW-2Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.069408,51.074717],"type":"Point"}
+featureOfInterestϢ944481ϢNAϢGenerated using location details: VU-NE-4Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.004315,51.091686],"type":"Point"}
+featureOfInterestϢ943937ϢNAϢGenerated using location details: VU-NW-7Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.100002,51.063928],"type":"Point"}
+featureOfInterestϢ835585ϢNAϢGenerated using location details: VU-SE-8Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-113.961282,50.927332],"type":"Point"}
+featureOfInterestϢ714873ϢNAϢGenerated using location details: VU-SW-8Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.081049,50.947028],"type":"Point"}
+featureOfInterestϢ693410ϢNAϢGenerated using location details: VU-NW-3Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.135771,51.16326],"type":"Point"}
+featureOfInterestϢ633164ϢNAϢGenerated using location details: VU-SE-3Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.021731,50.88699],"type":"Point"}
+featureOfInterestϢ627047ϢNAϢGenerated using location details: VU-NW-16Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.158612,51.072698],"type":"Point"}
+featureOfInterestϢ625900ϢNAϢGenerated using location details: VU-SE-7Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-113.966929,50.915674],"type":"Point"}
+featureOfInterestϢ571566ϢNAϢGenerated using location details: VU-NW-4Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.064433,51.109348],"type":"Point"}
+featureOfInterestϢ561260ϢNAϢGenerated using location details: VU-NW-19Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.108273,51.076237],"type":"Point"}
+featureOfInterestϢ546100ϢNAϢGenerated using location details: VU-NW-10Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.091278,51.051976],"type":"Point"}
+featureOfInterestϢ539801ϢNAϢGenerated using location details: VU-NW-15Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.181221,51.129692],"type":"Point"}
+featureOfInterestϢ529183ϢNAϢGenerated using location details: VU-NW-21Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.090211,51.09206],"type":"Point"}
+featureOfInterestϢ517018ϢNAϢGenerated using location details: VU-SW-5Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.138467,50.937265],"type":"Point"}
+featureOfInterestϢ513089ϢNAϢGenerated using location details: VU-NW-20Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.14257,51.10927],"type":"Point"}
+featureOfInterestϢ510635ϢNAϢGenerated using location details: VU-NW-11Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.08977,51.056222],"type":"Point"}
+featureOfInterestϢ508504ϢNAϢGenerated using location details: VU-SE-6Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.069336,50.947193],"type":"Point"}
+featureOfInterestϢ505344ϢNAϢGenerated using location details: VU-SW-10Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.133592,50.962807],"type":"Point"}
+featureOfInterestϢ505188ϢNAϢGenerated using location details: VU-NW-18Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.213579,51.130482],"type":"Point"}
+featureOfInterestϢ505095ϢNAϢGenerated using location details: VU-SW-9Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.086556,50.937376],"type":"Point"}
+featureOfInterestϢ505044ϢNAϢGenerated using location details: VU-NW-17Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.085213,51.055872],"type":"Point"}
+featureOfInterestϢ504838ϢNAϢGenerated using location details: VU-NE-3Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.058975,51.058975],"type":"Point"}
+featureOfInterestϢ504677ϢNAϢGenerated using location details: VU-SW-9Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.087216,50.937123],"type":"Point"}
+featureOfInterestϢ504509ϢNAϢGenerated using location details: VU-SW-7Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.177988,51.032242],"type":"Point"}
+featureOfInterestϢ504461ϢNAϢGenerated using location details: VU-NW-14Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.158852,51.130326],"type":"Point"}
+featureOfInterestϢ504274ϢNAϢGenerated using location details: VU-NW-12Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.111443,51.064137],"type":"Point"}
+featureOfInterestϢ504072ϢNAϢGenerated using location details: VU-NW-9Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.197953,51.111712],"type":"Point"}
+featureOfInterestϢ504059ϢNAϢGenerated using location details: VU-SW-6Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.078254,51.01316],"type":"Point"}
+featureOfInterestϢ503960ϢNAϢGenerated using location details: VU-NW-8Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.205948,51.104001],"type":"Point"}
+featureOfInterestϢ503752ϢNAϢGenerated using location details: VU-SE-5Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.028588,50.897608],"type":"Point"}
+featureOfInterestϢ503644ϢNAϢGenerated using location details: VU-SW-4Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.131582,51.01876],"type":"Point"}
+featureOfInterestϢ503606ϢNAϢGenerated using location details: VU-NW-6Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.148713,51.095083],"type":"Point"}
+featureOfInterestϢ503561ϢNAϢGenerated using location details: VU-SE-4Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.039069,50.900087],"type":"Point"}
+featureOfInterestϢ503495ϢNAϢGenerated using location details: VU-NE-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-113.961566,51.170639],"type":"Point"}
+featureOfInterestϢ503433ϢNAϢGenerated using location details: VU-NW-5Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.100165,51.053126],"type":"Point"}
+featureOfInterestϢ406371ϢNAϢGenerated using location details: VU-SW-3Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.183533,51.037387],"type":"Point"}
+featureOfInterestϢ354885ϢNAϢGenerated using location details: VU-FNW-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.140001,51.208701],"type":"Point"}
+featureOfInterestϢ350071ϢNAϢGenerated using location details: VU-SW-2Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.095999,50.907466],"type":"Point"}
+featureOfInterestϢ345148ϢNAϢGenerated using location details: VU-SW-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.083163,51.037016],"type":"Point"}
+featureOfInterestϢ316628ϢNAϢGenerated using location details: VU-SE-2Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.033878,50.901267],"type":"Point"}
+featureOfInterestϢ269387ϢNAϢGenerated using location details: VU-SE-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-113.973302,50.92069],"type":"Point"}
+featureOfInterestϢ254047ϢNAϢGenerated using location details: VU-NW-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[[[-114.158953,51.086535],[-114.159935,51.086871],[-114.159907,51.086964],[-114.159917,51.087692],[-114.158796,51.087409],[-114.158953,51.086535]]],"type":"Polygon"}
+featureOfInterestϢ123057ϢNAϢGenerated using location details: SU-NW-3Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.078305,51.059207],"type":"Point"}
+featureOfInterestϢ116556ϢNAϢGenerated using location details: SU-NW-1Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.239528,51.134141],"type":"Point"}
+featureOfInterestϢ103139ϢNAϢGenerated using location details: SU-NW-4Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.154805,51.128732],"type":"Point"}
+featureOfInterestϢ103065ϢNAϢGenerated using location details: SU-NW-2Ϣapplication/vnd.geo+jsonϢ{"coordinates":[-114.191938,51.130021],"type":"Point"}
+featureOfInterestϢ91257ϢNAϢGenerated using location details: 620 7th Avenue SW, Calgary, AlbertaϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.0731477,51.0471506],"type":"Point"}
+featureOfInterestϢ91153ϢNAϢGenerated using location details: 39th Street & 29th Avenue NW, Calgary, AlbertaϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.1452723,51.0801475],"type":"Point"}
+featureOfInterestϢ90845ϢNAϢGenerated using location details: 49th Avenue & 15th Street SE, Calgary, AlbertaϢapplication/vnd.geo+jsonϢ{"coordinates":[-113.969742,50.955122],"type":"Point"}
+featureOfInterestϢ72425ϢNAϢGenerated using location details: Edgemont Ravine, more information can be found here: http://www.calgary.ca/CSPS/Parks/Pages/Locations/NW-parks/Edgemont-Ravine.aspxϢapplication/vnd.geo+jsonϢ{"coordinates":[[[-114.1544508934021,51.12912815830016],[-114.15423095226288,51.128842002065504],[-114.1539466381073,51.12865347463615],[-114.15365695953369,51.12875110500812],[-114.15385007858276,51.129000229849694],[-114.15423095226288,51.12919212239254],[-114.1544508934021,51.12912815830016]]],"type":"Polygon"}
+featureOfInterestϢ53479ϢNAϢGenerated using location details: TK's balconyϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.136,51.042],"type":"Point"}
+featureOfInterestϢ53469ϢNAϢGenerated using location details: MD's backyardϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.084,50.938],"type":"Point"}
+featureOfInterestϢ53462ϢNAϢGenerated using location details: SensorUp HQϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.13,51.083],"type":"Point"}
+featureOfInterestϢ53458ϢNAϢGenerated using location details: JC's balconyϢapplication/vnd.geo+jsonϢ{"coordinates":[-114.108,51.022],"type":"Point"}
+featureOfInterestϢ7746ϢNAϢGenerated using location details: Sensorup AirBox LocationϢhttp://example.org/location_types#GeoJSONϢ{"coordinates":[-114.136,51.042],"type":"Point"}
+featureOfInterestϢ4275ϢNAϢGenerated using location details: Sensorup AirBox LocationϢhttp://example.org/location_types#GeoJSONϢ{"coordinates":[-114.154,51.128],"type":"Point"}
+featureOfInterestϢ3701ϢNAϢGenerated using location details: Sensorup AirBox LocationϢhttp://example.org/location_types#GeoJSONϢ{"coordinates":[-114.108,51.022],"type":"Point"}
+featureOfInterestϢ3667ϢNAϢGenerated using location details: Sensorup AirBox LocationϢhttp://example.org/location_types#GeoJSONϢ{"coordinates":[-114.084,50.938],"type":"Point"}
+featureOfInterestϢ3654ϢNAϢEdgemont Ravine (http://www.calgary.ca/CSPS/Parks/Pages/Locations/NW-parks/Edgemont-Ravine.aspx).Ϣhttp://example.org/location_types#GeoJSONϢ{"coordinates":[[[-114.1544508934021,51.12912815830016],[-114.15423095226288,51.128842002065504],[-114.1539466381073,51.12865347463615],[-114.15365695953369,51.12875110500812],[-114.15385007858276,51.129000229849694],[-114.15423095226288,51.12919212239254],[-114.1544508934021,51.12912815830016]]],"type":"Polygon"}
+featureOfInterestϢ3512ϢNAϢGenerated using location details: Sensorup AirBox LocationϢhttp://example.org/location_types#GeoJSONϢ{"coordinates":[-114.13,51.083],"type":"Point"}
+thingϢ11388512ϢNAϢSensorUp AirQ:1D76B2 DeviceϢ{}Ϣ
+thingϢ8774755ϢSensorUp AirQ:1C51FD DeviceϢSensorUp AirQ:1C51FD DeviceϢ{"displayName":"Varsity #3"}Ϣ8773509;
+thingϢ8668353ϢSensorUp AirQ:1D7602 DeviceϢSensorUp AirQ:1D7602 DeviceϢ{"displayName":"Springbank"}Ϣ8668535;
+thingϢ8480299ϢSensorUp AirQ:1C5098 DeviceϢSensorUp AirQ:1C5098 DeviceϢ{"displayName":"Evergreen"}Ϣ8480396;
+thingϢ6973329ϢSensorUp AirQ:1C53F0 DeviceϢSensorUp AirQ:1C53F0 DeviceϢ{"displayName":"SensorUp HQ 2"}Ϣ6973350;
+thingϢ6603862ϢSensorUp AirQ:1C4A0B DeviceϢSensorUp AirQ:1C4A0B DeviceϢ{"displayName":"Canyon Meadows #4"}Ϣ6604000;
+thingϢ6535140ϢSensorUp AirQ:1C4617 DeviceϢSensorUp AirQ:1C4617 DeviceϢ{"displayName":"Spruce Cliff #2"}Ϣ6535168;
+thingϢ6346560ϢSensorUp AirQ:1C48BC DeviceϢSensorUp AirQ:1C48BC DeviceϢ{"displayName":"Marda Loop #2"}Ϣ6346678;
+thingϢ5773912ϢSensorUp AirQ:1C4A7C DeviceϢSensorUp AirQ:1C4A7C DeviceϢ{"displayName":"Inglewood #2"}Ϣ5773878;
+thingϢ3071913ϢSensorUp AirQ:1C566E DeviceϢSensorUp AirQ:1C566E DeviceϢ{"displayName":"Bridgeland"}Ϣ3072031;
+thingϢ1520712ϢSensorUp AirQ:1C462D DeviceϢSensorUp AirQ:1C462D DeviceϢ{"displayName":"McKenzie Towne #4"}Ϣ1520749;
+thingϢ1520297ϢSensorUp AirQ:1C4372 DeviceϢSensorUp AirQ:1C4372 DeviceϢ{"displayName":"Inglewood #1"}Ϣ1520409;
+thingϢ529084ϢSensorUp AirQ:1C45CB DeviceϢSensorUp AirQ:1C45CB DeviceϢ{"displayName":"North Haven"}Ϣ529158;
+thingϢ503311ϢSensorUp AirQ:1C46AE DeviceϢSensorUp AirQ:1C46AE DeviceϢ{"displayName":"McKenzie Towne #3"}Ϣ505402;
+thingϢ503307ϢSensorUp AirQ:1C48A3 DeviceϢSensorUp AirQ:1C48A3 DeviceϢ{"displayName":"Oakridge"}Ϣ505328;
+thingϢ503303ϢSensorUp AirQ:1C45EA DeviceϢSensorUp AirQ:1C45EA DeviceϢ{"previousId":"1C45D5","displayName":"North Airways"}Ϣ505261;
+thingϢ503299ϢSensorUp AirQ:1C4340 DeviceϢSensorUp AirQ:1C4340 DeviceϢ{"displayName":"Dalhousie"}Ϣ505187;
+thingϢ503295ϢSensorUp AirQ:1C4614 DeviceϢSensorUp AirQ:1C4614 DeviceϢ{"displayName":"Banff Trail"}Ϣ505146;
+thingϢ503291ϢSensorUp AirQ:1C4A67 DeviceϢSensorUp AirQ:1C4A67 DeviceϢ{"displayName":"Arbour Lake"}Ϣ505112;
+thingϢ503287ϢSensorUp AirQ:1C46A7 DeviceϢSensorUp AirQ:1C46A7 DeviceϢ{"displayName":"Sunnyside #2"}Ϣ504972;
+thingϢ503283ϢSensorUp AirQ:1C477D DeviceϢSensorUp AirQ:1C477D DeviceϢ{"displayName":"McKenzie Towne #2"}Ϣ504887;
+thingϢ503279ϢSensorUp AirQ:1C43DE DeviceϢSensorUp AirQ:1C43DE DeviceϢ{"displayName":"Montgomery"}Ϣ504822;
+thingϢ503275ϢSensorUp AirQ:1C464E DeviceϢSensorUp AirQ:1C464E DeviceϢ{"displayName":"Crescent Heights"}Ϣ504790;
+thingϢ503271ϢSensorUp AirQ:1C478E DeviceϢSensorUp AirQ:1C478E DeviceϢ{"displayName":"Hawkwood #2"}Ϣ504714;
+thingϢ503267ϢSensorUp AirQ:1C45BD DeviceϢSensorUp AirQ:1C45BD DeviceϢ{"displayName":"Canyon Meadows #3"}Ϣ505061;
+thingϢ503263ϢSensorUp AirQ:1C45E8 DeviceϢSensorUp AirQ:1C45E8 DeviceϢ{"displayName":"Canyon Meadows #2"}Ϣ504537;
+thingϢ503259ϢSensorUp AirQ:1C46B9 DeviceϢSensorUp AirQ:1C46B9 DeviceϢ{"displayName":"Signal Hill #2"}Ϣ504484;
+thingϢ503255ϢSensorUp AirQ:1C45D6 DeviceϢSensorUp AirQ:1C45D6 DeviceϢ{"displayName":"Edgemont #3"}Ϣ504425;
+thingϢ503251ϢSensorUp AirQ:1C4331 DeviceϢSensorUp AirQ:1C4331 DeviceϢ{"displayName":"Lake Bonavista"}Ϣ504367;
+thingϢ503247ϢSensorUp AirQ:1C4697 DeviceϢSensorUp AirQ:1C4697 DeviceϢ{"displayName":"Edgemont #4"}Ϣ504326;
+thingϢ503243ϢSensorUp AirQ:1C45F8 DeviceϢSensorUp AirQ:1C45F8 DeviceϢ{"displayName":"Hounsfield Heights\/Briar Hill #1"}Ϣ504264;
+thingϢ503239ϢSensorUp AirQ:1C4372-L1 DeviceϢSensorUp AirQ:1C4372-L1 DeviceϢ{"displayName":"Hillhurst #3"}Ϣ504194;
+thingϢ503235ϢSensorUp AirQ:1C566E-L1 DeviceϢSensorUp AirQ:1C566E-L1 DeviceϢ{"displayName":"Hillhurst #2"}Ϣ504127;
+thingϢ503231ϢSensorUp AirQ:1C4418 DeviceϢSensorUp AirQ:1C4418 DeviceϢ{"displayName":"Silver Springs #2"}Ϣ504055;
+thingϢ503227ϢSensorUp AirQ:1C458C DeviceϢSensorUp AirQ:1C458C DeviceϢ{"displayName":"Elboya"}Ϣ503994;
+thingϢ503223ϢSensorUp AirQ:1C466D DeviceϢSensorUp AirQ:1C466D DeviceϢ{"previousId":"1C4418","displayName":"Silver Springs #1"}Ϣ503932;
+thingϢ503219ϢSensorUp AirQ:1C45B9 DeviceϢSensorUp AirQ:1C45B9 DeviceϢ{"displayName":"Monterey Park"}Ϣ503853;
+thingϢ503215ϢSensorUp AirQ:1C461C DeviceϢSensorUp AirQ:1C461C DeviceϢ{"displayName":"Woodbine"}Ϣ503792;
+thingϢ503211ϢSensorUp AirQ:1C4A3E DeviceϢSensorUp AirQ:1C4A3E DeviceϢ{"displayName":"Sundance #3"}Ϣ503733;
+thingϢ503207ϢSensorUp AirQ:1C45C0 DeviceϢSensorUp AirQ:1C45C0 DeviceϢ{"displayName":"Hounsfield Heights\/Briar Hill #2"}Ϣ503681;
+thingϢ503203ϢSensorUp AirQ:1C45C6 DeviceϢSensorUp AirQ:1C45C6 DeviceϢ{"displayName":"CFB-Currie"}Ϣ503640;
+thingϢ503199ϢSensorUp AirQ:1C4609 DeviceϢSensorUp AirQ:1C4609 DeviceϢ{"displayName":"Varsity #2"}Ϣ503584;
+thingϢ503195ϢSensorUp AirQ:1C4A78 DeviceϢSensorUp AirQ:1C4A78 DeviceϢ{"displayName":"Sundance #2"}Ϣ503515;
+thingϢ503191ϢSensorUp AirQ:1C55C2 DeviceϢSensorUp AirQ:1C55C2 DeviceϢ{"displayName":"Chaparral"}Ϣ503485;
+thingϢ503187ϢSensorUp AirQ:1C43BF DeviceϢSensorUp AirQ:1C43BF DeviceϢ{"displayName":"Redstone"}Ϣ503462;
+thingϢ503183ϢSensorUp AirQ:1C4665 DeviceϢSensorUp AirQ:1C4665 DeviceϢ{"displayName":"Hillhurst #1"}Ϣ503399;
+thingϢ503179ϢSensorUp AirQ:1C45E9 DeviceϢSensorUp AirQ:1C45E9 DeviceϢ{"displayName":"Thorncliffe"}Ϣ503343;
+thingϢ367096ϢSensorUp AirQ:1C461D DeviceϢSensorUp AirQ:1C461D DeviceϢ{"displayName":"Kincora"}Ϣ367110;
+thingϢ357673ϢSensorUp AirQ:1C50DF DeviceϢSensorUp AirQ:1C50DF DeviceϢ{"displayName":"Signal Hill #1"}Ϣ357690;
+thingϢ354810ϢSensorUp AirQ:1C462A DeviceϢSensorUp AirQ:1C462A DeviceϢ{"displayName":"Just North of Calgary"}Ϣ354821;
+thingϢ315554ϢSensorUp AirQ:1C3ED9 DeviceϢSensorUp AirQ:1C3ED9 DeviceϢ{"displayName":"Sundance #1"}Ϣ316593;
+thingϢ308210ϢSensorUp AirQ:1C434B DeviceϢSensorUp AirQ:1C434B DeviceϢ{"displayName":"Shawnessy"}Ϣ308215;
+thingϢ302476ϢSensorUp AirQ:1C4A7C-L1 DeviceϢSensorUp AirQ:1C4A7C-L1 DeviceϢ{"displayName":"Lower Mount Royal"}Ϣ302487;
+thingϢ267113ϢSensorUp AirQ:1C51F6 DeviceϢSensorUp AirQ:1C51F6 DeviceϢ{"displayName":"McKenzie Towne #1"}Ϣ267118;
+thingϢ259531ϢSensorUp AirQ:1C4603 DeviceϢSensorUp AirQ:1C4603 DeviceϢ{"displayName":"Mount Pleasant"}Ϣ259560;
+thingϢ140940ϢSensorUp AirQ:1C552C DeviceϢSensorUp AirQ:1C552C DeviceϢ{"displayName":"Varsity #1"}Ϣ141008;
+thingϢ116514ϢSensorUp AirQ:1C567E DeviceϢSensorUp AirQ:1C567E DeviceϢ{"displayName":"Tuscany"}Ϣ116528;
+thingϢ103033ϢSensorUp AirQ:0C440F DeviceϢSensorUp AirQ:0C440F DeviceϢ{"displayName":"Hawkwood #1"}Ϣ103059;
+thingϢ103029ϢSensorUp AirQ:1C4A3F DeviceϢSensorUp AirQ:1C4A3F DeviceϢ{"displayName":"Sunnyside #1"}Ϣ103064;
+thingϢ103025ϢSensorUp AirQ:1C51FD-L1 DeviceϢSensorUp AirQ:1C51FD-L1 DeviceϢ{"displayName":"Edgemont #2"}Ϣ103132;
+thingϢ90310ϢCRAZ - Calgary Central 2ϢCRAZ - Calgary Central 2Ϣ{"displayName":"Downtown"}Ϣ90299;
+thingϢ90305ϢCRAZ - Calgary NorthwestϢCRAZ - Calgary NorthwestϢ{"displayName":"University District"}Ϣ90288;
+thingϢ90303ϢCRAZ - Calgary SoutheastϢCRAZ - Calgary SoutheastϢ{"displayName":"East Shepard Industrial"}Ϣ90295;
+thingϢ3508ϢSensorUp AirBox:74DA388FF3F6 DeviceϢSensorUp AirBox:74DA388FF3F6 DeviceϢ{"owner":"SensorUp","displayName":"SensorUp HQ"}Ϣ4225;
+thingϢ3506ϢSensorUp AirBox:74DA388FF3F0 DeviceϢSensorUp AirBox:74DA388FF3F0 DeviceϢ{"owner":"SU-SW-2","displayName":"Marda Loop"}Ϣ4235;
+thingϢ3504ϢSensorUp AirBox:74DA388FF3EE DeviceϢSensorUp AirBox:74DA388FF3EE DeviceϢ{"owner":"Steve","displayName":"Edgemont #1"}Ϣ4220;
+thingϢ3502ϢSensorUp AirBox:74DA388FF534 DeviceϢSensorUp AirBox:74DA388FF534 DeviceϢ{"owner":"SU-SW-1","displayName":"Canyon Meadows #1"}Ϣ4230;
+thingϢ3500ϢSensorUp AirBox:74DA388FF406 DeviceϢSensorUp AirBox:74DA388FF406 DeviceϢ{"owner":"SU-W-1","displayName":"Spruce Cliff"}Ϣ7745;
+dataStreamϢ11388515ϢNAϢAirQ:1D76B2 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ11388512Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ11388514ϢNAϢAirQ:1D76B2 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ11388512Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ11388513ϢNAϢAirQ:1D76B2 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ11388512Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ8774758ϢNAϢAirQ:1C51FD :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ8774755Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ8774757ϢNAϢAirQ:1C51FD :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ8774755Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ8774756ϢNAϢAirQ:1C51FD :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ8774755Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ8668356ϢNAϢAirQ:1D7602 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ8668353Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ8668355ϢNAϢAirQ:1D7602 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ8668353Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ8668354ϢNAϢAirQ:1D7602 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ8668353Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ8480302ϢNAϢAirQ:1C5098 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ8480299Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ8480301ϢNAϢAirQ:1C5098 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ8480299Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ8480300ϢNAϢAirQ:1C5098 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ8480299Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ6973332ϢNAϢAirQ:1C53F0 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ6973329Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ6973331ϢNAϢAirQ:1C53F0 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ6973329Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ6973330ϢNAϢAirQ:1C53F0 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ6973329Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ6603865ϢNAϢAirQ:1C4A0B :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ6603862Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ6603864ϢNAϢAirQ:1C4A0B :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ6603862Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ6603863ϢNAϢAirQ:1C4A0B :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ6603862Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ6535143ϢNAϢAirQ:1C4617 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ6535140Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ6535142ϢNAϢAirQ:1C4617 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ6535140Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ6535141ϢNAϢAirQ:1C4617 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ6535140Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ6346563ϢNAϢAirQ:1C48BC :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ6346560Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ6346562ϢNAϢAirQ:1C48BC :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ6346560Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ6346561ϢNAϢAirQ:1C48BC :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ6346560Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ5773915ϢNAϢAirQ:1C4A7C :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ5773912Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ5773914ϢNAϢAirQ:1C4A7C :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ5773912Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ5773913ϢNAϢAirQ:1C4A7C :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ5773912Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ3071916ϢAirQ:1C566E :HumidityϢAirQ:1C566E :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ3071913Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ3071915ϢAirQ:1C566E :TemperatureϢAirQ:1C566E :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ3071913Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ3071914ϢAirQ:1C566E :PM2.5ϢAirQ:1C566E :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ3071913Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ1520715ϢAirQ:1C462D :HumidityϢAirQ:1C462D :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ1520712Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ1520714ϢAirQ:1C462D :TemperatureϢAirQ:1C462D :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ1520712Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ1520713ϢAirQ:1C462D :PM2.5ϢAirQ:1C462D :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ1520712Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ1520300ϢAirQ:1C4372 :HumidityϢAirQ:1C4372 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ1520297Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ1520299ϢAirQ:1C4372 :TemperatureϢAirQ:1C4372 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ1520297Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ1520298ϢAirQ:1C4372 :PM2.5ϢAirQ:1C4372 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ1520297Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ529087ϢAirQ:1C45CB :HumidityϢAirQ:1C45CB :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ529084Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ529086ϢAirQ:1C45CB :TemperatureϢAirQ:1C45CB :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ529084Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ529085ϢAirQ:1C45CB :PM2.5ϢAirQ:1C45CB :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ529084Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503314ϢAirQ:1C46AE :HumidityϢAirQ:1C46AE :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503311Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503313ϢAirQ:1C46AE :TemperatureϢAirQ:1C46AE :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503311Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503312ϢAirQ:1C46AE :PM2.5ϢAirQ:1C46AE :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503311Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503310ϢAirQ:1C48A3 :HumidityϢAirQ:1C48A3 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503307Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503309ϢAirQ:1C48A3 :TemperatureϢAirQ:1C48A3 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503307Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503308ϢAirQ:1C48A3 :PM2.5ϢAirQ:1C48A3 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503307Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503306ϢAirQ:1C45D5 :HumidityϢAirQ:1C45D5 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503303Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503305ϢAirQ:1C45D5 :TemperatureϢAirQ:1C45D5 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503303Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503304ϢAirQ:1C45D5 :PM2.5ϢAirQ:1C45D5 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503303Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503302ϢAirQ:1C4340 :HumidityϢAirQ:1C4340 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503299Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503301ϢAirQ:1C4340 :TemperatureϢAirQ:1C4340 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503299Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503300ϢAirQ:1C4340 :PM2.5ϢAirQ:1C4340 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503299Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503298ϢAirQ:1C4614 :HumidityϢAirQ:1C4614 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503295Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503297ϢAirQ:1C4614 :TemperatureϢAirQ:1C4614 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503295Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503296ϢAirQ:1C4614 :PM2.5ϢAirQ:1C4614 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503295Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503294ϢAirQ:1C4A67 :HumidityϢAirQ:1C4A67 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503291Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503293ϢAirQ:1C4A67 :TemperatureϢAirQ:1C4A67 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503291Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503292ϢAirQ:1C4A67 :PM2.5ϢAirQ:1C4A67 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503291Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503290ϢAirQ:1C46A7 :HumidityϢAirQ:1C46A7 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503287Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503289ϢAirQ:1C46A7 :TemperatureϢAirQ:1C46A7 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503287Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503288ϢAirQ:1C46A7 :PM2.5ϢAirQ:1C46A7 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503287Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503286ϢAirQ:1C477D :HumidityϢAirQ:1C477D :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503283Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503285ϢAirQ:1C477D :TemperatureϢAirQ:1C477D :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503283Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503284ϢAirQ:1C477D :PM2.5ϢAirQ:1C477D :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503283Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503282ϢAirQ:1C43DE :HumidityϢAirQ:1C43DE :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503279Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503281ϢAirQ:1C43DE :TemperatureϢAirQ:1C43DE :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503279Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503280ϢAirQ:1C43DE :PM2.5ϢAirQ:1C43DE :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503279Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503278ϢAirQ:1C464E :HumidityϢAirQ:1C464E :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503275Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503277ϢAirQ:1C464E :TemperatureϢAirQ:1C464E :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503275Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503276ϢAirQ:1C464E :PM2.5ϢAirQ:1C464E :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503275Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503274ϢAirQ:1C478E :HumidityϢAirQ:1C478E :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503271Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503273ϢAirQ:1C478E :TemperatureϢAirQ:1C478E :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503271Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503272ϢAirQ:1C478E :PM2.5ϢAirQ:1C478E :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503271Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503270ϢAirQ:1C45BD :HumidityϢAirQ:1C45BD :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503267Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503269ϢAirQ:1C45BD :TemperatureϢAirQ:1C45BD :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503267Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503268ϢAirQ:1C45BD :PM2.5ϢAirQ:1C45BD :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503267Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503266ϢAirQ:1C45E8 :HumidityϢAirQ:1C45E8 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503263Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503265ϢAirQ:1C45E8 :TemperatureϢAirQ:1C45E8 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503263Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503264ϢAirQ:1C45E8 :PM2.5ϢAirQ:1C45E8 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503263Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503262ϢAirQ:1C46B9 :HumidityϢAirQ:1C46B9 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503259Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503261ϢAirQ:1C46B9 :TemperatureϢAirQ:1C46B9 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503259Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503260ϢAirQ:1C46B9 :PM2.5ϢAirQ:1C46B9 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503259Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503258ϢAirQ:1C45D6 :HumidityϢAirQ:1C45D6 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503255Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503257ϢAirQ:1C45D6 :TemperatureϢAirQ:1C45D6 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503255Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503256ϢAirQ:1C45D6 :PM2.5ϢAirQ:1C45D6 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503255Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503254ϢAirQ:1C4331 :HumidityϢAirQ:1C4331 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503251Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503253ϢAirQ:1C4331 :TemperatureϢAirQ:1C4331 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503251Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503252ϢAirQ:1C4331 :PM2.5ϢAirQ:1C4331 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503251Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503250ϢAirQ:1C4697 :HumidityϢAirQ:1C4697 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503247Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503249ϢAirQ:1C4697 :TemperatureϢAirQ:1C4697 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503247Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503248ϢAirQ:1C4697 :PM2.5ϢAirQ:1C4697 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503247Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503246ϢAirQ:1C45F8 :HumidityϢAirQ:1C45F8 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503243Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503245ϢAirQ:1C45F8 :TemperatureϢAirQ:1C45F8 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503243Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503244ϢAirQ:1C45F8 :PM2.5ϢAirQ:1C45F8 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503243Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503242ϢAirQ:1C4372 :HumidityϢAirQ:1C4372 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503239Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503241ϢAirQ:1C4372 :TemperatureϢAirQ:1C4372 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503239Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503240ϢAirQ:1C4372 :PM2.5ϢAirQ:1C4372 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503239Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503238ϢAirQ:1C566E :HumidityϢAirQ:1C566E :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503235Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503237ϢAirQ:1C566E :TemperatureϢAirQ:1C566E :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503235Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503236ϢAirQ:1C566E :PM2.5ϢAirQ:1C566E :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503235Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503234ϢAirQ:1C4418 :HumidityϢAirQ:1C4418 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503231Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503233ϢAirQ:1C4418 :TemperatureϢAirQ:1C4418 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503231Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503232ϢAirQ:1C4418 :PM2.5ϢAirQ:1C4418 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503231Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503230ϢAirQ:1C458C :HumidityϢAirQ:1C458C :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503227Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503229ϢAirQ:1C458C :TemperatureϢAirQ:1C458C :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503227Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503228ϢAirQ:1C458C :PM2.5ϢAirQ:1C458C :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503227Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503226ϢAirQ:1C4418 :HumidityϢAirQ:1C4418 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503223Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503225ϢAirQ:1C4418 :TemperatureϢAirQ:1C4418 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503223Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503224ϢAirQ:1C4418 :PM2.5ϢAirQ:1C4418 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503223Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503222ϢAirQ:1C45B9 :HumidityϢAirQ:1C45B9 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503219Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503221ϢAirQ:1C45B9 :TemperatureϢAirQ:1C45B9 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503219Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503220ϢAirQ:1C45B9 :PM2.5ϢAirQ:1C45B9 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503219Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503218ϢAirQ:1C461C :HumidityϢAirQ:1C461C :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503215Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503217ϢAirQ:1C461C :TemperatureϢAirQ:1C461C :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503215Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503216ϢAirQ:1C461C :PM2.5ϢAirQ:1C461C :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503215Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503214ϢAirQ:1C4A3E :HumidityϢAirQ:1C4A3E :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503211Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503213ϢAirQ:1C4A3E :TemperatureϢAirQ:1C4A3E :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503211Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503212ϢAirQ:1C4A3E :PM2.5ϢAirQ:1C4A3E :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503211Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503210ϢAirQ:1C45C0 :HumidityϢAirQ:1C45C0 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503207Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503209ϢAirQ:1C45C0 :TemperatureϢAirQ:1C45C0 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503207Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503208ϢAirQ:1C45C0 :PM2.5ϢAirQ:1C45C0 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503207Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503206ϢAirQ:1C45C6 :HumidityϢAirQ:1C45C6 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503203Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503205ϢAirQ:1C45C6 :TemperatureϢAirQ:1C45C6 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503203Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503204ϢAirQ:1C45C6 :PM2.5ϢAirQ:1C45C6 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503203Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503202ϢAirQ:1C4609 :HumidityϢAirQ:1C4609 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503199Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503201ϢAirQ:1C4609 :TemperatureϢAirQ:1C4609 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503199Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503200ϢAirQ:1C4609 :PM2.5ϢAirQ:1C4609 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503199Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503198ϢAirQ:1C4A78 :HumidityϢAirQ:1C4A78 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503195Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503197ϢAirQ:1C4A78 :TemperatureϢAirQ:1C4A78 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503195Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503196ϢAirQ:1C4A78 :PM2.5ϢAirQ:1C4A78 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503195Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503194ϢAirQ:1C55C2 :HumidityϢAirQ:1C55C2 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503191Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503193ϢAirQ:1C55C2 :TemperatureϢAirQ:1C55C2 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503191Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503192ϢAirQ:1C55C2 :PM2.5ϢAirQ:1C55C2 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503191Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503190ϢAirQ:1C43BF :HumidityϢAirQ:1C43BF :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503187Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503189ϢAirQ:1C43BF :TemperatureϢAirQ:1C43BF :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503187Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503188ϢAirQ:1C43BF :PM2.5ϢAirQ:1C43BF :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503187Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503186ϢAirQ:1C4665 :HumidityϢAirQ:1C4665 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503183Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503185ϢAirQ:1C4665 :TemperatureϢAirQ:1C4665 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503183Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503184ϢAirQ:1C4665 :PM2.5ϢAirQ:1C4665 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503183Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ503182ϢAirQ:1C45E9 :HumidityϢAirQ:1C45E9 :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#Percent"}Ϣ503179Ϣ4202Ϣ4197ϢϢϢϢ
+dataStreamϢ503181ϢAirQ:1C45E9 :TemperatureϢAirQ:1C45E9 :TemperatureϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"C","name":"degree Celsius","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\/unit\/Instances.html#DegreeCelsius"}Ϣ503179Ϣ4200Ϣ4197ϢϢϢϢ
+dataStreamϢ503180ϢAirQ:1C45E9 :PM2.5ϢAirQ:1C45E9 :PM2.5Ϣhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"ug\/m3","name":"microgram per cubic meter","definition":""}Ϣ503179Ϣ3499Ϣ3498ϢϢϢϢ
+dataStreamϢ367099ϢAirQ:1C461D :HumidityϢAirQ:1C461D :HumidityϢhttp://www.opengis.net/def/observationType/OGC-OM/2.0/OM_MeasurementϢ{"symbol":"%","name":"Percent","definition":"http:\/\/www.qudt.org\/qudt\/owl\/1.0.0\
