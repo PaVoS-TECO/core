@@ -1,6 +1,6 @@
-define(['jquery', 'app', 'appState', 'recursiveRectangleGrid','recursiveRectangleCluster', 'bounds', 'dynamicHtmlBuilder', 'utcDateTime', 'leafletUtil', 'geoJsonUtil', 'storageUtil', 'requestor',
+define(['jquery', 'app', 'appState', 'appManager', 'recursiveRectangleGrid','recursiveRectangleCluster', 'bounds', 'dynamicHtmlBuilder', 'utcDateTime', 'leafletUtil', 'geoJsonUtil', 'storageUtil', 'requestor',
         'leaflet', 'bootstrapDatetimepicker', 'bootstrapTouchspin'],
-function($, App, AppState, RecursiveRectangleGrid, RecursiveRectangleCluster, Bounds, DynamicHtmlBuilder, UTCDateTime, LeafletUtil, GeoJsonUtil, StorageUtil, Requestor) {
+function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangleCluster, Bounds, DynamicHtmlBuilder, UTCDateTime, LeafletUtil, GeoJsonUtil, StorageUtil, Requestor) {
     // Latitude - Longitude
     var KARLSRUHE = [49.007, 8.404];
     var KARLSRUHE_TECO = [49.013, 8.424];
@@ -19,8 +19,8 @@ function($, App, AppState, RecursiveRectangleGrid, RecursiveRectangleCluster, Bo
     var addFavoritesModalTemp;
     var timeSettingsModalTemp;
 
-    var grid;
     var leafletMap;
+    var startStopChecked;
 
     return {
         init: function(app){
@@ -30,47 +30,47 @@ function($, App, AppState, RecursiveRectangleGrid, RecursiveRectangleCluster, Bo
             addFavoritesModalTemp = app.getAppState().clone();
             timeSettingsModalTemp = app.getAppState().clone();
 
+            startStopChecked = true;
+
             this.initLeafletMap(app);
             this.initExportModal(app);
             this.initSensortypeModal(app);
             this.initFavoritesModal(app);
             this.initAddFavoriteModal(app);
             this.initContentTable(app);
+            this.initTimetstampSlider(app);
             this.initStartStopUpdateButtons(app);
             this.initTimeSettingsModal(app);
         },
 
         initLeafletMap: function(app) {
-            leafletMap = LeafletUtil.createLeafletMap(
+            AppManager.MAP = LeafletUtil.createLeafletMap(
                 LEAFLET_MAP_CONTAINER,
                 BASEMAP_URL, BASEMAP_ATTRIBUTION,
                 INITIAL_COORDINATES, INITIAL_ZOOMLEVEL,
                 IS_FULLSCREEN_AVAILABLE, IS_MOUSE_COORDINATES_VISIBLE);
 
-            // temp
-            grid = new RecursiveRectangleGrid(new Bounds([-90, -180], [90, 180]), 10, 10, 5);
-            // temp
-
-            leafletMap.on("moveend", function () {
-                var leafletMapBounds = leafletMap.getBounds();
-                console.log(grid.getClustersContainedInBounds(new Bounds([leafletMapBounds._southWest.lat, leafletMapBounds._southWest.lng],
+            AppManager.MAP.on("moveend", function () {
+                var leafletMapBounds = AppManager.MAP.getBounds();
+                console.log(AppManager.GRID.getClustersContainedInBounds(new Bounds([leafletMapBounds._southWest.lat, leafletMapBounds._southWest.lng],
                                                                          [leafletMapBounds._northEast.lat, leafletMapBounds._northEast.lng]), 
-                                                                         LeafletUtil.calculateGridLevel(leafletMap.getZoom())));
+                                                                         LeafletUtil.calculateGridLevel(AppManager.MAP.getZoom())));
             });
 
-            leafletMap.on("zoomend", function () {
-                var leafletMapBounds = leafletMap.getBounds();
-                console.log(grid.getClustersContainedInBounds(new Bounds([leafletMapBounds._southWest.lat, leafletMapBounds._southWest.lng],
+            AppManager.MAP.on("zoomend", function () {
+                var leafletMapBounds = AppManager.MAP.getBounds();
+                console.log(AppManager.GRID.getClustersContainedInBounds(new Bounds([leafletMapBounds._southWest.lat, leafletMapBounds._southWest.lng],
                                                                          [leafletMapBounds._northEast.lat, leafletMapBounds._northEast.lng]), 
-                                                                         LeafletUtil.calculateGridLevel(leafletMap.getZoom())));
+                                                                         LeafletUtil.calculateGridLevel(AppManager.MAP.getZoom())));
             });
             
-            
-
-            LeafletUtil.initializeGrid(leafletMap);
+            LeafletUtil.initializeGrid(AppManager.MAP);
         },
 
         initExportModal: function(app) {
+            DynamicHtmlBuilder.buildRadioButtonGroup('#exportModalSensorTypeRadioButtons', 'exportModalSensorTypeRadioButtons', AppManager.AVAILABLE_SENSORTYPES, 'temperature_celsius');
+            DynamicHtmlBuilder.buildRadioButtonGroup('#exportModalExportFormatRadioButtons', 'exportModalExportFormatRadioButtons', AppManager.AVAILABLE_EXPORTFORMATS, 'CSV');
+
             // Adding Z (-> symbolizes +00:00) at the end of the format doesn't work yet
             $('#exportFrom-datetimepicker').datetimepicker({
                 format: "yyyy-mm-ddThh:ii:00",
@@ -110,7 +110,7 @@ function($, App, AppState, RecursiveRectangleGrid, RecursiveRectangleCluster, Bo
                                         [leafletMapBounds._northEast.lat, leafletMapBounds._northEast.lng]);
                 var gridLevel = LeafletUtil.calculateGridLevel(leafletMap.getZoom());
 
-                $('#selectedClusters-inputForm').val(JSON.stringify(grid.getClustersContainedInBounds(bounds, gridLevel)));
+                $('#selectedClusters-inputForm').val(JSON.stringify(AppManager.GRID.getClustersContainedInBounds(bounds, gridLevel)));
                 $('#selectedClusters-inputForm').trigger('change');
             });
 
@@ -169,6 +169,8 @@ function($, App, AppState, RecursiveRectangleGrid, RecursiveRectangleCluster, Bo
         },
 
         initSensortypeModal: function(app) {
+            DynamicHtmlBuilder.buildRadioButtonGroup('#sensorTypeModalRadioButtons', 'sensorTypeModalSensorTypeRadioButtons', AppManager.AVAILABLE_SENSORTYPES, 'temperature_celsius');
+
             $('#sensortypeModal').on('shown.bs.modal', function(){
                 sensortypeModalTemp.setSelectedSensortype(app.getAppState().getSelectedSensortype());
                 $('input[name=' + 'sensorTypeModalSensorTypeRadioButtons' + '][value=' + app.getAppState().getSelectedSensortype() + ']').prop("checked",true);
@@ -263,13 +265,20 @@ function($, App, AppState, RecursiveRectangleGrid, RecursiveRectangleCluster, Bo
         },
         
         initContentTable: function(app) {
-            var sensorTableHeaderArray = ['id', 'temperature_celsius'];
-            var sensorTableContentArray = ['recursiveRectangleGrid-10_10_5:6_5-3_4', '', 'recursiveRectangleGrid-10_10_5:6_5-4_8', '21.3'];
-            DynamicHtmlBuilder.buildTableContentFromArray('#sensortable', sensorTableHeaderArray, sensorTableContentArray);
+            DynamicHtmlBuilder.buildTableContentFromArray('#sensortable', AppManager.CONTENT_TABLE[0], AppManager.CONTENT_TABLE[1]);
 
             $("#sensortable tr").click(function() {
-                $(this).toggleClass('sensortable-tr-clicked');
+                // $(this).toggleClass('sensortable-tr-clicked');
             });
+        },
+
+        initTimetstampSlider: function(app) {
+            setInterval(function(){
+                if (startStopChecked) {
+                    $('#timeStampSlider').val((Number($('#timeStampSlider').val()) + 5) % 100);
+                    // AppManager.MAP.trigger('moveend');
+                }
+            }, 750);
         },
 
         initStartStopUpdateButtons: function(app) {
@@ -278,7 +287,7 @@ function($, App, AppState, RecursiveRectangleGrid, RecursiveRectangleCluster, Bo
              * current routine, as well as updating the current context.
              */
             $('#startStopUpdateButton').click(function () {
-                var checked = $('input', this).is(':checked');
+                startStopChecked = $('input', this).is(':checked');
                 $('span', this).toggleClass('glyphicon-play glyphicon-pause');
             });
 
@@ -287,12 +296,14 @@ function($, App, AppState, RecursiveRectangleGrid, RecursiveRectangleCluster, Bo
              * mode and live mode.
              */
             $('#liveHistoricalButton').click(function () {
-                var checked = $('input', this).is(':checked');
+                startStopChecked = $('input', this).is(':checked');
                 $('span', this).toggleClass('glyphicon-hourglass glyphicon-repeat');
             });
         },
 
         initTimeSettingsModal: function(app) {
+            DynamicHtmlBuilder.buildRadioButtonGroup('#timeSettingsAutomaticManualRefreshRadioButtons', 'timeSettingsAutomaticManualRefreshRadioButtons', AppManager.AVAILABLE_REFRESH_STATES, 'Automatic');
+
             // Adding Z (-> symbolizes +00:00) at the end of the format doesn't work yet
             $('#timeSettingsFrom-datetimepicker').datetimepicker({
                 format: "yyyy-mm-ddThh:ii:00",

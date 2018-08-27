@@ -15,6 +15,7 @@ require.config({
 
         'app': '../../resources/js/app/app',
         'appState': '../../resources/js/app/appState',
+        'appManager': '../../resources/js/app/appManager',
         'initializer': '../../resources/js/app/initializer',
         'grid': '../../resources/js/grid/grid',
         'recursiveRectangleGrid': '../../resources/js/grid/recursiveRectangleGrid',
@@ -84,21 +85,7 @@ require(['app', 'appState', 'recursiveRectangleGrid', 'bounds', 'utcDateTime', '
 
     app.init();
     app.run();
-
-    var sensorTypes = ['temperature_celsius', 'pollution', 'airpressure', 'waterflow', 'blub', 'blab'];
-    var senorTypeGroudNameExportModal = 'exportModalSensorTypeRadioButtons';
-    var sensorTypeGroupNameSensorTypeModal = 'sensorTypeModalSensorTypeRadioButtons';
-    DynamicHtmlBuilder.buildRadioButtonGroup('#exportModalSensorTypeRadioButtons', senorTypeGroudNameExportModal, sensorTypes, 'temperature_celsius');
-    DynamicHtmlBuilder.buildRadioButtonGroup('#sensorTypeModalRadioButtons', sensorTypeGroupNameSensorTypeModal, sensorTypes, 'temperature_celsius');
-
-    var exportFormats = ['NetCDF', 'CSV'];
-    var exportFormatsName = 'exportModalExportFormatRadioButtons';
-    DynamicHtmlBuilder.buildRadioButtonGroup('#exportModalExportFormatRadioButtons', exportFormatsName, exportFormats, 'CSV');
-
-    var automaticManual = ['Automatic', 'Manual'];
-    var automaticManualName = 'timeSettingsAutomaticManualRefreshRadioButtons';
-    DynamicHtmlBuilder.buildRadioButtonGroup('#timeSettingsAutomaticManualRefreshRadioButtons', automaticManualName, automaticManual, 'Automatic');
-
+    
     // ================================================================================================================= //
 
     // setInterval(tempMethod, 5000);
