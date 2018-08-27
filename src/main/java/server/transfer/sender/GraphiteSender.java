@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +26,7 @@ import server.transfer.sender.connection.SocketManager;
  */
 public class GraphiteSender extends Sender {
 
-	private Map<TopicPartition, List<ConsumerRecord<String, ObservationData>>> recordsMap;
-	private List<ConsumerRecord<String, ObservationData>> recordList;
-	private ConsumerRecord<String, ObservationData> record;
-	private ConsumerRecords<String, ObservationData> records;
+
 	private SocketManager som;
 
 	/**
@@ -38,12 +36,46 @@ public class GraphiteSender extends Sender {
 		this.som = new SocketManager(); 
 		som.connect(GraphiteConfig.getGraphiteHostName(), GraphiteConfig.getGraphitePort());
 	}
-
+	
 	/**
 	 * Sends the recorded data to Graphite.
 	 * Uses a record of multiple data objects.
 	 * <p>
-	 * {@link ConsumerRecords}<{@link String}, {@link ObservationData}> records
+	 * @param records {@link Map}<{@link String}, {@link ObservationData}> records
+	 * @return 
+	 */
+	public boolean send(Collection<ObservationData> records) {
+		if (som.isConnectionClosed()) {
+			som.reconnect();
+		}
+		
+		PyList list = new PyList();
+
+		records.forEach((data) -> {
+			GraphiteConverter.addObservations(data, list);
+		});
+
+		PyString payload = cPickle.dumps(list);
+		byte[] header = ByteBuffer.allocate(4).putInt(payload.__len__()).array();
+
+		try {
+			OutputStream outputStream = som.getOutputStream();
+			outputStream.write(header);
+			outputStream.write(payload.toBytes());
+			outputStream.flush();
+		} catch (IOException e) {
+			logger.error("Failed writing to Graphite.", e);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Sends the recorded data to Graphite.
+	 * Uses a record of multiple data objects.
+	 * <p>
+	 * @param records {@link ConsumerRecords}<{@link String}, {@link ObservationData}> records
 	 * @return 
 	 */
 	@Override
@@ -85,13 +117,17 @@ public class GraphiteSender extends Sender {
 	 * @return 
 	 */
 	public boolean send(String singleTopic, ObservationData data) {
-		recordsMap = new HashMap<TopicPartition, List<ConsumerRecord<String, ObservationData>>>();
-		recordList = new ArrayList<ConsumerRecord<String, ObservationData>>();
-		record = new ConsumerRecord<String, ObservationData>(singleTopic, 0, 0, null, data);
+		HashMap<TopicPartition, List<ConsumerRecord<String, ObservationData>>> recordsMap 
+		= new HashMap<TopicPartition, List<ConsumerRecord<String, ObservationData>>>();
+		ArrayList<ConsumerRecord<String, ObservationData>> recordList 
+		= new ArrayList<ConsumerRecord<String, ObservationData>>();
+		ConsumerRecord<String, ObservationData> record 
+		= new ConsumerRecord<String, ObservationData>(singleTopic, 0, 0, null, data);
 
 		recordList.add(record);
 		recordsMap.put(new TopicPartition(singleTopic, 0), recordList);
-		records = new ConsumerRecords<String, ObservationData>(recordsMap);
+		ConsumerRecords<String, ObservationData> records 
+		= new ConsumerRecords<String, ObservationData>(recordsMap);
 
 		return this.send(records);
 	}

@@ -1,5 +1,7 @@
 package server.transfer.sender;
 
+import java.util.Collection;
+
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.python.core.PyList;
 import org.python.core.PyString;
@@ -25,6 +27,12 @@ public class ConsoleSender extends Sender {
 		PyString payload = cPickle.dumps(list);
 		System.out.println(payload.asString());
 		return true;
+	}
+	
+	@Override
+	public boolean send(Collection<ObservationData> records) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	@Override

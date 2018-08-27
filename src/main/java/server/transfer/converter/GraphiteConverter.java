@@ -31,6 +31,18 @@ public final class GraphiteConverter {
     	PythonMetricUtil.addFloatMetric(record, list, record.value().observations);
     }
     
+    /**
+     * Adds the sensor-observed properties to the collection of properties that will be sent
+     * @param observation The record of data that will be sent
+     * @param list The list of metrics that were created from our data with python
+	 * @param graphTopic The Graphite / Grafana topic name, where all data will be sent to
+     * @param logger Documents the metrics created by the {@link PythonMetricUtil}
+     */
+    public static void addObservations(ObservationData observation, PyList list) {
+    	if (!isDataReadable(observation, list)) return;
+    	PythonMetricUtil.addFloatMetric(observation, list, observation.observations);
+    }
+    
     private static boolean isDataReadable(Object...objects) {
     	if (isAnyNull(objects)) {
     		logger.error("parameters must not be null" + new NullPointerException());

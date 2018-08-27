@@ -17,8 +17,8 @@ import server.core.grid.exceptions.ClusterNotFoundException;
 import server.core.grid.geojson.GeoJsonConverter;
 import server.core.grid.polygon.math.Tuple3D;
 import server.transfer.data.ObservationData;
+import server.transfer.data.util.GridTopicTranslator;
 import server.transfer.producer.GraphiteProducer;
-import server.transfer.producer.util.GridTopicTranslator;
 import server.transfer.sender.util.TimeUtil;
 
 /**
@@ -324,6 +324,18 @@ public abstract class GeoPolygon {
 			}
 		}
 		return topics;
+	}
+	
+	public Collection<ObservationData> transferSensorDataDirectly() {
+		Set<ObservationData> observations = new HashSet<>();
+		for (GeoPolygon subPolygon : subPolygons) {
+			observations.addAll(subPolygon.transferSensorDataDirectly());
+		}
+		
+		if (!sensorValues.isEmpty()) {
+			observations.addAll(sensorValues.values());
+		}
+		return observations;
 	}
 	
 	public Collection<String> getAllProperties() {

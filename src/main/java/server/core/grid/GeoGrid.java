@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import server.core.grid.exceptions.SensorNotFoundException;
 import server.core.grid.polygon.GeoPolygon;
 import server.database.Facade;
 import server.transfer.Destination;
+import server.transfer.DirectUploadManager;
 import server.transfer.TransferManager;
 import server.transfer.data.ObservationData;
 import server.transfer.producer.GraphiteProducer;
@@ -241,7 +243,14 @@ public abstract class GeoGrid {
 		return topics;
 	}
 	
-	
+	public void transferSensorDataDirectly() {
+		Set<ObservationData> observations = new HashSet<>();
+		for (GeoPolygon polygon : polygons) {
+			observations.addAll(polygon.transferSensorDataDirectly());
+		}
+		DirectUploadManager dum = new DirectUploadManager();
+		dum.uploadData(observations, Destination.GRAPHITE);
+	}
 	
 	/**
 	 * Updates all values of this {@link GeoGrid} and it's {@link GeoPolygon}s.<p>
@@ -258,13 +267,15 @@ public abstract class GeoGrid {
 		
 		// Live data
 		
-		List<String> topics = produceSensorDataMessages();
-		System.out.println("Topics: " + topics);
-		transferToGraphite(topics);
+//		List<String> topics = produceSensorDataMessages();
+//		System.out.println("Topics: " + topics);
+//		transferToGraphite(topics);
+		
+		transferSensorDataDirectly();
 		
 		// send to database
 		
-		updateDatabase();
+//		updateDatabase();
 		
 		
 		// ONLY RESET AT THE END
@@ -284,6 +295,7 @@ public abstract class GeoGrid {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void transferToGraphite(List<String> topics) {
 		TransferManager tm = new TransferManager();
 		tm.startDataTransfer(topics, Destination.GRAPHITE);
