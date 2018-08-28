@@ -3,6 +3,7 @@ package server.database;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -71,11 +72,23 @@ public class ObservationDataToStorageProcessor {
 		// counter expiration time of two days in seconds, can safely cast
 		int counterExp = (int) TimeUnit.SECONDS.convert(2, TimeUnit.DAYS);
 		
+		// get gridID from clusterID
+		String gridID = observationData.clusterID.split(":")[0];
+		
 		try {
 			// set observationData entry
 			cli.set(dataKey, dataExp, observationData);
 			// set observationData counter entry
 			cli.set(observationData.clusterID, counterExp, counter);
+			// update observedProperties list
+			HashSet<String> properties = cli.get(gridID);
+			if (properties == null) {
+				properties = new HashSet<String>();
+			}
+			for (String key : observationData.observations.keySet()) {
+				properties.add(key);
+			}
+			cli.set(gridID, dataExp, properties);
 		} catch (TimeoutException e) {
 			logger.warn("Timeout when saving ObservationData to memcached!", e);
 		} catch (InterruptedException | MemcachedException e) {
@@ -200,6 +213,21 @@ public class ObservationDataToStorageProcessor {
 		} catch (IOException e) {
 			logger.warn("Could not add Memcached server", e);
 		}
+	}
+
+	/**
+     * Get a HashSet containing all observed properties in a grid with ID {@code gridID}.
+     * @param gridID The gridID from which to get the observed properties
+     * @return A HashSet containing the observed properties
+     */
+	public HashSet<String> getObservedProperties(String gridID) {
+		try {
+			HashSet<String> properties = cli.get(gridID);
+			return properties;
+		} catch (TimeoutException | InterruptedException | MemcachedException e) {
+			logger.warn("Could not get observedProperties list", e);
+		}
+		return null;
 	}
 
 }

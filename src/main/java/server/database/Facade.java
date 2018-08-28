@@ -1,8 +1,9 @@
 package server.database;
 
+import java.util.HashSet;
+
 import server.transfer.data.ObservationData;
 import server.transfer.data.ObservationDataDeserializer;
-import web.grid.Grid;
 
 /**
  * A facade to simplify access to a StorageSolution, such as a database. Through the methods, data can be inserted into the StorageSolution and certain information about its content requested.
@@ -66,6 +67,15 @@ public class Facade {
 	 */
     public void addMemcachedServer(String address, int port) {
     	storageProcessor.addServer(address, port);
+    }
+    
+    /**
+     * Get a HashSet containing all observed properties in a grid with ID {@code gridID}.
+     * @param gridID The gridID from which to get the observed properties
+     * @return A HashSet containing the observed properties
+     */
+    public HashSet<String> getObservedProperties(String gridID) {
+    	return storageProcessor.getObservedProperties(gridID);
     }
 
 }
