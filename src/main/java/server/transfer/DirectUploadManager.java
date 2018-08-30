@@ -20,7 +20,9 @@ public class DirectUploadManager {
 
 	private boolean uploadDataToGraphite(Collection<ObservationData> records) {
 		connector = new DirectGraphiteConnector(records);
-    	return connector.run(new GraphiteSender());
+    	boolean result = connector.run(new GraphiteSender());
+    	connector.stop();
+    	return result;
 	}
 	
 }

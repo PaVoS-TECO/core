@@ -31,7 +31,7 @@ public final class KafkaTopicAdmin {
 
 	private void init() {
 		Properties adminp = new Properties();
-		PropertiesFileManager propManager = PropertiesFileManager.getInstance();
+		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();
 		
 		adminp.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
 				propManager.getProperty("BOOTSTRAP_SERVERS_CONFIG"));

@@ -23,7 +23,7 @@ import org.json.simple.parser.ParseException;
 import server.core.grid.GeoGrid;
 import server.core.grid.GeoRecRectangleGrid;
 import server.core.grid.config.WorldMapData;
-import server.core.properties.PropertiesFileManager;
+import server.core.properties.KafkaPropertiesFileManager;
 import server.transfer.data.ObservationData;
 import server.transfer.sender.util.TimeUtil;
 
@@ -56,7 +56,7 @@ public class GridProcess implements ProcessInterface, Runnable {
 	 */
 	
 	public GridProcess(String inputTopic, int timeIntervall) {
-		PropertiesFileManager propManager = PropertiesFileManager.getInstance();
+		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();
 		this.props = propManager.getGridStreamProperties();
 		this.timeIntervall = timeIntervall;
 		this.inputTopic = inputTopic;

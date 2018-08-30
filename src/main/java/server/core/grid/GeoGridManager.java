@@ -31,6 +31,9 @@ public final class GeoGridManager {
 			}
 			
 		}, 0, 10, TimeUnit.SECONDS);
+		
+//		new Thread(WebServer.getInstance()).start();
+		
 	}
 	
 	public static GeoGridManager getInstance() {

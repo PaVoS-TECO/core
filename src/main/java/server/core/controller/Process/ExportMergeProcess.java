@@ -18,7 +18,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import server.core.properties.PropertiesFileManager;
+import server.core.properties.KafkaPropertiesFileManager;
 
 /**
  * @author Patrick
@@ -42,7 +42,7 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 	 */
 	public ExportMergeProcess(Boolean obsPro) {
 		this.obsPro = obsPro;
-		PropertiesFileManager propManager = PropertiesFileManager.getInstance();
+		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();
 		this.props = propManager.getExportStreamProperties();
 		System.out.println("Creating " + threadName);
 	}

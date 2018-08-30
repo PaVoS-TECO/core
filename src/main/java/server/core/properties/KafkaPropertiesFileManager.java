@@ -32,16 +32,16 @@ import server.transfer.data.ObservationDataSerializer;
  * from the program text so that the values ​​can be easily changed without
  * retranslation.
  */
-public final class PropertiesFileManager {
+public final class KafkaPropertiesFileManager {
 
 	private Properties properties;
 	private String kafkaPropertyFilePath = "src/main/resources/KafkaCore.properties";
-	private static PropertiesFileManager instance;
+	private static KafkaPropertiesFileManager instance;
 	
 	/**
 	 * Default Constructor
 	 */
-	private PropertiesFileManager() {
+	private KafkaPropertiesFileManager() {
 		loadKafkaCoreProperties();
 	}
 	
@@ -49,9 +49,9 @@ public final class PropertiesFileManager {
 	 * 
 	 * @return it Self
 	 */
-	public static PropertiesFileManager getInstance() {
+	public static KafkaPropertiesFileManager getInstance() {
 		if (instance == null) {
-			instance = new PropertiesFileManager();
+			instance = new KafkaPropertiesFileManager();
 		}
 		return instance;
 	}

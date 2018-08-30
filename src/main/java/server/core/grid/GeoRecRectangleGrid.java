@@ -1,6 +1,6 @@
 package server.core.grid;
 
-import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import server.core.grid.config.Seperators;
 import server.core.grid.polygon.GeoPolygon;
@@ -10,7 +10,7 @@ public class GeoRecRectangleGrid extends GeoGrid {
 	
 	public static final String NAME = "recursiveRectangleGrid";
 	
-	public GeoRecRectangleGrid(Point2D.Double mapBounds, int rows, int columns, int maxLevel) {
+	public GeoRecRectangleGrid(Rectangle2D.Double mapBounds, int rows, int columns, int maxLevel) {
 		super(mapBounds, rows, columns, maxLevel, getGridID(rows, columns, maxLevel));
 		generateGeoPolygons();
 	}
@@ -22,13 +22,15 @@ public class GeoRecRectangleGrid extends GeoGrid {
 	
 	@Override
 	protected void generateGeoPolygons() {
-		double width = MAP_BOUNDS.getX() / (double) COLUMNS;
-		double height = MAP_BOUNDS.getY() / (double) ROWS;
+		double width = MAP_BOUNDS.getWidth() / (double) COLUMNS;
+		double height = MAP_BOUNDS.getHeight() / (double) ROWS;
+		double baseXOffset = MAP_BOUNDS.getX();
+		double baseYOffset = MAP_BOUNDS.getY();
 		
 		for (int row = 0; row < ROWS; row++) {
 			for (int col = 0; col < COLUMNS; col++) {
-				double xOffset = (double) col * width;
-				double yOffset = (double) row * height;
+				double xOffset = baseXOffset + (double) col * width;
+				double yOffset = baseYOffset + (double) row * height;
 				String id = String.valueOf(row) + Seperators.ROW_COLUMN_SEPERATOR + String.valueOf(col);
 				
 				GeoPolygon polygon = new GeoRectangle(xOffset, yOffset, width, height

@@ -327,7 +327,7 @@ public abstract class GeoPolygon {
 	}
 	
 	public Collection<ObservationData> transferSensorDataDirectly() {
-		Set<ObservationData> observations = new HashSet<>();
+		Collection<ObservationData> observations = new HashSet<>();
 		for (GeoPolygon subPolygon : subPolygons) {
 			observations.addAll(subPolygon.transferSensorDataDirectly());
 		}

@@ -14,7 +14,7 @@ import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Produced;
 
 import server.core.properties.KafkaTopicAdmin;
-import server.core.properties.PropertiesFileManager;
+import server.core.properties.KafkaPropertiesFileManager;
 
 /**
  * @author Patrick This Class merges bascily the ObservationTopic with the
@@ -59,7 +59,7 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 		this.outputTopic = outputTopic;
 		this.keyEqual = key;
 
-		PropertiesFileManager propManager = PropertiesFileManager.getInstance();
+		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();
 		this.props = propManager.getMergeStreamProperties();
 		System.out.println("Creating " + threadName);
 	}

@@ -27,7 +27,7 @@ public class DirectGraphiteConnector extends Connector {
 
 	@Override
 	public void stop() {
-		
+		this.sender.close();
 	}
 
 }

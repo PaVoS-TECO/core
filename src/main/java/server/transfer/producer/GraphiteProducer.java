@@ -7,7 +7,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import server.core.properties.KafkaTopicAdmin;
-import server.core.properties.PropertiesFileManager;
+import server.core.properties.KafkaPropertiesFileManager;
 import server.transfer.data.ObservationData;
 
 public class GraphiteProducer {
@@ -37,7 +37,7 @@ public class GraphiteProducer {
 	}
 	
 	private Properties getProducerProperties() {
-		PropertiesFileManager propManager = PropertiesFileManager.getInstance();
+		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();
 		Properties props = propManager.getProducerGridProperties();
 		return props;
     }

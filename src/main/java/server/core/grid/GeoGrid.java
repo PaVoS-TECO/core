@@ -2,6 +2,7 @@ package server.core.grid;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,7 +32,7 @@ import server.transfer.producer.GraphiteProducer;
  */
 public abstract class GeoGrid {
 	
-	public final Point2D.Double MAP_BOUNDS;
+	public final Rectangle2D.Double MAP_BOUNDS;
 	public final int ROWS;
 	public final int COLUMNS;
 	public final int MAX_LEVEL;
@@ -43,7 +44,7 @@ public abstract class GeoGrid {
 	private final int CYCLES_UNTIL_RESET = 1;
 	private int cyclesDone = 0;
 	
-	public GeoGrid(Point2D.Double mapBounds, int rows, int columns, int maxLevel, String gridID) {
+	public GeoGrid(Rectangle2D.Double mapBounds, int rows, int columns, int maxLevel, String gridID) {
 		this.MAP_BOUNDS = mapBounds;
 		this.ROWS = rows;
 		this.COLUMNS = columns;
@@ -100,7 +101,7 @@ public abstract class GeoGrid {
 	public ObservationData getSensorObservation(String sensorID, Point2D.Double point) throws PointNotOnMapException, SensorNotFoundException {
 		GeoPolygon polygon = getPolygonContaining(point, MAX_LEVEL);
 		for (ObservationData observation : polygon.getSensorDataList()) {
-			if (observation.sensorID == sensorID) {
+			if (observation.sensorID.equals(sensorID)) {
 				return observation;
 			}
 		}
@@ -173,7 +174,6 @@ public abstract class GeoGrid {
 				if (i == 0) {
 					currentID.append(clusters[i]);
 					for (GeoPolygon polygon : this.polygons) {
-						System.out.println("currentID: " + currentID.toString());
 						if (polygon.ID.equals(currentID.toString())) {
 							result = polygon;
 							break;
@@ -183,7 +183,6 @@ public abstract class GeoGrid {
 				} else {
 					currentID.append(Seperators.CLUSTER_SEPERATOR + clusters[i]);
 					for (GeoPolygon polygon : result.getSubPolygons()) {
-						System.out.println("currentID: " + currentID.toString());
 						if (polygon.ID.equals(currentID.toString())) {
 							result = polygon;
 							break;

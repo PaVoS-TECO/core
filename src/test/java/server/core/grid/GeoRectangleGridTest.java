@@ -3,6 +3,7 @@ package server.core.grid;
 import static org.junit.Assert.fail;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -23,7 +24,7 @@ public class GeoRectangleGridTest {
 
 	@Test
 	public void test() {
-		GeoGrid grid = new GeoRecRectangleGrid(new Point2D.Double(WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, - WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
 		
 		ObservationData data = new ObservationData();
 		data.observationDate = TimeUtil.getUTCDateTimeNowString();

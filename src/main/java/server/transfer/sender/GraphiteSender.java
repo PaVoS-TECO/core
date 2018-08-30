@@ -45,24 +45,25 @@ public class GraphiteSender extends Sender {
 	 * @return 
 	 */
 	public boolean send(Collection<ObservationData> records) {
+		PyList list = new PyList();
+		
+		for (ObservationData record : records) {
+			GraphiteConverter.addObservations(record, list);
+		}
+		
+		PyString payload = cPickle.dumps(list);
+		byte[] header = ByteBuffer.allocate(4).putInt(payload.__len__()).array();
+		
 		if (som.isConnectionClosed()) {
 			som.reconnect();
 		}
 		
-		PyList list = new PyList();
-
-		records.forEach((data) -> {
-			GraphiteConverter.addObservations(data, list);
-		});
-
-		PyString payload = cPickle.dumps(list);
-		byte[] header = ByteBuffer.allocate(4).putInt(payload.__len__()).array();
-
 		try {
 			OutputStream outputStream = som.getOutputStream();
 			outputStream.write(header);
 			outputStream.write(payload.toBytes());
 			outputStream.flush();
+			outputStream.close();
 		} catch (IOException e) {
 			logger.error("Failed writing to Graphite.", e);
 			return false;
@@ -98,6 +99,7 @@ public class GraphiteSender extends Sender {
 			outputStream.write(header);
 			outputStream.write(payload.toBytes());
 			outputStream.flush();
+			outputStream.close();
 		} catch (IOException e) {
 			logger.error("Failed writing to Graphite.", e);
 			return false;
