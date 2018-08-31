@@ -18,7 +18,7 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
     var favoritesModalTemp;
     var addFavoritesModalTemp;
     var timeSettingsModalTemp;
-
+  
     var leafletMap;
     var startStopChecked;
 
@@ -39,6 +39,7 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             this.initAddFavoriteModal(app);
             this.initContentTable(app);
             this.initTimetstampSlider(app);
+
             this.initStartStopUpdateButtons(app);
             this.initTimeSettingsModal(app);
         },
@@ -170,7 +171,7 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
 
         initSensortypeModal: function(app) {
             DynamicHtmlBuilder.buildRadioButtonGroup('#sensorTypeModalRadioButtons', 'sensorTypeModalSensorTypeRadioButtons', AppManager.AVAILABLE_SENSORTYPES, 'temperature_celsius');
-
+          
             $('#sensortypeModal').on('shown.bs.modal', function(){
                 sensortypeModalTemp.setSelectedSensortype(app.getAppState().getSelectedSensortype());
                 $('input[name=' + 'sensorTypeModalSensorTypeRadioButtons' + '][value=' + app.getAppState().getSelectedSensortype() + ']').prop("checked",true);

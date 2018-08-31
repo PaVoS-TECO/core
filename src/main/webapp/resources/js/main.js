@@ -85,7 +85,7 @@ require(['app', 'appState', 'recursiveRectangleGrid', 'bounds', 'utcDateTime', '
 
     app.init();
     app.run();
-    
+
     // ================================================================================================================= //
 
     // setInterval(tempMethod, 5000);

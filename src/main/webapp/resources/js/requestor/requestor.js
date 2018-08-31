@@ -114,7 +114,7 @@ define(['jquery', 'loadingOverlay'], function($) {
             }
             return result;
         },
-
+      
         startLoadAnimation: function(timeout) {
             $.LoadingOverlay("show", {
                 image          : "resources/data/PaVoSLogo-Icon.png",
