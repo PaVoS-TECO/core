@@ -239,7 +239,6 @@ public abstract class GeoPolygon {
 			observations.addAll(polygon.getSubObservations());
 			observations.add(polygon.cloneObservation());
 		}
-		System.out.println("Cluster " + this.id + " : " + observations);
 		return observations;
 	}
 	

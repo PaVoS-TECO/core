@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.http.HttpStatus;
 import org.joda.time.DateTime;
@@ -121,8 +122,10 @@ public class WebWorker implements Runnable {
 	}
 	
 	private void getObservationTypes(PrintWriter out) {
-		GeoGridManager manager = GeoGridManager.getInstance();
-	    printOut(manager.getAllProperties().toString(), out);
+		String gridID = getParameter("gridID");
+		Facade f = new Facade();
+		Set<String> properties = f.getObservedProperties(gridID);
+	    printOut(properties.toString(), out);
 	}
 
 	private void reportSensor(PrintWriter out) {
