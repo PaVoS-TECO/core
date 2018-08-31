@@ -4,6 +4,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Reads the Property File to the System
  * 
@@ -11,7 +14,9 @@ import java.util.Properties;
  *
  */
 public final class PropertyFileReader {
-
+	
+	private static Logger logger = LoggerFactory.getLogger(PropertyFileReader.class);
+	
 	/**
 	 * Default constructor
 	 */
@@ -32,8 +37,7 @@ public final class PropertyFileReader {
 			properties.load(file);
 			file.close();
 		} catch (IOException e) {
-			e.printStackTrace();
-			System.err.println("There was an error reading the configuration file.\n"
+			logger.error("There was an error reading the configuration file.\n"
 					+ "Please make sure that the file '" + filePath + "' exists.");
 			System.exit(-1);
 		}

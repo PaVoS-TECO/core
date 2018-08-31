@@ -1,4 +1,4 @@
-package server.core.controller.Process;
+package server.core.controller.process;
 
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -9,7 +9,6 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.JoinWindows;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
@@ -17,6 +16,8 @@ import org.apache.kafka.streams.kstream.Produced;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import server.core.properties.KafkaPropertiesFileManager;
 
@@ -28,36 +29,28 @@ import server.core.properties.KafkaPropertiesFileManager;
  */
 public class ExportMergeProcess implements ProcessInterface, Runnable {
 
+	private static final String FOI_DOUBLE_PARSE_EXCEPTION = "Could not parse FeatureOfInterest value to double.";
 	private Properties props;
 	private KafkaStreams kafkaStreams;
-	private final String threadName = "ExportProcess";
+	private static final String THREAD_NAME = "ExportProcess";
 	private boolean obsPro = false;
-
-
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private Thread thread;
 	private CountDownLatch countdownLatch = null;
-
-	/**
-	 * Default Constructor
-	 */
+	
+	
 	public ExportMergeProcess(Boolean obsPro) {
 		this.obsPro = obsPro;
 		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();
 		this.props = propManager.getExportStreamProperties();
-		System.out.println("Creating " + threadName);
+		logger.info("Creating thread: {}", THREAD_NAME);
 	}
-
-	/* (non-Javadoc)
-	 * @see server.core.controller.ProcessInterface#kafkaStreamStart()
-	 */
+	
 	@Override
 	public boolean kafkaStreamStart() {
-		
-		
-		
-		System.out.println("Starting " + threadName);
+		logger.info("Starting thread: {}", THREAD_NAME);
 		if (thread == null) {
-			thread = new Thread(this, threadName);
+			thread = new Thread(this, THREAD_NAME);
 
 			countdownLatch = new CountDownLatch(1);
 			thread.start();
@@ -66,14 +59,11 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 		}
 		return false;
 	}
-
-	/* (non-Javadoc)
-	 * @see server.core.controller.ProcessInterface#kafkaStreamClose()
-	 */
+	
 	@Override
 	public boolean kafkaStreamClose() {
-
-		System.out.println("Closing " + threadName);
+		logger.info("Closing thread: {}", THREAD_NAME);
+		
 		if(countdownLatch != null) {
 			countdownLatch.countDown();
 		}
@@ -82,24 +72,21 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 			try {
 				thread.join();
 				if (kafkaStreams == null) {
-					System.out.println("Applikation 'Export' is not Running");
+					logger.info("Applikation 'Export' is not Running");
 					return false;
 				}
 				Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
 			} catch (InterruptedException e) {
-				
-				e.printStackTrace();
+				thread.interrupt();
+				logger.warn("Interruption of thread: {}", THREAD_NAME);
 			}
-			System.out.println(threadName + "successfully stopped.");
+			logger.info("Stopped thread successfully: {}", THREAD_NAME);
 			return true;
 			
 		}
 		return false;
 	}
-
-	/* (non-Javadoc)
-	 * @see server.core.controller.ProcessInterface#apply(org.apache.kafka.streams.StreamsBuilder)
-	 */
+	
 	@Override
 	public void apply(StreamsBuilder builder) {
 		final KStream<String, GenericRecord> observationStream = builder.stream("Observations");
@@ -110,35 +97,32 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 
 		final KStream<String, GenericRecord> mergedFoIObs = observationStream.join(foIStreamKey, (value, location) -> {
 			value.put("FeatureOfInterest", location.toString());
-//			JSONObject jo = (JSONObject) new JSONParser().parse(value.toString());
+			
 			return value;
-			// return null;
-
 		}, JoinWindows.of(100000));
-
-		// get DataStream
-		final KStream<String, GenericRecord> DataStream = builder.stream("Datastreams");
+		
+		final KStream<String, GenericRecord> dataStream = builder.stream("Datastreams");
+		
 		// Transform merged to Equals Keys to DataStream.Iot
 		final KStream<String, GenericRecord> mergedKey = mergedFoIObs
 				.map((key, value) -> KeyValue.pair(value.get("Datastream").toString(), value));
+		
 		// Join the DataStream with MergedStream
-		final KStream<String, GenericRecord> mergedFoIObsData = mergedKey.join(DataStream, (value, data) -> {
+		final KStream<String, GenericRecord> mergedFoIObsData = mergedKey.join(dataStream, (value, data) -> {
 
 			value.put("Datastream", data.toString());
-			// JSONObject jo = (JSONObject) new JSONParser().parse(value.toString());
 			return value;
 
 		},JoinWindows.of(100000));
-
-		// get ThingsStream
-		final KTable<String, GenericRecord> ThingStream = builder.table("Things");
+		
+		final KTable<String, GenericRecord> thingStream = builder.table("Things");
+		
 		// Tranfrom mergedFoIObsData to Equals Key to Things
 		final KStream<String, GenericRecord> mergedKeyThing = mergedFoIObsData
 				.map((key, value) -> KeyValue.pair(toJson(value, "Datastream", "Thing"), value));
 		
-		
 		 //Join ThingsStream with MergedStream
-		final KStream<String, GenericRecord> mergedFoIObsDataThing = mergedKeyThing.join(ThingStream,
+		final KStream<String, GenericRecord> mergedFoIObsDataThing = mergedKeyThing.join(thingStream,
 				(value, thing) -> {
 					JSONObject ds = toJson(value, "Datastream");
 					ds.put("Thing", thing.toString());
@@ -150,26 +134,23 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 				});
 
 		// get SensorStream
-		final KTable<String, GenericRecord> SensorStream = builder.table("Sensors");
+		final KTable<String, GenericRecord> sensorStream = builder.table("Sensors");
 		// Tranfrom mergedFoIObsData to Equals Key to Sensor
 		final KStream<String, GenericRecord> mergedFoIObsDataThingKey = mergedFoIObsDataThing
 				.map((key, value) -> KeyValue.pair(toJson(value, "Datastream", "Sensor"), value));
 
 		// Join ThingsStream with MergedStream
-		final KStream<String, GenericRecord> mergedFoIObsDataThingSensor = mergedFoIObsDataThingKey.leftJoin(SensorStream,
+		final KStream<String, GenericRecord> mergedFoIObsDataThingSensor = mergedFoIObsDataThingKey.leftJoin(sensorStream,
 				(value, thing) -> {
 
 					JSONObject ds = toJson(value, "Datastream");
-					if(thing!= null) {
+					if (thing!= null) {
 						ds.put("Sensor", thing.toString());
 						value.put("Datastream", ds.toString());
-					}else {
+					} else {
 						value.put("Datastream", "NO Sensor VALUE FOUND");
 					}
 					
-
-					
-					// JSONObject jo = (JSONObject) new JSONParser().parse(value.toString());
 					return value;
 
 				});
@@ -197,53 +178,44 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 	
 		
 		final Serde<String> stringSerde = Serdes.String();
-
-			finalStream.to("AvroExport",Produced.with(stringSerde, stringSerde));
 		
+		finalStream.to("AvroExport", Produced.with(stringSerde, stringSerde));
 		
-
-
-
-		
+		stringSerde.close();
 	}
 
 	/**
 	 * This Methode generates a key String from a GenericRecord
 	 * @param record 
-	 * @param Stream Name
+	 * @param stream Name
 	 * @param key Name
 	 * @return
 	 */
-	public String toJson(GenericRecord record, String Stream, String key) {
+	public String toJson(GenericRecord record, String stream, String key) {
 		JSONObject ds;
 		try {
-			ds = (JSONObject) new JSONParser().parse(record.get(Stream).toString());
-
+			ds = (JSONObject) new JSONParser().parse((stream == null) ? record.toString() : record.get(stream).toString());
 			return (String) ds.get(key);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(FOI_DOUBLE_PARSE_EXCEPTION, e);
 		}
 		return null;
-
 	}
 
 	/**
 	 * 
 	 * This Method generation a JSONOject from a Generic Record
 	 * @param record
-	 * @param Stream
+	 * @param stream
 	 * @return
 	 */
-	public JSONObject toJson(GenericRecord record, String Stream) {
+	public JSONObject toJson(GenericRecord record, String stream) {
 		JSONObject ds;
 		try {
-			ds = (JSONObject) new JSONParser().parse(record.get(Stream).toString());
-
+			ds = (JSONObject) new JSONParser().parse((stream == null) ? record.toString() : record.get(stream).toString());
 			return ds;
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(FOI_DOUBLE_PARSE_EXCEPTION, e);
 		}
 		return null;
 
@@ -254,23 +226,13 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 	 * @param record
 	 * @return
 	 */
-	public JSONObject toJson(GenericRecord record ){
-		JSONObject ds;
-		try {
-			ds = (JSONObject) new JSONParser().parse(record.toString());
-
-			return ds;
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-
+	public JSONObject toJson(GenericRecord record){
+		return toJson(record, null);
 	}
 
 	@Override
 	public void run() {
-		System.out.println("Running " +  threadName );
+		logger.info("Starting thread: {}", THREAD_NAME);
 		StreamsBuilder builder = new StreamsBuilder();
 
 		apply(builder);
@@ -278,6 +240,11 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 		kafkaStreams.start();
 		
 		
+	}
+
+	@Override
+	public void apply() throws InterruptedException {
+		apply(new StreamsBuilder());
 	}
 
 }

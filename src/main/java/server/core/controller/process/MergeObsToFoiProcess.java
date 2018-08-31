@@ -1,4 +1,4 @@
-package server.core.controller.Process;
+package server.core.controller.process;
 
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -12,6 +12,8 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Produced;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import server.core.properties.KafkaTopicAdmin;
 import server.core.properties.KafkaPropertiesFileManager;
@@ -24,17 +26,16 @@ import server.core.properties.KafkaPropertiesFileManager;
  */
 public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 
-	private String ObservationTopic;
-	private String FeatureOfIntresssTopic;
+	private String observationTopic;
+	private String featureOfIntresssTopic;
 	private String outputTopic;
 	private String keyEqual;
 	private Properties props;
 	private KafkaStreams kafkaStreams;
-	private final String threadName = "MergeProcess";
-
+	private static final String THREAD_NAME = "MergeProcess";
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private boolean threadBoolean = true;
 	private Thread thread;
-
 	private CountDownLatch countdownLatch = null;
 
 	/**
@@ -48,20 +49,20 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 	 */
 	public MergeObsToFoiProcess(String topic1, String topic2, String outputTopic, String key) {
 		KafkaTopicAdmin kAdmin = KafkaTopicAdmin.getInstance();
-
+		
 		if (!kAdmin.existsTopic(topic1, topic2)) {
 			kAdmin.createTopic(topic1);
 			kAdmin.createTopic(topic2);
 		}
-
-		this.ObservationTopic = topic1;
-		this.FeatureOfIntresssTopic = topic2;
+		
+		this.observationTopic = topic1;
+		this.featureOfIntresssTopic = topic2;
 		this.outputTopic = outputTopic;
 		this.keyEqual = key;
 
 		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();
 		this.props = propManager.getMergeStreamProperties();
-		System.out.println("Creating " + threadName);
+		logger.info("Creating thread: {}", THREAD_NAME);
 	}
 
 	/**
@@ -73,14 +74,14 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 
 	/**
 	 * This Starts the process with String Serializer
+	 * @return 
 	 */
-
 	public boolean startDifferent() {
 		final Serde<String> stringSerde = Serdes.String();
 
 		StreamsBuilder builder = new StreamsBuilder();
-		final KStream<String, GenericRecord> foIT = builder.stream(FeatureOfIntresssTopic);
-		final KTable<String, GenericRecord> obsT = builder.table(ObservationTopic);
+		final KStream<String, GenericRecord> foIT = builder.stream(featureOfIntresssTopic);
+		final KTable<String, GenericRecord> obsT = builder.table(observationTopic);
 		final KStream<String, GenericRecord> transformfoIT = foIT
 				.map((key, value) -> KeyValue.pair(value.get(keyEqual).toString(), value));
 
@@ -105,7 +106,8 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 
 		kafkaStreams = new KafkaStreams(builder.build(), props);
 		kafkaStreams.start();
-
+		
+		stringSerde.close();
 		return true;
 	}
 
@@ -115,9 +117,9 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 
 	public boolean kafkaStreamStart() {
 
-		System.out.println("Starting " + threadName);
+		logger.info("Starting thread: {}", THREAD_NAME);
 		if (thread == null) {
-			thread = new Thread(this, threadName);
+			thread = new Thread(this, THREAD_NAME);
 
 			countdownLatch = new CountDownLatch(1);
 			thread.start();
@@ -134,8 +136,8 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 	 * StreamsBuilder)
 	 */
 	public void apply(StreamsBuilder builder) {
-		final KTable<String, GenericRecord> obsT = builder.table(ObservationTopic);
-		final KStream<String, GenericRecord> foIT = builder.stream(FeatureOfIntresssTopic);
+		final KTable<String, GenericRecord> obsT = builder.table(observationTopic);
+		final KStream<String, GenericRecord> foIT = builder.stream(featureOfIntresssTopic);
 		
 		final KStream<String, GenericRecord> transformfoIT = foIT
 				.map((key, value) -> KeyValue.pair(value.get(keyEqual).toString(), value));
@@ -164,11 +166,7 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 	 * This closes the process
 	 */
 	public boolean kafkaStreamClose() {
-		
-
-		
-		
-		System.out.println("Closing " + threadName);
+		logger.info("Closing thread: {}", THREAD_NAME);
 		if(countdownLatch != null) {
 			countdownLatch.countDown();
 		}
@@ -178,15 +176,15 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 			try {
 				thread.join();
 				if (kafkaStreams == null) {
-					System.out.println("Applikation 'Merge' is not Running");
+					logger.info("Applikation 'Export' is not Running");
 					return false;
 				}
 				Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
 			} catch (InterruptedException e) {
-				
-				e.printStackTrace();
+				thread.interrupt();
+				logger.warn("Interruption of thread: {}", THREAD_NAME);
 			}
-			System.out.println(threadName + "successfully stopped.");
+			logger.info("Stopped thread successfully: {}", THREAD_NAME);
 			return true;
 			
 		}
@@ -195,13 +193,18 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 
 	@Override
 	public void run() {
-		System.out.println("Running " +  threadName );
+		logger.info("Starting thread: {}", THREAD_NAME);
 		StreamsBuilder builder = new StreamsBuilder();
 
 		apply(builder);
 		kafkaStreams = new KafkaStreams(builder.build(), props);
 		kafkaStreams.start();
 
+	}
+
+	@Override
+	public void apply() throws InterruptedException {
+		apply(new StreamsBuilder());
 	}
 
 }

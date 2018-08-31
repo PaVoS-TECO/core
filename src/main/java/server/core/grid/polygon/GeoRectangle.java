@@ -1,5 +1,7 @@
 package server.core.grid.polygon;
 
+import java.awt.geom.Rectangle2D;
+
 import server.core.grid.config.Seperators;
 
 /**
@@ -10,29 +12,26 @@ public class GeoRectangle extends GeoPolygon {
 	
 	/**
 	 * Creates a {@link GeoRectangle} with the given offsets, width, height and id.<p>
-	 * @param xOffset The horizontal offset
-	 * @param yOffset The vertical offset
-	 * @param width
-	 * @param height
+	 * @param bounds {@link Rectangle2D.Double} a bounding-box around our {@link GeoRectangle}
 	 * @param rows 
 	 * @param columns 
 	 * @param levelsAfterThis The depth of the map
-	 * @param id The identifier {@link String} of this {@link GeoPolygon}
+	 * @param id The identifier {@link String} of this {@link GeoRectangle}
 	 */
-	public GeoRectangle(double xOffset, double yOffset, double width, double height, int rows, int columns, int levelsAfterThis, String id) {
-		super(xOffset, yOffset, width, height, rows, columns, levelsAfterThis, id);
+	public GeoRectangle(Rectangle2D.Double bounds, int rows, int columns, int levelsAfterThis, String id) {
+		super(bounds, rows, columns, levelsAfterThis, id);
 		generatePath();
-		if (LEVELS_AFTER_THIS > 0) {
-			generateSubPolygons(ROWS, COLUMNS);
+		if (this.levelsAfterThis > 0) {
+			generateSubPolygons(this.rows, this.columns);
 		}
 	}
 
 	@Override
 	protected void generatePath() {
-		path.moveTo(X_OFFSET, Y_OFFSET);
-		path.lineTo(X_OFFSET + WIDTH, Y_OFFSET);
-		path.lineTo(X_OFFSET + WIDTH, Y_OFFSET + HEIGHT);
-		path.lineTo(X_OFFSET, Y_OFFSET + HEIGHT);
+		path.moveTo(bounds.getX(), bounds.getY());
+		path.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY());
+		path.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight());
+		path.lineTo(bounds.getX(), bounds.getY() + bounds.getHeight());
 		path.closePath();
 	}
 	
@@ -43,18 +42,18 @@ public class GeoRectangle extends GeoPolygon {
 
 	@Override
 	protected void generateSubPolygons(int xSubdivisions, int ySubdivisions) {
-		double subWidth = WIDTH / (double) ySubdivisions;
-		double subHeight = HEIGHT / (double) xSubdivisions;
+		double subWidth = bounds.getWidth() / (double) ySubdivisions;
+		double subHeight = bounds.getHeight() / (double) xSubdivisions;
 		
 		for (int row = 0; row < xSubdivisions; row++) {
 			for (int col = 0; col < ySubdivisions; col++) {
-				double subXOffset = X_OFFSET + (double) col * subWidth;
-				double subYOffset = Y_OFFSET + (double) row * subHeight;
+				double subXOffset = bounds.getX() + (double) col * subWidth;
+				double subYOffset = bounds.getY() + (double) row * subHeight;
+				Rectangle2D.Double subBounds = new Rectangle2D.Double(subXOffset, subYOffset, subWidth, subHeight);
 				String subID = String.valueOf(row) + Seperators.ROW_COLUMN_SEPERATOR + String.valueOf(col);
 				
-				GeoRectangle subPolygon = new GeoRectangle(subXOffset, subYOffset, subWidth, subHeight
-						, ROWS, COLUMNS, (LEVELS_AFTER_THIS - 1)
-						, ID + Seperators.CLUSTER_SEPERATOR + subID);
+				GeoRectangle subPolygon = new GeoRectangle(subBounds, this.rows, this.columns, (levelsAfterThis - 1)
+						, id + Seperators.CLUSTER_SEPERATOR + subID);
 				subPolygons.add(subPolygon);
 			}
 		}

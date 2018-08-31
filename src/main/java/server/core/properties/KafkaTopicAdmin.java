@@ -12,11 +12,15 @@ import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.DeleteTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.admin.TopicListing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class KafkaTopicAdmin {
 
 	private AdminClient admin;
 	private static KafkaTopicAdmin instance;
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private Collection<TopicListing> topicListings = new ArrayList<>();
 
 	private KafkaTopicAdmin() {
 		init();
@@ -55,16 +59,12 @@ public final class KafkaTopicAdmin {
 
 	public boolean existsTopic(Collection<String> topicNames) {
 		Collection<TopicListing> allListings = getExistingTopics();
-		Collection<TopicListing> listingsToCheck = new ArrayList<TopicListing>();
+		Collection<TopicListing> listingsToCheck = new ArrayList<>();
 
 		for (String topicName : topicNames) {
 			listingsToCheck.add(new TopicListing(topicName, false));
 		}
-		if (!containsAllTopicListings(allListings, listingsToCheck)) {
-			return false;
-		} else {
-			return true;
-		}
+		return containsAllTopicListings(allListings, listingsToCheck);
 	}
 	
 	private boolean containsAllTopicListings(Collection<TopicListing> allListings, Collection<TopicListing> listingsToCheck) {
@@ -76,28 +76,34 @@ public final class KafkaTopicAdmin {
 				}
 			}
 		}
-		if (num == listingsToCheck.size()) return true;
-		return false;
+		return num == listingsToCheck.size();
 	}
 	
 	private Collection<TopicListing> getExistingTopics() {
-		Collection<TopicListing> topicListings = new ArrayList<>();
+		Thread t = new Thread(() -> {
+			try {
+				topicListings = admin.listTopics().listings().get();
+			} catch (InterruptedException | ExecutionException e) {
+				logger.error("Interrupted while trying to check Kafka topics.", e);
+				Thread.currentThread().interrupt();
+			}
+		});
+		t.start();
 		try {
-			topicListings = admin.listTopics().listings().get();
+			t.join();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+			logger.error("Interrupted while joining threads.", e);
+			Thread.currentThread().interrupt();
 		}
 		return topicListings;
 	}
 
 	public boolean deleteTopic(String topic) {
-		Collection<TopicListing> topicListings = getExistingTopics();
+		topicListings = getExistingTopics();
 		TopicListing tl = new TopicListing(topic, false);
 		if (!topicListings.contains(tl)) return true;
 
-		Collection<String> topicsToRemove = new ArrayList<String>();
+		Collection<String> topicsToRemove = new ArrayList<>();
 		topicsToRemove.add(topic);
 		DeleteTopicsResult result = admin.deleteTopics(topicsToRemove);
 

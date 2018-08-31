@@ -3,6 +3,7 @@ package server.core.grid.polygon;
 import static org.junit.Assert.fail;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 
 import org.junit.Test;
@@ -17,7 +18,7 @@ public class GeoRectangleTest {
 	@Test
 	public void generateJson() {
 		System.out.println("Starting Test [generateJson]:");
-		GeoRectangle rect = new GeoRectangle(2.3, 1.7, 10.0, 5.0, 1, 1, 0, "test1");
+		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(2.3, 1.7, 10.0, 5.0), 1, 1, 0, "test1");
 		System.out.println(rect.getPoints());
 		System.out.println(rect.getJson("pM10"));
 		System.out.println();
@@ -26,7 +27,7 @@ public class GeoRectangleTest {
 	@Test
 	public void addValueAndGetNumberOfSensors() {
 		System.out.println("Starting Test [addValue & getNumberOfSensors]:");
-		GeoRectangle rect = new GeoRectangle(0.0, 0.0, 10.0, 5.0, 1, 1, 0, "test1");
+		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 1, 1, 0, "test1");
 		System.out.println(rect.getPoints());
 		ObservationData data = new ObservationData();
 		data.observationDate = TimeUtil.getUTCDateTimeNowString();
@@ -45,7 +46,7 @@ public class GeoRectangleTest {
 	@Test
 	public void generateSubPolygons() {
 		System.out.println("Starting Test [generateSubPolygons]:");
-		GeoRectangle rect = new GeoRectangle(0.0, 0.0, 10.0, 5.0, 2, 2, 1, "test1");
+		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 2, 2, 1, "test1");
 		Collection<GeoPolygon> subPolygons = rect.getSubPolygons();
 		for (GeoPolygon polygon : subPolygons) {
 			System.out.println(polygon.getPoints());
@@ -56,7 +57,7 @@ public class GeoRectangleTest {
 	@Test
 	public void searchForPoint() {
 		System.out.println("Starting Test [searchForPoint]:");
-		GeoRectangle rect = new GeoRectangle(0.0, 0.0, 10.0, 5.0, 2, 2, 1, "test1");
+		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 2, 2, 1, "test1");
 		rect.getSubPolygons();
 		boolean contains = rect.contains(new Point2D.Double(1.4, 3.3), false);
 		System.out.println(contains);

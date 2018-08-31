@@ -61,8 +61,8 @@ public class GeoRectangleGridTest {
 		String clusterID = null;
 		GeoPolygon poly = null;
 		try {
-			poly = grid.getPolygonContaining(location1, grid.MAX_LEVEL);
-			clusterID = poly.ID;
+			poly = grid.getPolygonContaining(location1, grid.maxLevel);
+			clusterID = poly.id;
 		} catch (PointNotOnMapException e) {
 			fail("Location out of map bounds.");
 		}
@@ -100,7 +100,7 @@ public class GeoRectangleGridTest {
 		
 		GeoPolygon jsonPoly = null;
 		try {
-			jsonPoly = grid.getPolygon(grid.GRID_ID + Seperators.GRID_CLUSTER_SEPERATOR + "0_1");
+			jsonPoly = grid.getPolygon(grid.id + Seperators.GRID_CLUSTER_SEPERATOR + "0_1");
 		} catch (ClusterNotFoundException e) {
 			fail(e.getMessage());
 		}

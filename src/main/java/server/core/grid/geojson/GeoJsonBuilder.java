@@ -107,9 +107,8 @@ public final class GeoJsonBuilder {
 			return buildPolygon();
 		} else if (type.equals("sensor")) {
 			return buildSensor();
-		} else {
-			return null;
 		}
+		throw new NullPointerException("No building type selected for GeoJsonBuilder.");
 	}
 	
 	private String buildPolygon() {
@@ -150,7 +149,7 @@ public final class GeoJsonBuilder {
 		polyBuilder.append(toEntry("content") + ": [ ");
 		int count = 1;
 		for (GeoPolygon sub2Polygon : subPolygons) {
-			polyBuilder.append(toEntry(sub2Polygon.ID));
+			polyBuilder.append(toEntry(sub2Polygon.id));
 			if (count < subPolygons.size()) {
 				polyBuilder.append(COMMA);
 			}
@@ -170,7 +169,7 @@ public final class GeoJsonBuilder {
 			polyBuilder.append(COMMA);
 			count++;
 		}
-		polyBuilder.append("[ " + tempPoint.getX() + COMMA + tempPoint.getY() + "]");
+		if (tempPoint != null) polyBuilder.append("[ " + tempPoint.getX() + COMMA + tempPoint.getY() + "]");
 		polyBuilder.append("] ] } }");
 		return polyBuilder.toString();
 	}

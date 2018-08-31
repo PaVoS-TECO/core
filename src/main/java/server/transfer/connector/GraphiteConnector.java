@@ -77,6 +77,7 @@ public class GraphiteConnector extends Connector {
             logger.info("Waiting for consumer to shutdown...");
             shutdownLatch.await();
         } catch (InterruptedException e) {
+        	Thread.currentThread().interrupt();
             logger.error("Exception thrown waiting for shutdown", e);
         }
     }

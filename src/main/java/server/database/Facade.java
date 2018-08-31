@@ -1,6 +1,6 @@
 package server.database;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import server.transfer.data.ObservationData;
 import server.transfer.data.ObservationDataDeserializer;
@@ -74,7 +74,7 @@ public class Facade {
      * @param gridID The gridID from which to get the observed properties
      * @return A HashSet containing the observed properties
      */
-    public HashSet<String> getObservedProperties(String gridID) {
+    public Set<String> getObservedProperties(String gridID) {
     	return storageProcessor.getObservedProperties(gridID);
     }
 

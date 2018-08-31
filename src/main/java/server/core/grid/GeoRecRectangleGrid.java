@@ -22,19 +22,20 @@ public class GeoRecRectangleGrid extends GeoGrid {
 	
 	@Override
 	protected void generateGeoPolygons() {
-		double width = MAP_BOUNDS.getWidth() / (double) COLUMNS;
-		double height = MAP_BOUNDS.getHeight() / (double) ROWS;
-		double baseXOffset = MAP_BOUNDS.getX();
-		double baseYOffset = MAP_BOUNDS.getY();
+		double width = mapBounds.getWidth() / (double) columns;
+		double height = mapBounds.getHeight() / (double) rows;
+		double baseXOffset = mapBounds.getX();
+		double baseYOffset = mapBounds.getY();
 		
-		for (int row = 0; row < ROWS; row++) {
-			for (int col = 0; col < COLUMNS; col++) {
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < columns; col++) {
 				double xOffset = baseXOffset + (double) col * width;
 				double yOffset = baseYOffset + (double) row * height;
-				String id = String.valueOf(row) + Seperators.ROW_COLUMN_SEPERATOR + String.valueOf(col);
+				Rectangle2D.Double bounds = new Rectangle2D.Double(xOffset, yOffset, width, height);
+				String newId = String.valueOf(row) + Seperators.ROW_COLUMN_SEPERATOR + String.valueOf(col);
 				
-				GeoPolygon polygon = new GeoRectangle(xOffset, yOffset, width, height
-						, ROWS, COLUMNS, (MAX_LEVEL - 1), GRID_ID + Seperators.GRID_CLUSTER_SEPERATOR + id);
+				GeoPolygon polygon = new GeoRectangle(bounds, rows, columns, (maxLevel - 1), 
+						this.id + Seperators.GRID_CLUSTER_SEPERATOR + newId);
 				polygons.add(polygon);
 			}
 		}

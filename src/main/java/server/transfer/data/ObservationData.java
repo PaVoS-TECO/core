@@ -13,12 +13,6 @@ public class ObservationData implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 5410581483969835624L;
 
-	/**
-     * Default constructor
-     */
-    public ObservationData() {
-    }
-
     public String sensorID;
     
     public String clusterID;

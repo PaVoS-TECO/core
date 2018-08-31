@@ -32,24 +32,24 @@ import server.transfer.producer.GraphiteProducer;
  */
 public abstract class GeoGrid {
 	
-	public final Rectangle2D.Double MAP_BOUNDS;
-	public final int ROWS;
-	public final int COLUMNS;
-	public final int MAX_LEVEL;
-	public final String GRID_ID;
+	public final Rectangle2D.Double mapBounds;
+	public final int rows;
+	public final int columns;
+	public final int maxLevel;
+	public final String id;
 	protected List<GeoPolygon> polygons = new ArrayList<>();
 	protected Map<String, Point2D.Double> sensorsAndLocations = new HashMap<>();
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
+	private static final int CYCLES_UNTIL_RESET = 1;
 	private GeoGridManager manager = GeoGridManager.getInstance();
-	private final int CYCLES_UNTIL_RESET = 1;
 	private int cyclesDone = 0;
 	
 	public GeoGrid(Rectangle2D.Double mapBounds, int rows, int columns, int maxLevel, String gridID) {
-		this.MAP_BOUNDS = mapBounds;
-		this.ROWS = rows;
-		this.COLUMNS = columns;
-		this.MAX_LEVEL = maxLevel;
-		this.GRID_ID = gridID;
+		this.mapBounds = mapBounds;
+		this.rows = rows;
+		this.columns = columns;
+		this.maxLevel = maxLevel;
+		this.id = gridID;
 		
 		this.manager.addGeoGrid(this);
 	}
@@ -64,7 +64,7 @@ public abstract class GeoGrid {
 	public void addObservation(Point2D.Double location, ObservationData data) {
 		GeoPolygon targetPolygon = null;
 		try {
-			targetPolygon = getPolygonContaining(location, MAX_LEVEL);
+			targetPolygon = getPolygonContaining(location, maxLevel);
 			targetPolygon.addObservation(data);
 			this.sensorsAndLocations.put(data.sensorID, location);
 		} catch (PointNotOnMapException e) {
@@ -79,9 +79,14 @@ public abstract class GeoGrid {
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o == null) return false;
+		if (o == null || !o.getClass().equals(this.getClass())) return false;
 		GeoGrid oGrid = (GeoGrid) o;
-		return (this.GRID_ID.equals(oGrid.GRID_ID));
+		return (this.id.equals(oGrid.id));
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.id.hashCode();
 	}
 	
 	/**
@@ -95,11 +100,11 @@ public abstract class GeoGrid {
 	 * @throws PointNotOnMapException Thrown when the Point was not located in the map-boundaries.
 	 */
 	public String getClusterID(Point2D.Double point, int level) throws PointNotOnMapException {
-		return getPolygonContaining(point, level).ID;
+		return getPolygonContaining(point, level).id;
 	}
 	
 	public ObservationData getSensorObservation(String sensorID, Point2D.Double point) throws PointNotOnMapException, SensorNotFoundException {
-		GeoPolygon polygon = getPolygonContaining(point, MAX_LEVEL);
+		GeoPolygon polygon = getPolygonContaining(point, maxLevel);
 		for (ObservationData observation : polygon.getSensorDataList()) {
 			if (observation.sensorID.equals(sensorID)) {
 				return observation;
@@ -146,7 +151,7 @@ public abstract class GeoGrid {
 	 * @return topic {@link String}
 	 */
 	public String getOutputTopic() {
-		return this.GRID_ID + ".out";
+		return this.id + ".out";
 	}
 	
 	public Point2D.Double getSensorLocation(String sensorID) throws SensorNotFoundException {
@@ -169,32 +174,31 @@ public abstract class GeoGrid {
 			int levels = clusters.length;
 
 			StringBuilder currentID = new StringBuilder();
-			currentID.append(GRID_ID + Seperators.GRID_CLUSTER_SEPERATOR);
-			for (int i = 0; i < levels; i++) {
-				if (i == 0) {
-					currentID.append(clusters[i]);
-					for (GeoPolygon polygon : this.polygons) {
-						if (polygon.ID.equals(currentID.toString())) {
-							result = polygon;
-							break;
-						}
-
-					}
-				} else {
-					currentID.append(Seperators.CLUSTER_SEPERATOR + clusters[i]);
-					for (GeoPolygon polygon : result.getSubPolygons()) {
-						if (polygon.ID.equals(currentID.toString())) {
-							result = polygon;
-							break;
-						}
-					}
-				}
+			currentID.append(id + Seperators.GRID_CLUSTER_SEPERATOR);
+			
+			currentID.append(clusters[0]);
+			result = updatePolygonIfClusterMatches(currentID.toString(), result, this.polygons);
+			
+			for (int i = 1; i < levels; i++) {
+				if (result == null) throw new NullPointerException();
+				currentID.append(Seperators.CLUSTER_SEPERATOR + clusters[i]);
+				result = updatePolygonIfClusterMatches(currentID.toString(), result, result.getSubPolygons());
 			}
+			
+			return result;
+			
 		} catch (NullPointerException e) {
 			throw new ClusterNotFoundException(clusterID);
 		}
-		if (result == null) {
-			throw new ClusterNotFoundException(clusterID);
+	}
+	
+	private GeoPolygon updatePolygonIfClusterMatches(String currentID, GeoPolygon input, List<GeoPolygon> polygons) {
+		GeoPolygon result = input;
+		for (GeoPolygon polygon : polygons) {
+			if (polygon.id.equals(currentID)) {
+				result = polygon;
+				break;
+			}
 		}
 		return result;
 	}
@@ -214,7 +218,7 @@ public abstract class GeoGrid {
 		
 		// t2Polygon, meaning: tier-2-polygon
 		GeoPolygon t2Polygon = targetPolygon;
-		int levelBounds = Math.min(level, MAX_LEVEL);
+		int levelBounds = Math.min(level, maxLevel);
 		for (int currentLevel = 1; currentLevel < levelBounds; currentLevel++) {
 			try {
 				t2Polygon = getPolygonContainingPointFromCollection(point, t2Polygon.getSubPolygons());
@@ -251,6 +255,11 @@ public abstract class GeoGrid {
 		dum.uploadData(observations, Destination.GRAPHITE);
 	}
 	
+	public void transferSensorDataViaKafka() {
+		List<String> topics = produceSensorDataMessages();
+		transferToGraphite(topics);
+	}
+	
 	/**
 	 * Updates all values of this {@link GeoGrid} and it's {@link GeoPolygon}s.<p>
 	 * The process takes into account that {@link GeoPolygon} may have more or less data
@@ -263,24 +272,11 @@ public abstract class GeoGrid {
 		for (GeoPolygon polygon : polygons) {
 			polygon.updateObservations();
 		}
-		
-		// Live data
-		
-//		List<String> topics = produceSensorDataMessages();
-//		System.out.println("Topics: " + topics);
-//		transferToGraphite(topics);
-		
-		transferSensorDataDirectly();
-		
-		// send to database
-		
-//		updateDatabase();
-		
-		
-		// ONLY RESET AT THE END
-		
+	}
+	
+	public void resetObservations() {
 		if (cyclesDone == CYCLES_UNTIL_RESET) {
-			resetObservations();
+			resetObservationsNow();
 			this.sensorsAndLocations.clear();
 			cyclesDone = 0;
 		} else {
@@ -288,7 +284,7 @@ public abstract class GeoGrid {
 		}
 	}
 	
-	private void resetObservations() {
+	public void resetObservationsNow() {
 		for (GeoPolygon polygon : polygons) {
 			polygon.resetObservations();
 		}

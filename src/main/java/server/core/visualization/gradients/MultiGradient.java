@@ -37,10 +37,14 @@ public class MultiGradient {
 	
 	@Override
 	public boolean equals(Object o) {
-		if (!o.getClass().equals(this.getClass())) return false;
+		if (o == null || !o.getClass().equals(this.getClass())) return false;
 		MultiGradient oGrad = (MultiGradient) o;
-		if (!oGrad.NAME.equals(this.NAME)) return false;
-		return true;
+		return oGrad.NAME.equals(this.NAME);
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.NAME.hashCode();
 	}
 	
 	public Color[] getColors() {

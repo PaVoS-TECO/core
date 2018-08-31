@@ -58,18 +58,7 @@ public class GraphiteSender extends Sender {
 			som.reconnect();
 		}
 		
-		try {
-			OutputStream outputStream = som.getOutputStream();
-			outputStream.write(header);
-			outputStream.write(payload.toBytes());
-			outputStream.flush();
-			outputStream.close();
-		} catch (IOException e) {
-			logger.error("Failed writing to Graphite.", e);
-			return false;
-		}
-		
-		return true;
+		return writeToGraphite(header, payload);
 	}
 	
 	/**
@@ -87,25 +76,12 @@ public class GraphiteSender extends Sender {
 		
 		PyList list = new PyList();
 
-		records.forEach(record -> {
-			GraphiteConverter.addObservations(record, list);
-		});
+		records.forEach(record -> GraphiteConverter.addObservations(record, list));
 
 		PyString payload = cPickle.dumps(list);
 		byte[] header = ByteBuffer.allocate(4).putInt(payload.__len__()).array();
 
-		try {
-			OutputStream outputStream = som.getOutputStream();
-			outputStream.write(header);
-			outputStream.write(payload.toBytes());
-			outputStream.flush();
-			outputStream.close();
-		} catch (IOException e) {
-			logger.error("Failed writing to Graphite.", e);
-			return false;
-		}
-		
-		return true;
+		return writeToGraphite(header, payload);
 	}
 
 	/**
@@ -119,17 +95,13 @@ public class GraphiteSender extends Sender {
 	 * @return 
 	 */
 	public boolean send(String singleTopic, ObservationData data) {
-		HashMap<TopicPartition, List<ConsumerRecord<String, ObservationData>>> recordsMap 
-		= new HashMap<TopicPartition, List<ConsumerRecord<String, ObservationData>>>();
-		ArrayList<ConsumerRecord<String, ObservationData>> recordList 
-		= new ArrayList<ConsumerRecord<String, ObservationData>>();
-		ConsumerRecord<String, ObservationData> record 
-		= new ConsumerRecord<String, ObservationData>(singleTopic, 0, 0, null, data);
+		HashMap<TopicPartition, List<ConsumerRecord<String, ObservationData>>> recordsMap = new HashMap<>();
+		ArrayList<ConsumerRecord<String, ObservationData>> recordList = new ArrayList<>();
+		ConsumerRecord<String, ObservationData> record = new ConsumerRecord<>(singleTopic, 0, 0, null, data);
 
 		recordList.add(record);
 		recordsMap.put(new TopicPartition(singleTopic, 0), recordList);
-		ConsumerRecords<String, ObservationData> records 
-		= new ConsumerRecords<String, ObservationData>(recordsMap);
+		ConsumerRecords<String, ObservationData> records = new ConsumerRecords<>(recordsMap);
 
 		return this.send(records);
 	}
@@ -137,6 +109,21 @@ public class GraphiteSender extends Sender {
 	@Override
 	public void close() {
 		som.closeSocket();
+	}
+	
+	private boolean writeToGraphite(byte[] header, PyString payload) {
+		try {
+			OutputStream outputStream = som.getOutputStream();
+			outputStream.write(header);
+			outputStream.write(payload.toBytes());
+			outputStream.flush();
+			outputStream.close();
+		} catch (IOException e) {
+			logger.error("Failed writing to Graphite.", e);
+			return false;
+		}
+		
+		return true;
 	}
 	
 }

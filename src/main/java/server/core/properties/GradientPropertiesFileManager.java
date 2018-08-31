@@ -3,11 +3,15 @@ package server.core.properties;
 import java.security.InvalidParameterException;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GradientPropertiesFileManager {
 	
 	private Properties properties;
 	public final String gradientPropertyFilePath = "src/main/resources/defaultGradients.properties";
 	private static GradientPropertiesFileManager instance;
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * Default Constructor
@@ -46,10 +50,9 @@ public class GradientPropertiesFileManager {
 				throw new InvalidParameterException();
 			}
 		}  catch (InvalidParameterException e) {
-			e.printStackTrace();
-			System.err.println("The configuration file is missing at least one of the following required arguments:\n"
+			logger.error("The configuration file is missing at least one of the following required arguments:\n"
 					+ "\t- temperature\n" + "\t- temperature.range.celsius\n"
-					+ "\t- temperature.range.fahrenheit");
+					+ "\t- temperature.range.fahrenheit", e);
 			System.exit(-1);
 		}
 	}

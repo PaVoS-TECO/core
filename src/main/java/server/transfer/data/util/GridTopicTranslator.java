@@ -17,7 +17,7 @@ public class GridTopicTranslator {
 	
 	public static Map<String, String> getTopic(Collection<String> sensorIDs, GeoPolygon polygon) {
 		StringBuilder topicBuilder = new StringBuilder();
-		String start = polygon.ID;
+		String start = polygon.id;
 		String[] args = start.split(Seperators.GRID_CLUSTER_SEPERATOR);
 		String gridID = args[0];
 		String[] clusters = args[1].split(Seperators.CLUSTER_SEPERATOR);

@@ -14,12 +14,6 @@ import server.transfer.sender.GraphiteSender;
 public class TransferManager {
 	
 	private Connector connector;
-	
-    /**
-     * Default constructor
-     */
-    public TransferManager() {
-    }
 
     /**
      * Starts data-transfer
@@ -31,7 +25,7 @@ public class TransferManager {
     public boolean startDataTransfer(List<String> topics, Destination dest) {
     	if (connector != null) stopDataTransfer();
         if (dest.equals(Destination.GRAPHITE)) return transferToGraphite(topics);
-        return false;
+        else return false;
     }
     
     /**

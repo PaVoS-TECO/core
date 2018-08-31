@@ -38,8 +38,7 @@ public class GraphiteProducer {
 	
 	private Properties getProducerProperties() {
 		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();
-		Properties props = propManager.getProducerGridProperties();
-		return props;
+		return propManager.getProducerGridProperties();
     }
 	
 	public void close() {

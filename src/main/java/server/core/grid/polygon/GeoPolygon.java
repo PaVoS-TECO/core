@@ -3,18 +3,21 @@ package server.core.grid.polygon;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.joda.time.DateTime;
 
 import server.core.grid.exceptions.ClusterNotFoundException;
 import server.core.grid.geojson.GeoJsonConverter;
+import server.core.grid.polygon.math.Tuple2D;
 import server.core.grid.polygon.math.Tuple3D;
 import server.transfer.data.ObservationData;
 import server.transfer.data.util.GridTopicTranslator;
@@ -29,16 +32,12 @@ import server.transfer.sender.util.TimeUtil;
  */
 public abstract class GeoPolygon {
 	
-	public final boolean USE_SCALE;
-	public final double X_OFFSET;
-	public final double Y_OFFSET;
-	public final double WIDTH;
-	public final double HEIGHT;
-	public final int ROWS;
-	public final int COLUMNS;
-	public final double SCALE;
-	public final String ID;
-	public final int LEVELS_AFTER_THIS;
+	public final Rectangle2D.Double bounds;
+	public final int rows;
+	public final int columns;
+	public final double scale;
+	public final String id;
+	public final int levelsAfterThis;
 	protected Path2D.Double path;
 	protected List<GeoPolygon> subPolygons;
 	protected Map<String, ObservationData> sensorValues;
@@ -47,54 +46,22 @@ public abstract class GeoPolygon {
 	/**
 	 * Creates a {@link GeoPolygon} with the given offsets, width, height and id.<p>
 	 * Sets {@code USE_SCALE} to {@code false}!
-	 * @param xOffset The horizontal offset
-	 * @param yOffset The vertical offset
-	 * @param width
-	 * @param height
+	 * @param bounds {@link Rectangle2D.Double} a bounding-box around our {@link GeoPolygon}
 	 * @param rows How many times the {@link GeoPolygon} will be subdivided horizontally
 	 * @param columns How many times the {@link GeoPolygon} will be subdivided vertically
 	 * @param levelsAfterThis The depth of the map
 	 * @param id The identifier {@link String} of this {@link GeoPolygon}
 	 */
-	public GeoPolygon(double xOffset, double yOffset, double width, double height, int rows, int columns, int levelsAfterThis, String id) {
-		this.USE_SCALE = false;
-		this.X_OFFSET = xOffset;
-		this.Y_OFFSET = yOffset;
-		this.WIDTH = width;
-		this.HEIGHT = height;
-		this.ROWS = rows;
-		this.COLUMNS = columns;
-		this.ID = id;
-		this.SCALE = 0;
-		this.LEVELS_AFTER_THIS = Math.max(levelsAfterThis, 0);;
+	public GeoPolygon(Rectangle2D.Double bounds, int rows, int columns, int levelsAfterThis, String id) {
+		this.bounds = bounds;
+		this.rows = rows;
+		this.columns = columns;
+		this.id = id;
+		this.scale = 0;
+		this.levelsAfterThis = Math.max(levelsAfterThis, 0);
 		
 		commonConstructor();
 	}
-	
-	/**
-	 * Creates a {@link GeoPolygon} with the given offsets, scale and id.<p>
-	 * Sets {@code USE_SCALE} to {@code true}!
-	 * @param xOffset The horizontal offset
-	 * @param yOffset The vertical offset
-	 * @param scale
-	 * @param subdivisions How many times the {@link GeoPolygon} will be subdivided horizontally and vertically
-	 * @param levelsAfterThis The depth of the map
-	 * @param id The identifier {@link String} of this {@link GeoPolygon}
-	 */
-	public GeoPolygon(double xOffset, double yOffset, double scale, int subdivisions, int levelsAfterThis, String id) {
-		this.USE_SCALE = true;
-		this.X_OFFSET = xOffset;
-		this.Y_OFFSET = yOffset;
-		this.WIDTH = 0;
-		this.HEIGHT = 0;
-		this.ROWS = subdivisions;
-		this.COLUMNS = subdivisions;
-		this.ID = id;
-		this.SCALE = scale;
-		this.LEVELS_AFTER_THIS = Math.max(levelsAfterThis, 0);
-		
-		commonConstructor();
-	} 
 	
 	private void commonConstructor() {
 		this.path = new Path2D.Double();
@@ -110,7 +77,7 @@ public abstract class GeoPolygon {
 	 * @param data The {@link ObservationData} with the value.
 	 */
 	public void addObservation(ObservationData data) {
-		data.clusterID = this.ID;
+		data.clusterID = this.id;
 		this.sensorValues.put(data.sensorID, data);
 	}
 	
@@ -138,10 +105,8 @@ public abstract class GeoPolygon {
 	 * @return containsPoint {@link boolean}
 	 */
 	public boolean contains(Point2D.Double point, boolean checkBoundsFirst) {
-		if (checkBoundsFirst) {
-			if (!path.getBounds2D().contains(point)) {
+		if (checkBoundsFirst && !path.getBounds2D().contains(point)) {
 				return false;
-			}
 		}
 		return path.contains(point);
 	}
@@ -285,7 +250,7 @@ public abstract class GeoPolygon {
 	 */
 	public GeoPolygon getSubPolygon(String clusterID) throws ClusterNotFoundException {
 		for (GeoPolygon polygon : this.subPolygons) {
-			if (polygon.ID == clusterID) {
+			if (polygon.id == clusterID) {
 				return polygon;
 			}
 		}
@@ -340,20 +305,16 @@ public abstract class GeoPolygon {
 	
 	public Collection<String> getAllProperties() {
 		Collection<String> properties = new HashSet<>();
-		
 		for (GeoPolygon entry : this.subPolygons) {
-			Map<String, String> obsTemp = entry.observationData.observations;
-			for (String property : obsTemp.keySet()) {
+			for (String property : entry.observationData.observations.keySet()) {
 				properties.add(property);
 			}
 		}
 		for (ObservationData entry : this.sensorValues.values()) {
-			Map<String, String> obsTemp = entry.observations;
-			for (String property : obsTemp.keySet()) {
+			for (String property : entry.observations.keySet()) {
 				properties.add(property);
 			}
 		}
-		
 		return properties;
 	}
 	
@@ -366,69 +327,115 @@ public abstract class GeoPolygon {
 	 * This way, we achieve the most realistic representation of our data.
 	 */
 	public void updateObservations() {
-		
-		//create entries for sub-polygons & sensors
 		for (GeoPolygon entry : this.subPolygons) {
 			entry.updateObservations();
 		}
 		
+		Collection<Tuple3D<String, Integer, Double>> values = getPropertyWeight();
+		Collection<String> properties = getProperties();
+		
+		setWeightedObservationForCluster(values, properties);
+	}
+	
+	private void setWeightedObservationForCluster(Collection<Tuple3D<String, Integer, Double>> values, Collection<String> properties) {
 		boolean anyEntry = false;
 		ObservationData obs = new ObservationData();
+		DateTime dt = selectDateTimeFromAllSources();
 		obs.observationDate = TimeUtil.getUTCDateTimeNowString();
-		Set<Tuple3D<String, Integer, Double>> values = new HashSet<>();
-		Set<String> properties = new HashSet<>();
-		DateTime dt = null;
-		// save properties found in sub-GeoPolygons and sensors
-		for (GeoPolygon entry : this.subPolygons) {
-			Map<String, String> obsTemp = entry.observationData.observations;
-			for (String property : obsTemp.keySet()) {
-				values.add(new Tuple3D<String, Integer, Double>(property
-						, Integer.valueOf(entry.getNumberOfSensors(property)), Double.valueOf(obsTemp.get(property))));
-				properties.add(property);
-			}
-			DateTime dtCheck = TimeUtil.getUTCDateTime(entry.observationData.observationDate).toDateTime();
-			if (dt == null || dt.isBefore(dtCheck)) {
-				dt = dtCheck;
-			}
-		}
-		for (ObservationData entry : this.sensorValues.values()) {
-			Map<String, String> obsTemp = entry.observations;
-			for (String property : obsTemp.keySet()) {
-				values.add(new Tuple3D<String, Integer, Double>(property
-						, Integer.valueOf(1), Double.valueOf(obsTemp.get(property))));
-				properties.add(property);
-			}
-			DateTime dtCheck = TimeUtil.getUTCDateTime(entry.observationDate).toDateTime();
-			if (dt == null || dt.isBefore(dtCheck)) {
-				dt = dtCheck;
-			}
-		}
-		
-		// save data in ObservationData obs after calculation
 		for (String property : properties) {
-			double value = 0;
-			int totalSensors = 0;
-			
-			for (Tuple3D<String, Integer, Double> tuple : values) {
-				if (tuple.getFirstValue().equals(property)) {
-					if (!anyEntry) anyEntry = true;
-					value += tuple.getThirdValue().doubleValue() * tuple.getSecondValue().doubleValue();
-					totalSensors += tuple.getSecondValue().intValue();
-				}
-			}
-			
-			value = value / (double) totalSensors;
-			if (anyEntry) {
-				obs.observations.put(property, String.valueOf(value));
-			} else {
-				obs.observations.put(property, null);
-			}
+			anyEntry = weightProperty(property, values, obs);
 		}
 		if (anyEntry) {
-			obs.clusterID = this.ID;
-			this.observationData = obs;
+			obs.clusterID = this.id;
 			obs.observationDate = TimeUtil.getUTCDateTimeString(dt.toLocalDateTime());
+			this.observationData = obs;
 		}
+	}
+	
+	private boolean weightProperty(String property, Collection<Tuple3D<String, Integer, Double>> values, ObservationData output) {
+		double value = 0;
+		int totalSensors = 0;
+		boolean anyEntry = false;
+		
+		for (Tuple3D<String, Integer, Double> tuple : values) {
+			if (tuple.getFirstValue().equals(property)) {
+				Tuple2D<Double, Integer> weight = addWeightedData(tuple, value, totalSensors);
+				if (weight != null && weight.getFirstValue() != null && weight.getSecondValue() != null) {
+					value = weight.getFirstValue();
+					totalSensors = weight.getSecondValue();
+					anyEntry = true;
+				}
+			}
+		}
+		value = (totalSensors != 0) ? value / (double) totalSensors : value;
+		output.observations.put(property, anyEntry ? String.valueOf(value) : null);
+		return anyEntry;
+	}
+	
+	private Tuple2D<Double, Integer> addWeightedData(Tuple3D<String, Integer, Double> tuple, double value, int totalSensors) {
+		if (tuple.getFirstValue() == null || tuple.getSecondValue() == null || tuple.getThirdValue() == null) return null; 
+		return new Tuple2D<>(value + tuple.getThirdValue().doubleValue() * tuple.getSecondValue().doubleValue(), 
+				totalSensors + tuple.getSecondValue().intValue());
+	}
+	
+	public Collection<String> getProperties() {
+		Collection<String> properties = new HashSet<>();
+		for (GeoPolygon polygon : this.subPolygons) {
+			for (Entry<String, String> entry : polygon.observationData.observations.entrySet()) {
+				properties.add(entry.getKey());
+			}
+		}
+		for (ObservationData observation : this.sensorValues.values()) {
+			for (Entry<String, String> entry : observation.observations.entrySet()) {
+				properties.add(entry.getKey());
+			}
+		}
+		return properties;
+	}
+	
+	private DateTime selectDateTimeFromAllSources() {
+		DateTime dt = null;
+		for (GeoPolygon polygon : this.subPolygons) {
+			dt = earliestDateTime(dt, TimeUtil.getUTCDateTime(polygon.observationData.observationDate).toDateTime());
+		}
+		for (ObservationData observation : this.sensorValues.values()) {
+			dt = earliestDateTime(dt, TimeUtil.getUTCDateTime(observation.observationDate).toDateTime());
+		}
+		if (dt == null) dt = TimeUtil.getUTCDateTimeNow().toDateTime();
+		return dt;
+	}
+	
+	private DateTime earliestDateTime(DateTime dt1, DateTime dt2) {
+		if ((dt1 == null && dt2 == null)) return null;
+		if (dt1 == null) return dt2;
+		if (dt2 == null) return dt1;
+		DateTime result = new DateTime(dt1.getMillis());
+		if (dt1.isBefore(dt2)) result = dt2;
+		return result;
+	}
+	
+	/**
+	 * Returns multiple weightings for each property.
+	 * @return weightings A {@link Set} of {@link Tuple3D} with the settings:
+	 * {@link String} property, {@link Integer} number of sensors and {@link Double} value.
+	 */
+	private Collection<Tuple3D<String, Integer, Double>> getPropertyWeight() {
+		Collection<Tuple3D<String, Integer, Double>> values = new HashSet<>();
+		for (GeoPolygon polygon : this.subPolygons) {
+			for (Entry<String, String> entry : polygon.observationData.observations.entrySet()) {
+				values.add(new Tuple3D<String, Integer, Double>(entry.getKey()
+						, Integer.valueOf(polygon.getNumberOfSensors(entry.getKey())), 
+						Double.valueOf(polygon.observationData.observations.get(entry.getKey()))));
+			}
+		}
+		for (ObservationData observation : this.sensorValues.values()) {
+			for (Entry<String, String> entry : observation.observations.entrySet()) {
+				values.add(new Tuple3D<String, Integer, Double>(entry.getKey()
+						, Integer.valueOf(1), 
+						Double.valueOf(observation.observations.get(entry.getKey()))));
+			}
+		}
+		return values;
 	}
 	
 	public void resetObservations() {
@@ -440,7 +447,7 @@ public abstract class GeoPolygon {
 	
 	private void setupObservationData() {
 		this.observationData.observationDate = TimeUtil.getUTCDateTimeNowString();
-		this.observationData.clusterID = this.ID;
+		this.observationData.clusterID = this.id;
 	}
 	
 	/**

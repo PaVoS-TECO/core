@@ -49,7 +49,7 @@ public class GraphiteSenderTests {
 		}
 		
 		GraphiteSender sender = new GraphiteSender();
-		sender.send(records, topic);
+		sender.send(records);
 	}
 	
 	@Test

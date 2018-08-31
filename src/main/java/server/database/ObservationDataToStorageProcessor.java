@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -26,6 +27,7 @@ public class ObservationDataToStorageProcessor {
 
     /**
      * Default constructor
+     * @param host {@link String}
      */
     public ObservationDataToStorageProcessor(String host) {
         try {
@@ -42,8 +44,7 @@ public class ObservationDataToStorageProcessor {
 	public void add(ObservationData observationData) {
 		// A singular pipe character is used as delimiter, so it is an illegal character for clusterID.
 		if (observationData.clusterID.contains("|")) {
-			logger.warn("ClusterID of ObservationData object contains illegal character '|': "
-					+ observationData.clusterID);
+			logger.warn("ClusterID of ObservationData object contains illegal character '|': {}", observationData.clusterID);
 			return;
 		}
 		
@@ -52,6 +53,7 @@ public class ObservationDataToStorageProcessor {
 		try {
 			counter = cli.get(observationData.clusterID);
 		} catch (TimeoutException | InterruptedException | MemcachedException e) {
+			if (e.getClass().equals(InterruptedException.class)) Thread.currentThread().interrupt();
 			logger.warn("Could not get counter to clusterID " + observationData.clusterID, e);
 			return;
 		}
@@ -83,7 +85,7 @@ public class ObservationDataToStorageProcessor {
 			// update observedProperties list
 			HashSet<String> properties = cli.get(gridID);
 			if (properties == null) {
-				properties = new HashSet<String>();
+				properties = new HashSet<>();
 			}
 			for (String key : observationData.observations.keySet()) {
 				properties.add(key);
@@ -92,6 +94,7 @@ public class ObservationDataToStorageProcessor {
 		} catch (TimeoutException e) {
 			logger.warn("Timeout when saving ObservationData to memcached!", e);
 		} catch (InterruptedException | MemcachedException e) {
+			if (e.getClass().equals(InterruptedException.class)) Thread.currentThread().interrupt();
 			logger.warn("Memcached error: " + e.getMessage(), e);
 		}
 	}
@@ -108,7 +111,7 @@ public class ObservationDataToStorageProcessor {
 		if (obsTime != null && obsTime.length() >= 1 && obsTime.charAt(obsTime.length() - 1) == 'Z') {
 			obsTime = obsTime.substring(0, obsTime.length() - 1);
 		} else {
-			logger.warn("Given timestamp is invalid: " + timestamp);
+			logger.warn("Given timestamp is invalid: {}", timestamp);
 			return null;
 		}
 		
@@ -117,7 +120,7 @@ public class ObservationDataToStorageProcessor {
 		try {
 			time = LocalDateTime.parse(obsTime);
 		} catch (DateTimeParseException e) {
-			logger.warn("Could not parse given time " + timestamp);
+			logger.warn("Could not parse given time {}", timestamp);
 			return null;
 		}
 		
@@ -145,6 +148,7 @@ public class ObservationDataToStorageProcessor {
 		try {
 			counter = cli.get(clusterID);
 		} catch (TimeoutException | InterruptedException | MemcachedException e) {
+			if (e.getClass().equals(InterruptedException.class)) Thread.currentThread().interrupt();
 			logger.warn("Could not get counter to clusterID " + clusterID, e);
 			return null;
 		}
@@ -160,6 +164,10 @@ public class ObservationDataToStorageProcessor {
 			return null;
 		}
 		
+		return getObservationValue(counter, clusterID, givenTime, observedProperty);
+	}
+	
+	private String getObservationValue(long counter, String clusterID, LocalDateTime givenTime, Object observedProperty) {
 		ObservationData od = null;
 		
 		try {
@@ -186,6 +194,7 @@ public class ObservationDataToStorageProcessor {
 			logger.warn("Timeout when saving ObservationData to memcached!", e);
 			return null;
 		} catch (InterruptedException | MemcachedException e) {
+			if (e.getClass().equals(InterruptedException.class)) Thread.currentThread().interrupt();
 			logger.warn("Memcached error: " + e.getMessage(), e);
 			return null;
 		} catch (ClassCastException e) {
@@ -194,14 +203,15 @@ public class ObservationDataToStorageProcessor {
 		}
 		
 		// get value to given observedProperty
-		Map<String, String> obs = od.observations;
-		if (obs.containsKey(observedProperty)) {
-			return obs.get(observedProperty);
-		} else {
-			return null;
+		if (od != null) {
+			Map<String, String> obs = od.observations;
+			if (obs.containsKey(observedProperty)) {
+				return obs.get(observedProperty);
+			}
 		}
+		return null;
 	}
-
+	
 	/**
 	 * Add a memcached server to the server cluster.
 	 * @param address The address of the server
@@ -220,14 +230,14 @@ public class ObservationDataToStorageProcessor {
      * @param gridID The gridID from which to get the observed properties
      * @return A HashSet containing the observed properties
      */
-	public HashSet<String> getObservedProperties(String gridID) {
+	public Set<String> getObservedProperties(String gridID) {
 		try {
-			HashSet<String> properties = cli.get(gridID);
-			return properties;
+			return cli.get(gridID);
 		} catch (TimeoutException | InterruptedException | MemcachedException e) {
+			if (e.getClass().equals(InterruptedException.class)) Thread.currentThread().interrupt();
 			logger.warn("Could not get observedProperties list", e);
 		}
-		return null;
+		return new HashSet<>();
 	}
 
 }

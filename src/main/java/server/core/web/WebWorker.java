@@ -36,8 +36,6 @@ import server.transfer.sender.util.TimeUtil;
 public class WebWorker implements Runnable {
 	
 	Socket clientSocket;
-	private BufferedReader in;
-	private PrintWriter out;
 	private int statusCode = HttpStatus.SC_OK;
 	private String[] req;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -48,45 +46,25 @@ public class WebWorker implements Runnable {
 	
 	@Override
 	public void run() {
-		try {
-			
-	        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-	        out = new PrintWriter(clientSocket.getOutputStream());
-	        
+		try (
+				BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
+			){
 	        String request = in.readLine();
 	        if (request.startsWith("GET /") && request.endsWith(" HTTP/1.1")) {
 	        	request = request.replaceFirst("GET /", "").replaceFirst(" HTTP/1.1", "");
 	        } else {
 	        	statusCode = HttpStatus.SC_FORBIDDEN;
-				printOut(null);
-	        	shutdownConnection();
+				printOut(null, out);
+	        	shutdownConnection(in, out);
 	        }
 	        
 	        req = request.split("\\?", 2);
 	        String type = req[0];
-			try {
-				req = req[1].split("&");
-				if (type.equals("getGeoJsonCluster")) {
-					getGeoJsonCluster();
-				} else if (type.equals("getGeoJsonSensor")) {
-					getGeoJsonSensor();
-				} else if (type.equals("reportSensor")) {
-					reportSensor();
-				} else if (type.equals("getObservationTypes")) {
-					getObservationTypes();
-				} else if (type.equals("getGradient")) {
-					getGradient();
-				} else if (type.equals("getGradientRange")) {
-					getGradientRange();
-				} else if (type.equals("getAllGradients")) {
-					getAllGradients();
-				}
-			} catch (IllegalArgumentException | ArrayIndexOutOfBoundsException | NullPointerException e) {
-				statusCode = HttpStatus.SC_BAD_REQUEST;
-				printOut(null);
-			}
-			
-	        shutdownConnection();
+	        
+	        handleRequest(type, in, out);
+	        
+	        shutdownConnection(in, out);
 
         } catch (IOException e) {
             logger.error("Processing socket request was interrupted. Attempting to close socket now.", e);
@@ -99,13 +77,37 @@ public class WebWorker implements Runnable {
         }
 	}
 	
-	private void getAllGradients() {
+	private void handleRequest(String type, BufferedReader in, PrintWriter out) {
+		try {
+			req = req[1].split("&");
+			if (type.equals("getGeoJsonCluster")) {
+				getGeoJsonCluster(out);
+			} else if (type.equals("getGeoJsonSensor")) {
+				getGeoJsonSensor(in, out);
+			} else if (type.equals("reportSensor")) {
+				reportSensor(out);
+			} else if (type.equals("getObservationTypes")) {
+				getObservationTypes(out);
+			} else if (type.equals("getGradient")) {
+				getGradient(out);
+			} else if (type.equals("getGradientRange")) {
+				getGradientRange(out);
+			} else if (type.equals("getAllGradients")) {
+				getAllGradients(out);
+			}
+		} catch (IllegalArgumentException | ArrayIndexOutOfBoundsException | NullPointerException e) {
+			statusCode = HttpStatus.SC_BAD_REQUEST;
+			printOut(null, out);
+		}
+	}
+	
+	private void getAllGradients(PrintWriter out) {
 		GradientPropertiesFileManager manager = GradientPropertiesFileManager.getInstance();
 		Properties prop = PropertyFileReader.readPropertyFile(manager.gradientPropertyFilePath);
 		out.write(prop.toString());
 	}
 
-	private void getGradientRange() {
+	private void getGradientRange(PrintWriter out) {
 		String gradientName = getParameter("gradientName");
 		String rangeName = getParameter("rangeName");
 		GradientManager manager = GradientManager.getInstance();
@@ -113,41 +115,42 @@ public class WebWorker implements Runnable {
 		out.write(range.toString());
 	}
 
-	private void getGradient() {
+	private void getGradient(PrintWriter out) {
 		String name = getParameter("name");
 		GradientManager manager = GradientManager.getInstance();
 		MultiGradient gradient = manager.getGradient(name);
 		out.write(gradient.toString());
 	}
 
-	private void shutdownConnection() {
-		out.close();
+	private void shutdownConnection(BufferedReader in, PrintWriter out) {
         try {
+        	out.close();
 			in.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Exception while closing the BufferedReader and the PrintWriter.", e);
 		}
         try {
 			clientSocket.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Exception while closing the client socket.", e);
 		}
 	}
 	
-	private void getObservationTypes() {
+	private void getObservationTypes(PrintWriter out) {
 		GeoGridManager manager = GeoGridManager.getInstance();
-	    printOut(manager.getAllProperties().toString());
+	    printOut(manager.getAllProperties().toString(), out);
 	}
 
-	private void reportSensor() {
+	private void reportSensor(PrintWriter out) {
 		String sensor = getParameter("sensorID");
 		String reason = getParameter("reason");
 		InetAddress ip = clientSocket.getInetAddress();
-		logger.info("[Webinterface][Sensor-Reported] Sensor = " + sensor + ", reason = " + reason + ", ip = " + ip.getHostAddress());
-	    printOut("Sensor reported successfully!");
+		String message = String.format("sensor = %s, reason = %s, ip = %s", sensor, reason, ip.getHostAddress());
+		logger.info("A sensor was reported: {}", message);
+	    printOut("Sensor reported successfully!", out);
 	}
 
-	private void getGeoJsonSensor() {
+	private void getGeoJsonSensor(BufferedReader in, PrintWriter out) {
 		String result = null;
 		try {
 		String gridID = getParameter("gridID");
@@ -156,12 +159,12 @@ public class WebWorker implements Runnable {
 		
 		result = getLiveDataSensor(sensorID, gridID, keyProperty);
 		} catch (IllegalArgumentException e) {
-			shutdownConnection();
+			shutdownConnection(in, out);
 		}
-	    printOut(result);
+	    printOut(result, out);
 	}
 
-	private void getGeoJsonCluster() throws IllegalArgumentException {
+	private void getGeoJsonCluster(PrintWriter out) {
 		String fusedClusterIDs = getParameter("clusterID");
 		String keyProperty = getParameter("property");
 		String[] clusterIDs = fusedClusterIDs.split(",");
@@ -197,7 +200,7 @@ public class WebWorker implements Runnable {
 			statusCode = HttpStatus.SC_BAD_REQUEST;
 			throw new IllegalArgumentException();
 		} else {
-			printOut(result);
+			printOut(result, out);
 		}
 	}
 	
@@ -285,7 +288,7 @@ public class WebWorker implements Runnable {
 		return gridManager.getGrid(gridID);
 	}
 	
-	private String getParameter(String parameter) throws IllegalArgumentException {
+	private String getParameter(String parameter) {
 		for (int i = 0; i < req.length; i++) {
 			if (req[i].startsWith(parameter + "=")) {
 				return req[i].replaceFirst(parameter + "=", "");
@@ -294,7 +297,7 @@ public class WebWorker implements Runnable {
 		throw new IllegalArgumentException(parameter);
 	}
 	
-	private void printOut(String result) {
+	private void printOut(String result, PrintWriter out) {
         // Start sending our reply, using the HTTP 1.1 protocol
         out.print("HTTP/1.1 " + statusCode + " \r\n"); 			// Version & status code
         out.print("Content-Type: text/plain\r\n"); 	// The type of data
@@ -304,11 +307,11 @@ public class WebWorker implements Runnable {
         	out.write(result);
         }
         if (statusCode != 200) {
-        	printErr();
+        	printErr(out);
         }
 	}
 
-	private void printErr() {
+	private void printErr(PrintWriter out) {
 		switch (statusCode) {
 		case HttpStatus.SC_BAD_REQUEST:
 			out.write("Error " + statusCode + " - Requested parameters do not match internal data.");
@@ -316,6 +319,8 @@ public class WebWorker implements Runnable {
 		case HttpStatus.SC_FORBIDDEN:
 			out.write("Error " + statusCode + " - Forbidden.");
 			break;
+		default:
+			out.write("Error" + HttpStatus.SC_NOT_IMPLEMENTED + " - Not implemented.");
 		}
 	}
 	
