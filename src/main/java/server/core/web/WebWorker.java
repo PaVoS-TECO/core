@@ -47,25 +47,23 @@ public class WebWorker implements Runnable {
 	@Override
 	public void run() {
 		try (
-				BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 				PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
+				BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			){
+			
 	        String request = in.readLine();
 	        if (request.startsWith("GET /") && request.endsWith(" HTTP/1.1")) {
 	        	request = request.replaceFirst("GET /", "").replaceFirst(" HTTP/1.1", "");
 	        } else {
 	        	statusCode = HttpStatus.SC_FORBIDDEN;
 				printOut(null, out);
-	        	shutdownConnection(in, out);
+	        	throw new IOException();
 	        }
 	        
 	        req = request.split("\\?", 2);
 	        String type = req[0];
 	        
 	        handleRequest(type, in, out);
-	        
-	        shutdownConnection(in, out);
-
         } catch (IOException e) {
             logger.error("Processing socket request was interrupted. Attempting to close socket now.", e);
         } finally {
@@ -83,7 +81,7 @@ public class WebWorker implements Runnable {
 			if (type.equals("getGeoJsonCluster")) {
 				getGeoJsonCluster(out);
 			} else if (type.equals("getGeoJsonSensor")) {
-				getGeoJsonSensor(in, out);
+				getGeoJsonSensor(out);
 			} else if (type.equals("reportSensor")) {
 				reportSensor(out);
 			} else if (type.equals("getObservationTypes")) {
@@ -121,20 +119,6 @@ public class WebWorker implements Runnable {
 		MultiGradient gradient = manager.getGradient(name);
 		out.write(gradient.toString());
 	}
-
-	private void shutdownConnection(BufferedReader in, PrintWriter out) {
-        try {
-        	out.close();
-			in.close();
-		} catch (IOException e) {
-			logger.error("Exception while closing the BufferedReader and the PrintWriter.", e);
-		}
-        try {
-			clientSocket.close();
-		} catch (IOException e) {
-			logger.error("Exception while closing the client socket.", e);
-		}
-	}
 	
 	private void getObservationTypes(PrintWriter out) {
 		GeoGridManager manager = GeoGridManager.getInstance();
@@ -150,17 +134,15 @@ public class WebWorker implements Runnable {
 	    printOut("Sensor reported successfully!", out);
 	}
 
-	private void getGeoJsonSensor(BufferedReader in, PrintWriter out) {
+	private void getGeoJsonSensor(PrintWriter out) {
 		String result = null;
-		try {
+		
 		String gridID = getParameter("gridID");
 		String sensorID = getParameter("sensorID");
 		String keyProperty = getParameter("property");
 		
 		result = getLiveDataSensor(sensorID, gridID, keyProperty);
-		} catch (IllegalArgumentException e) {
-			shutdownConnection(in, out);
-		}
+		
 	    printOut(result, out);
 	}
 
@@ -305,6 +287,7 @@ public class WebWorker implements Runnable {
         out.print("\r\n"); 							// End of headers
         if (result != null) {
         	out.write(result);
+        	out.close();
         }
         if (statusCode != 200) {
         	printErr(out);
@@ -321,7 +304,9 @@ public class WebWorker implements Runnable {
 			break;
 		default:
 			out.write("Error" + HttpStatus.SC_NOT_IMPLEMENTED + " - Not implemented.");
+			break;
 		}
+		out.close();
 	}
 	
 }

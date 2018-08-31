@@ -3,7 +3,6 @@ package server.core.web;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +45,9 @@ public class WebServer {
 	}
 	
 	public static void main(String[] args) {
+		getInstance();
+		shutdown = false;
 		try (ServerSocket serverSocket = new ServerSocket(PORT, BACKLOG)) {
-			getInstance();
-			shutdown = false;
 			while (!shutdown) {
 				processClients(serverSocket);
 			}
@@ -59,8 +58,8 @@ public class WebServer {
 	}
 	
 	private static void processClients(ServerSocket serverSocket) {
-		try (Socket clientSocket = serverSocket.accept()) {
-			Thread t = new Thread(new WebWorker(clientSocket));
+		try {
+			Thread t = new Thread(new WebWorker(serverSocket.accept()));
 			t.start();
 		} catch (Exception e) {
 			logger.error("Client-socket closed with an exception.", e);

@@ -290,7 +290,6 @@ public abstract class GeoGrid {
 		}
 	}
 	
-	@SuppressWarnings("unused")
 	private void transferToGraphite(List<String> topics) {
 		TransferManager tm = new TransferManager();
 		tm.startDataTransfer(topics, Destination.GRAPHITE);
