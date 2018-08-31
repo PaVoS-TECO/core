@@ -24,7 +24,7 @@ public final class GeoGridManager {
 		execUpdate.scheduleAtFixedRate(() -> {
 			for (GeoGrid grid : grids) {
 				grid.updateObservations();
-				grid.transferSensorDataDirectly();
+//				grid.transferSensorDataDirectly();
 //				grid.updateDatabase();
 				grid.resetObservations();
 			}
@@ -37,6 +37,10 @@ public final class GeoGridManager {
 			instance = new GeoGridManager();
 		}
 		return instance;
+	}
+	
+	public GeoGrid getNewestGrid() {
+		return this.grids.get(grids.size() - 1);
 	}
 	
 	public void addGeoGrid(GeoGrid grid) {

@@ -65,7 +65,7 @@ public class WebWorker implements Runnable {
 	        String type = req[0];
 	        
 	        handleRequest(type, in, out);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             logger.error("Processing socket request was interrupted. Attempting to close socket now.", e);
         } finally {
             try {
@@ -79,20 +79,31 @@ public class WebWorker implements Runnable {
 	private void handleRequest(String type, BufferedReader in, PrintWriter out) {
 		try {
 			req = req[1].split("&");
-			if (type.equals("getGeoJsonCluster")) {
+			switch (type) {
+			case "getGeoJsonCluster":
 				getGeoJsonCluster(out);
-			} else if (type.equals("getGeoJsonSensor")) {
+				break;
+			case "getGeoJsonSensor":
 				getGeoJsonSensor(out);
-			} else if (type.equals("reportSensor")) {
+				break;
+			case "reportSensor":
 				reportSensor(out);
-			} else if (type.equals("getObservationTypes")) {
+				break;
+			case "getObservationTypes":
 				getObservationTypes(out);
-			} else if (type.equals("getGradient")) {
+				break;
+			case "getGradient":
 				getGradient(out);
-			} else if (type.equals("getGradientRange")) {
+				break;
+			case "getGradientRange":
 				getGradientRange(out);
-			} else if (type.equals("getAllGradients")) {
+				break;
+			case "getAllGradients":
 				getAllGradients(out);
+				break;
+			case "getGridID":
+				getGridID(out);
+				break;
 			}
 		} catch (IllegalArgumentException | ArrayIndexOutOfBoundsException | NullPointerException e) {
 			statusCode = HttpStatus.SC_BAD_REQUEST;
@@ -100,6 +111,12 @@ public class WebWorker implements Runnable {
 		}
 	}
 	
+	private void getGridID(PrintWriter out) {
+		GeoGridManager manager = GeoGridManager.getInstance();
+		GeoGrid grid = manager.getNewestGrid();
+		printOut(grid.id, out);
+	}
+
 	private void getAllGradients(PrintWriter out) {
 		GradientPropertiesFileManager manager = GradientPropertiesFileManager.getInstance();
 		Properties prop = PropertyFileReader.readPropertyFile(manager.gradientPropertyFilePath);
@@ -111,14 +128,14 @@ public class WebWorker implements Runnable {
 		String rangeName = getParameter("rangeName");
 		GradientManager manager = GradientManager.getInstance();
 		GradientRange range = manager.getRangeFromName(gradientName, rangeName);
-		out.write(range.toString());
+		printOut(range.toString(), out);
 	}
 
 	private void getGradient(PrintWriter out) {
 		String name = getParameter("name");
 		GradientManager manager = GradientManager.getInstance();
 		MultiGradient gradient = manager.getGradient(name);
-		out.write(gradient.toString());
+		printOut(gradient.toString(), out);
 	}
 	
 	private void getObservationTypes(PrintWriter out) {

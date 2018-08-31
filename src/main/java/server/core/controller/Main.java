@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import server.core.controller.process.ExportMergeProcess;
 import server.core.controller.process.GridProcess;
 import server.core.controller.process.MergeObsToFoiProcess;
+import server.core.web.WebServer;
 
 public class Main {
 	
@@ -32,6 +33,11 @@ public class Main {
 		//ExportProcess
 		ExportMergeProcess exportMergeProcess = new ExportMergeProcess(false);
 		exportMergeProcess.kafkaStreamStart();
+		Thread.sleep(5000);
+		
+		//WebServer
+		WebServer webServer = WebServer.getInstance();
+		webServer.run();
 		
 		logger.info("Main finished successfully!");
 	}

@@ -13,7 +13,7 @@ import server.core.grid.config.WorldMapData;
 import server.transfer.data.ObservationData;
 import server.transfer.sender.util.TimeUtil;
 
-public class WebServer {
+public class WebServer implements Runnable {
 
 	private static final int PORT = 7700;
 	private static final int BACKLOG = 10000;
@@ -45,13 +45,18 @@ public class WebServer {
 	}
 	
 	public static void main(String[] args) {
+		WebServer server = getInstance();
+		server.run();
+	}
+	
+	@Override
+	public void run() {
 		getInstance();
 		shutdown = false;
 		try (ServerSocket serverSocket = new ServerSocket(PORT, BACKLOG)) {
 			while (!shutdown) {
 				processClients(serverSocket);
 			}
-			
 		} catch (Exception e) {
 			logger.error("Server-socket closed with an exception.", e);
 		}
@@ -66,7 +71,7 @@ public class WebServer {
 		}
 	}
 	
-	public static void shutdown() {
+	public static void close() {
 		shutdown = true;
 	}
 
