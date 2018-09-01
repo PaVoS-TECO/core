@@ -2,7 +2,6 @@ package server.transfer.consumer;
 
 import static org.junit.Assert.fail;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;

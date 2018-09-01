@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import server.core.controller.process.ExportMergeProcess;
 import server.core.controller.process.GridProcess;
 import server.core.controller.process.MergeObsToFoiProcess;
+import server.core.properties.GridPropertiesFileManager;
 import server.core.web.WebServer;
 
 public class Main {
@@ -14,6 +15,9 @@ public class Main {
 
 	
 	public static void main(String[] args) throws InterruptedException {
+		
+		//load existing grid setup from properties file
+		GridPropertiesFileManager.getInstance();
 		
 		//init of the Topics
 		Initialisation initialisation = new Initialisation();

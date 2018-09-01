@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import server.core.grid.GeoGrid;
+import server.core.grid.GeoGridManager;
 import server.core.grid.GeoRecRectangleGrid;
 import server.core.grid.config.WorldMapData;
 import server.core.properties.KafkaPropertiesFileManager;
@@ -167,8 +168,7 @@ public class GridProcess implements ProcessInterface, Runnable {
 		try (KafkaConsumer<String, GenericRecord> consumer = new KafkaConsumer<>(props)) {
 			consumer.subscribe(Arrays.asList(inputTopic));
 			logger.info("Started consumer grid.");
-			grid = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.lngRange, -WorldMapData.latRange,
-					WorldMapData.lngRange * 2, WorldMapData.latRange * 2), 2, 2, 3);
+			grid = GeoGridManager.getInstance().getNewestGrid();
 
 			TimeUnit.SECONDS.sleep(1);
 

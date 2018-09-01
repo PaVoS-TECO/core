@@ -24,8 +24,8 @@ public final class GeoGridManager {
 		execUpdate.scheduleAtFixedRate(() -> {
 			for (GeoGrid grid : grids) {
 				grid.updateObservations();
-//				grid.transferSensorDataDirectly();
-//				grid.updateDatabase();
+				grid.transferSensorDataDirectly();
+				grid.updateDatabase();
 				grid.resetObservations();
 			}
 		}, 0, 10, TimeUnit.SECONDS);

@@ -5,10 +5,10 @@
  */
 package server.core.data.avro;
 
-import org.apache.avro.specific.SpecificData;
-import org.apache.avro.message.BinaryMessageEncoder;
 import org.apache.avro.message.BinaryMessageDecoder;
+import org.apache.avro.message.BinaryMessageEncoder;
 import org.apache.avro.message.SchemaStore;
+import org.apache.avro.specific.SpecificData;
 
 @SuppressWarnings("all")
 /**

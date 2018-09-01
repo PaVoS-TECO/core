@@ -14,6 +14,7 @@ import server.transfer.config.GraphiteConfig;
 import server.transfer.config.KafkaConfig;
 import server.transfer.data.ObservationData;
 import server.transfer.data.ObservationDataDeserializer;
+import server.transfer.sender.GraphiteSender;
 import server.transfer.sender.Sender;
 
 /**

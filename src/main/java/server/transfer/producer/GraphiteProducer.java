@@ -6,8 +6,8 @@ import java.util.Properties;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
-import server.core.properties.KafkaTopicAdmin;
 import server.core.properties.KafkaPropertiesFileManager;
+import server.core.properties.KafkaTopicAdmin;
 import server.transfer.data.ObservationData;
 
 @Deprecated
