@@ -10,6 +10,7 @@ import server.core.properties.KafkaTopicAdmin;
 import server.core.properties.KafkaPropertiesFileManager;
 import server.transfer.data.ObservationData;
 
+@Deprecated
 public class GraphiteProducer {
 	
 	private KafkaProducer<String, ObservationData> producer;
