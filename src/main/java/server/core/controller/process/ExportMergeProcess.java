@@ -185,7 +185,7 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 		
 		final Serde<String> stringSerde = Serdes.String();
 		
-		finalStream.to("AvroExportOliver1", Produced.with(stringSerde, stringSerde));
+		finalStream.to("AvroExport", Produced.with(stringSerde, stringSerde));
 		
 		stringSerde.close();
 	}
