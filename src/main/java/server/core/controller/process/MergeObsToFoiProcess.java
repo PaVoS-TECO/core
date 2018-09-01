@@ -15,8 +15,8 @@ import org.apache.kafka.streams.kstream.Produced;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import server.core.properties.KafkaTopicAdmin;
 import server.core.properties.KafkaPropertiesFileManager;
+import server.core.properties.KafkaTopicAdmin;
 
 /**
  * @author Patrick This Class merges bascily the ObservationTopic with the
@@ -50,9 +50,10 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 	public MergeObsToFoiProcess(String topic1, String topic2, String outputTopic, String key) {
 		KafkaTopicAdmin kAdmin = KafkaTopicAdmin.getInstance();
 		
-		if (!kAdmin.existsTopic(topic1, topic2)) {
+		if (!kAdmin.existsTopic(topic1, topic2, outputTopic)) {
 			kAdmin.createTopic(topic1);
 			kAdmin.createTopic(topic2);
+			kAdmin.createTopic(outputTopic);
 		}
 		
 		this.observationTopic = topic1;

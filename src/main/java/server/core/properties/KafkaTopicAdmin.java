@@ -42,19 +42,13 @@ public final class KafkaTopicAdmin {
 		admin = AdminClient.create(adminp);
 	}
 
-	public boolean existsTopic(String topicName) {
-		Collection<String> topicNames = new ArrayList<>();
-		topicNames.add(topicName);
+	public boolean existsTopic(String... topicNames) {
+		Collection<String> topicNamesColl = new ArrayList<>();
+		for (int i = 0; i < topicNames.length; i++) {
+			topicNamesColl.add(topicNames[i]);
+		}
 
-		return existsTopic(topicNames);
-	}
-
-	public boolean existsTopic(String topicName1, String topicName2) {
-		Collection<String> topicNames = new ArrayList<>();
-		topicNames.add(topicName1);
-		topicNames.add(topicName2);
-
-		return existsTopic(topicNames);
+		return existsTopic(topicNamesColl);
 	}
 
 	public boolean existsTopic(Collection<String> topicNames) {
