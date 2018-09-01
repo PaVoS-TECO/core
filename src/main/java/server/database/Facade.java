@@ -2,6 +2,7 @@ package server.database;
 
 import java.util.Set;
 
+import server.transfer.config.util.EnvironmentUtil;
 import server.transfer.data.ObservationData;
 import server.transfer.data.ObservationDataDeserializer;
 
@@ -16,8 +17,14 @@ public class Facade {
      * Default constructor
      */
     public Facade() {
-    	// TODO set host by property list
-    	storageProcessor = new ObservationDataToStorageProcessor("localhost");
+    	String host = EnvironmentUtil.getEnvironmentVariable("PAVOS_MEMCACHED_LOCATION", "localhost");
+    	int port;
+    	try {
+    		port = Integer.parseInt(EnvironmentUtil.getEnvironmentVariable("PAVOS_MEMCACHED_PORT", "11211"));
+    	} catch (NumberFormatException e) {
+    		port = 11211;
+    	}
+    	storageProcessor = new ObservationDataToStorageProcessor(host, port);
     }
     
     /**

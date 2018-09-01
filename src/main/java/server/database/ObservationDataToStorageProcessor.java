@@ -29,9 +29,9 @@ public class ObservationDataToStorageProcessor {
      * Default constructor
      * @param host {@link String}
      */
-    public ObservationDataToStorageProcessor(String host) {
+    public ObservationDataToStorageProcessor(String host, int port) {
         try {
-            cli = new XMemcachedClient(host, 11211);
+            cli = new XMemcachedClient(host, port);
         } catch (IOException e) {
             logger.error("Could not connect to memcached client!", e);
         }
