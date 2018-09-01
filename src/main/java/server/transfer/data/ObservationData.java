@@ -28,5 +28,17 @@ public class ObservationData implements java.io.Serializable {
      *  The different observed properties (keys) and their corresponding values
      */
     public Map<String, String> observations = new HashMap<>();
-
+    
+    @Override
+    public String toString() {
+    	StringBuilder builder = new StringBuilder();
+    	builder.append("{");
+    	builder.append("clusterID=" + clusterID + ", ");
+    	builder.append("sensorID=" + sensorID + ", ");
+    	builder.append("observationDate=" + observationDate + ", ");
+    	builder.append("observations=" + observations.toString());
+    	builder.append("}");
+    	return builder.toString();
+    }
+    
 }
