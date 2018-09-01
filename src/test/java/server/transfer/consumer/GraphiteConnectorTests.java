@@ -20,6 +20,7 @@ import server.transfer.connector.GraphiteConnector;
 import server.transfer.data.ObservationData;
 import server.transfer.data.ObservationType;
 import server.transfer.sender.ConsoleSender;
+import server.transfer.sender.util.TimeUtil;
 
 public class GraphiteConnectorTests {
 
@@ -77,7 +78,7 @@ public class GraphiteConnectorTests {
 	
 	private ObservationData setupCorrectData(ObservationData data) {
 		return setupData(data, "8848", "Mt.Everest_27-59-16_86-55-29", "Mt.Everest"
-				, LocalDateTime.now().toString(), "0", "0");
+				, TimeUtil.getUTCDateTimeNowString(), "0", "0");
 	}
 	
 	private ObservationData setupData(ObservationData data, String locationElevation

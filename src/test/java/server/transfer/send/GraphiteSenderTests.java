@@ -1,7 +1,5 @@
 package server.transfer.send;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import server.transfer.data.ObservationData;
 import server.transfer.data.ObservationType;
 import server.transfer.sender.GraphiteSender;
+import server.transfer.sender.util.TimeUtil;
 
 public class GraphiteSenderTests {
 	
@@ -91,7 +90,7 @@ public class GraphiteSenderTests {
 	}
 	
 	private String getDateString() {
-		return LocalDateTime.now(Clock.systemUTC()).toString();
+		return TimeUtil.getUTCDateTimeNowString();
 	}
 	
 	private ObservationData setupData(ObservationData data, String locationElevation, String locationID, String locationName, String date, String pM10) {

@@ -31,7 +31,8 @@ public class SocketManager {
 		try {
 			socket = new Socket(host, port);
 		} catch (IOException e) {
-			logger.error("Could not initialize socket.", e);
+			logger.error("Could not initialize socket to Graphite. Using internal Socket to prevent failure", e);
+			socket = new Socket();
 		}
 	}
 	

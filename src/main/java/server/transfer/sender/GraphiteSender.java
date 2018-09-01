@@ -45,6 +45,8 @@ public class GraphiteSender extends Sender {
 	 * @return 
 	 */
 	public boolean send(Collection<ObservationData> records) {
+		if (som == null) return false;
+		if (som.isConnectionClosed()) som.reconnect();
 		PyList list = new PyList();
 		
 		for (ObservationData record : records) {
@@ -70,9 +72,8 @@ public class GraphiteSender extends Sender {
 	 */
 	@Override
 	public boolean send(ConsumerRecords<String, ObservationData> records) {
-		if (som.isConnectionClosed()) {
-			som.reconnect();
-		}
+		if (som == null) return false;
+		if (som.isConnectionClosed()) som.reconnect();
 		
 		PyList list = new PyList();
 
@@ -114,6 +115,10 @@ public class GraphiteSender extends Sender {
 	private boolean writeToGraphite(byte[] header, PyString payload) {
 		try {
 			OutputStream outputStream = som.getOutputStream();
+			if (outputStream == null) {
+				logger.error("Could not send data to Graphite. OutputStream not connected.");
+				throw new IOException();
+			}
 			outputStream.write(header);
 			outputStream.write(payload.toBytes());
 			outputStream.flush();
