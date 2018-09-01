@@ -113,11 +113,12 @@ public class GraphiteSender extends Sender {
 	}
 	
 	private boolean writeToGraphite(byte[] header, PyString payload) {
+		if (som == null || som.isConnectionClosed()) return false;
 		try {
 			OutputStream outputStream = som.getOutputStream();
 			if (outputStream == null) {
 				logger.error("Could not send data to Graphite. OutputStream not connected.");
-				throw new IOException();
+				return false;
 			}
 			outputStream.write(header);
 			outputStream.write(payload.toBytes());

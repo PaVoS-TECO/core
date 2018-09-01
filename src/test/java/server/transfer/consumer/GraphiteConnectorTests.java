@@ -3,18 +3,16 @@ package server.transfer.consumer;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import server.transfer.config.KafkaConfig;
+import server.core.properties.KafkaPropertiesFileManager;
 import server.transfer.connector.GraphiteConnector;
 import server.transfer.data.ObservationData;
 import server.transfer.data.ObservationType;
@@ -50,7 +48,7 @@ public class GraphiteConnectorTests {
 		topics.add(topic);
 		final GraphiteConnector consumer = new GraphiteConnector(topics);
 		
-		KafkaProducer<String, String> producer = new KafkaProducer<>(getProducerProperties());
+		KafkaProducer<String, String> producer = new KafkaProducer<>(KafkaPropertiesFileManager.getInstance().getGraphiteConnectorProperties());
 		producer.send(new ProducerRecord<String, String>(topic, sData));
 		producer.close();
 		
@@ -64,16 +62,6 @@ public class GraphiteConnectorTests {
 		consumer.stop();
 		t.join();
 	}
-	
-	private Properties getProducerProperties() {
-    	Properties configProperties = new Properties();
-    	configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConfig.getKafkaHostName());
-        configProperties.put(ProducerConfig.ACKS_CONFIG, "all");
-        configProperties.put(ProducerConfig.RETRIES_CONFIG, 0);
-        configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        return configProperties;
-    }
 	
 	private ObservationData setupCorrectData(ObservationData data) {
 		return setupData(data, "8848", "Mt.Everest_27-59-16_86-55-29", "Mt.Everest"

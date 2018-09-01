@@ -31,7 +31,7 @@ public class SocketManager {
 		try {
 			socket = new Socket(host, port);
 		} catch (IOException e) {
-			logger.error("Could not initialize socket to Graphite. Using internal Socket to prevent failure", e);
+			logger.error("Could not initialize socket to Graphite. Using internal Socket to prevent failure.");
 			socket = new Socket();
 		}
 	}
@@ -67,6 +67,7 @@ public class SocketManager {
 	 * @return outputStream {@link OutputStream}
 	 */
 	public OutputStream getOutputStream() {
+		if (!socket.isConnected()) return null;
 		try {
 			return socket.getOutputStream();
 		} catch (IOException e) {

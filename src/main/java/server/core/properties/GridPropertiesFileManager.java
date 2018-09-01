@@ -1,34 +1,40 @@
 package server.core.properties;
 
 import java.awt.geom.Rectangle2D;
-import java.security.InvalidParameterException;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import server.core.grid.GeoRecRectangleGrid;
+import server.transfer.config.util.EnvironmentUtil;
 
 public final class GridPropertiesFileManager {
 	
-	private static final String DEFAULT_GRID_NAME = "default.grid.name";
-	private static final String DEFAULT_GRID_ROWS = "default.grid.rows";
-	private static final String DEFAULT_GRID_COLUMNS = "default.grid.columns";
-	private static final String DEFAULT_GRID_LEVELS = "default.grid.levels";
-	private static final String DEFAULT_GRID_X_MIN = "default.grid.x.min";
-	private static final String DEFAULT_GRID_X_MAX = "default.grid.x.max";
-	private static final String DEFAULT_GRID_Y_MIN = "default.grid.y.min";
-	private static final String DEFAULT_GRID_Y_MAX = "default.grid.y.max";
-	private Properties properties;
-	public final String gradientPropertyFilePath = "src/main/resources/GridProperties.properties";
+	private static final String DEFAULT_GRID_NAME = "PAVOS_DEFAULT_GRID_NAME";
+	private static final String DEFAULT_GRID_ROWS = "PAVOS_DEFAULT_GRID_ROWS";
+	private static final String DEFAULT_GRID_COLUMNS = "PAVOS_DEFAULT_GRID_COLUMNS";
+	private static final String DEFAULT_GRID_LEVELS = "PAVOS_DEFAULT_GRID_LEVELS";
+	private static final String DEFAULT_GRID_X_MIN = "PAVOS_DEFAULT_GRID_X_MIN";
+	private static final String DEFAULT_GRID_X_MAX = "PAVOS_DEFAULT_GRID_X_MAX";
+	private static final String DEFAULT_GRID_Y_MIN = "PAVOS_DEFAULT_GRID_Y_MIN";
+	private static final String DEFAULT_GRID_Y_MAX = "PAVOS_DEFAULT_GRID_Y_MAX";
+	private Properties properties = new Properties();
 	private static GridPropertiesFileManager instance;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	private void loadGridProperties() {
+		properties.put(DEFAULT_GRID_NAME, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_NAME", "recursiveRectangleGrid"));
+		properties.put(DEFAULT_GRID_ROWS, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_ROWS", "2"));
+		properties.put(DEFAULT_GRID_COLUMNS, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_COLUMNS", "2"));
+		properties.put(DEFAULT_GRID_LEVELS, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_LEVELS", "3"));
+		properties.put(DEFAULT_GRID_X_MIN, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_X_MIN", "-180.0"));
+		properties.put(DEFAULT_GRID_X_MAX, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_X_MAX", "180.0"));
+		properties.put(DEFAULT_GRID_Y_MIN, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_Y_MIN", "-85.0"));
+		properties.put(DEFAULT_GRID_Y_MAX, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_Y_MAX", "85.0"));
+	}
 	
 	/**
 	 * Default Constructor
 	 */
 	private GridPropertiesFileManager() {
-		loadGradientProperties();
+		loadGridProperties();
 		loadGrid();
 	}
 	
@@ -44,7 +50,6 @@ public final class GridPropertiesFileManager {
 		
 		switch(name) {
 		case GeoRecRectangleGrid.NAME:
-			System.out.println("--- grid recRecGrid created ---");
 			System.out.println(new GeoRecRectangleGrid(new Rectangle2D.Double(xMin, yMin, xMax, yMax), rows, columns, levels).getGridObservations());
 			break;
 		default:
@@ -66,34 +71,5 @@ public final class GridPropertiesFileManager {
 	public String getProperty(String key) {
 		return properties.getProperty(key);
 	}
-	/**
-	 * Load from File Properties
-	 */
-	
-	private void loadGradientProperties() {
-		try {
-			properties = PropertyFileReader.readPropertyFile(gradientPropertyFilePath);
-
-			// check if properties file is missing keys
-
-			if (!properties.containsKey(DEFAULT_GRID_NAME)
-					|| !properties.containsKey(DEFAULT_GRID_ROWS)
-					|| !properties.containsKey(DEFAULT_GRID_COLUMNS)
-					|| !properties.containsKey(DEFAULT_GRID_LEVELS)
-					|| !properties.containsKey(DEFAULT_GRID_X_MIN)
-					|| !properties.containsKey(DEFAULT_GRID_X_MAX)
-					|| !properties.containsKey(DEFAULT_GRID_Y_MIN)
-					|| !properties.containsKey(DEFAULT_GRID_Y_MAX)) {
-				throw new InvalidParameterException();
-			}
-		}  catch (InvalidParameterException e) {
-			logger.error("The configuration file is missing at least one of the following required arguments:\n"
-					+ "\t- " + DEFAULT_GRID_NAME + "\n" + "\t- " + DEFAULT_GRID_ROWS + "\n" + "\t- " + DEFAULT_GRID_COLUMNS + "\n"
-					+ "\t- " + DEFAULT_GRID_LEVELS + "\n" + "\t- " + DEFAULT_GRID_X_MIN + "\n" + "\t- " + DEFAULT_GRID_X_MAX + "\n"
-					+ "\t- " + DEFAULT_GRID_Y_MIN + "\n" + "\t- " + DEFAULT_GRID_Y_MAX, e);
-			System.exit(-1);
-		}
-	}
-	
 	
 }
