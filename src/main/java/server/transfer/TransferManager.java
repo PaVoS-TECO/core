@@ -11,6 +11,7 @@ import server.transfer.sender.GraphiteSender;
  * The Control-Unit in charge of creating and destroying KafkaToGraphiteConsumer
  *  as well as passing on the users request.
  */
+@Deprecated
 public class TransferManager {
 	
 	private Connector connector;

@@ -1,6 +1,5 @@
 package server.core.properties;
 
-import java.security.InvalidParameterException;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -8,12 +7,12 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
+import server.transfer.config.util.EnvironmentUtil;
+import server.transfer.data.ObservationDataDeserializer;
 import server.transfer.data.ObservationDataSerializer;
 
 /**
@@ -29,22 +28,35 @@ import server.transfer.data.ObservationDataSerializer;
  */
 public final class KafkaPropertiesFileManager {
 	
-	private static final String BOOTSTRAP_SERVERS_CONFIG = "BOOTSTRAP_SERVERS_CONFIG";
-	private static final String M_APPLICATION_ID_CONFIG = "M_APPLICATION_ID_CONFIG";
-	private static final String M_CLIENT_ID_CONFIG = "M_CLIENT_ID_CONFIG";
-	private static final String SCHEMA_REGISTRY_URL_CONFIG = "SCHEMA_REGISTRY_URL_CONFIG";
-	private static final String M_AUTO_OFFSET_RESET_CONFIG = "M_AUTO_OFFSET_RESET_CONFIG";
-	private static final String E_APPLICATION_ID_CONFIG = "E_APPLICATION_ID_CONFIG";
-	private static final String E_CLIENT_ID_CONFIG = "E_CLIENT_ID_CONFIG";
-	private static final String E_AUTO_OFFSET_RESET_CONFIG = "E_AUTO_OFFSET_RESET_CONFIG";
-	private static final String P_APPLICATION_ID_CONFIG = "P_APPLICATION_ID_CONFIG";
-	private static final String P_CLIENT_ID_CONFIG = "P_CLIENT_ID_CONFIG";
-	private static final String P_AUTO_OFFSET_RESET_CONFIG = "P_AUTO_OFFSET_RESET_CONFIG";
-	private static final String C_CLIENT_ID_CONFIG = "C_CLIENT_ID_CONFIG";
+	private static final String BOOTSTRAP_SERVERS_CONFIG = "PAVOS_BOOTSTRAP_SERVERS_CONFIG";
+	private static final String M_APPLICATION_ID_CONFIG = "PAVOS_M_APPLICATION_ID_CONFIG";
+	private static final String M_CLIENT_ID_CONFIG = "PAVOS_M_CLIENT_ID_CONFIG";
+	private static final String SCHEMA_REGISTRY_URL_CONFIG = "PAVOS_SCHEMA_REGISTRY_URL_CONFIG";
+	private static final String M_AUTO_OFFSET_RESET_CONFIG = "PAVOS_M_AUTO_OFFSET_RESET_CONFIG";
+	private static final String E_APPLICATION_ID_CONFIG = "PAVOS_E_APPLICATION_ID_CONFIG";
+	private static final String E_CLIENT_ID_CONFIG = "PAVOS_E_CLIENT_ID_CONFIG";
+	private static final String E_AUTO_OFFSET_RESET_CONFIG = "PAVOS_E_AUTO_OFFSET_RESET_CONFIG";
+	private static final String P_APPLICATION_ID_CONFIG = "PAVOS_P_APPLICATION_ID_CONFIG";
+	private static final String P_CLIENT_ID_CONFIG = "PAVOS_P_CLIENT_ID_CONFIG";
+	private static final String P_AUTO_OFFSET_RESET_CONFIG = "PAVOS_P_AUTO_OFFSET_RESET_CONFIG";
+	private static final String C_CLIENT_ID_CONFIG = "PAVOS_C_CLIENT_ID_CONFIG";
 	private static KafkaPropertiesFileManager instance;
-	private Properties properties;
-	private String kafkaPropertyFilePath = "src/main/resources/KafkaCore.properties";
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private Properties properties = new Properties();
+	
+	private void loadKafkaCoreProperties() {
+		properties.put(BOOTSTRAP_SERVERS_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_BOOTSTRAP_SERVERS_CONFIG", "localhost:9092"));
+		properties.put(M_APPLICATION_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_M_APPLICATION_ID_CONFIG", "m_application"));
+		properties.put(M_CLIENT_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_M_CLIENT_ID_CONFIG", "m_client"));
+		properties.put(SCHEMA_REGISTRY_URL_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_SCHEMA_REGISTRY_URL_CONFIG", "http://localhost:8081"));
+		properties.put(M_AUTO_OFFSET_RESET_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_M_AUTO_OFFSET_RESET_CONFIG", "earliest"));
+		properties.put(E_APPLICATION_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_E_APPLICATION_ID_CONFIG", "Export_application"));
+		properties.put(E_CLIENT_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_E_CLIENT_ID_CONFIG", "Export_client"));
+		properties.put(E_AUTO_OFFSET_RESET_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_E_AUTO_OFFSET_RESET_CONFIG", "earliest"));
+		properties.put(P_APPLICATION_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_P_APPLICATION_ID_CONFIG", "p_application"));
+		properties.put(P_CLIENT_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_P_CLIENT_ID_CONFIG", "p_client"));
+		properties.put(P_AUTO_OFFSET_RESET_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_P_AUTO_OFFSET_RESET_CONFIG", "earliest"));
+		properties.put(C_CLIENT_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_C_CLIENT_ID_CONFIG", "c_client"));
+	}
 	
 	/**
 	 * Default Constructor
@@ -64,6 +76,32 @@ public final class KafkaPropertiesFileManager {
 		return instance;
 	}
 
+	
+	public Properties getGraphiteConnectorProperties() {
+		Properties configProperties = new Properties();
+        configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getProperty(BOOTSTRAP_SERVERS_CONFIG));
+        configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, 
+        		"org.apache.kafka.common.serialization.StringDeserializer");
+        configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, 
+        		ObservationDataDeserializer.class.getName());
+        configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, "GraphiteConsumers");
+        configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "GraphiteConsumer");
+        configProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        return configProperties;
+	}
+	
+	public Properties getGraphiteProducerProperties() {
+		Properties properties = new Properties();
+		properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getProperty(BOOTSTRAP_SERVERS_CONFIG));
+		properties.put(ProducerConfig.ACKS_CONFIG, "all");
+		properties.put(ProducerConfig.RETRIES_CONFIG, 0);
+		properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+				"org.apache.kafka.common.serialization.StringSerializer");
+		properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+				"org.apache.kafka.common.serialization.StringSerializer");
+		return properties;
+	}
+	
 	/**
 	 * @return Merge Stream Properties
 	 */
@@ -167,31 +205,6 @@ public final class KafkaPropertiesFileManager {
 
 	public String getProperty(String key) {
 		return properties.getProperty(key);
-	}
-	/**
-	 * Load from File Properties
-	 */
-	
-	private void loadKafkaCoreProperties() {
-		try {
-			properties = PropertyFileReader.readPropertyFile(kafkaPropertyFilePath);
-
-			// check if properties file is missing keys
-
-			if (!properties.containsKey(BOOTSTRAP_SERVERS_CONFIG)
-					|| !properties.containsKey(SCHEMA_REGISTRY_URL_CONFIG)
-					|| !properties.containsKey(M_AUTO_OFFSET_RESET_CONFIG)
-					|| !properties.containsKey(M_APPLICATION_ID_CONFIG)
-					|| !properties.containsKey(C_CLIENT_ID_CONFIG)
-					|| !properties.containsKey(M_CLIENT_ID_CONFIG)) {
-				throw new InvalidParameterException();
-			}
-		}  catch (InvalidParameterException e) {
-			logger.error(String.format("The configuration file is missing at least one of the following required arguments:\n"
-					+ "\t- %s\n\t- %s\n\t- %s\n\t- %s\n\t- %s\n", BOOTSTRAP_SERVERS_CONFIG, SCHEMA_REGISTRY_URL_CONFIG,
-					M_AUTO_OFFSET_RESET_CONFIG, M_APPLICATION_ID_CONFIG, M_CLIENT_ID_CONFIG), e);
-			System.exit(-1);
-		}
 	}
 	
 }

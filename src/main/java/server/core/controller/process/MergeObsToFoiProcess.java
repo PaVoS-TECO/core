@@ -70,7 +70,7 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 	 * Default Constructer
 	 */
 	public MergeObsToFoiProcess() {
-		this("Observations", "FeaturesOfInterest", "ObservationsMergesGeneric", "Observations");
+		this("Observations", "FeaturesOfInterest", "ObservationsMergesGeneric", "FeatureOfInterest");
 	}
 
 	/**
@@ -137,13 +137,19 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 	 * StreamsBuilder)
 	 */
 	public void apply(StreamsBuilder builder) {
-		final KTable<String, GenericRecord> obsT = builder.table(observationTopic);
-		final KStream<String, GenericRecord> foIT = builder.stream(featureOfIntresssTopic);
+		final KStream<String, GenericRecord> obsT = builder.stream(observationTopic);
+		final KTable<String, GenericRecord> foIT = builder.table(featureOfIntresssTopic);
 		
-		final KStream<String, GenericRecord> transformfoIT = foIT
+		final KStream<String, GenericRecord> tranformObsT = obsT
 				.map((key, value) -> KeyValue.pair(value.get(keyEqual).toString(), value));
+		
+		
+		//final KStream<String, GenericRecord> transformfoIT = foIT
+		//		.map((key, value) -> KeyValue.pair(value.get(keyEqual).toString(), value));
+		
+		tranformObsT.peek((key,value) -> System.out.println(key + " -- " + value));
 
-		final KStream<String, GenericRecord> transformfoITTable = transformfoIT.join(obsT, (location, value) -> {
+		final KStream<String, GenericRecord> transformfoITTable = tranformObsT.join(foIT, (value, location) -> {
 
 			if (value != null) {
 				GenericRecord obj = (GenericRecord) location.get("feature");
