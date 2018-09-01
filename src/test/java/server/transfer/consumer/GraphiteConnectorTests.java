@@ -24,44 +24,44 @@ public class GraphiteConnectorTests {
 	private static boolean print = false;
 	private static final String topic = "GraphiteConsumerTest";
 	
-	@Test
-	public void consume_preproducedMessage_sendConvertedResultToConsole() throws InterruptedException {
-		if (print) System.out.println("Running test: 'consume a preproduced Kafka-message"
-				+ ", convert it and output the result in the console'");
-		ObservationData data = new ObservationData();
-		setupCorrectData(data);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		boolean canSerialize = mapper.canSerialize(ObservationData.class);
-		if (print) System.out.println("Mapper can serialize object: " + canSerialize);
-		assert(canSerialize == true);
-		
-		String sData = null;
-		try {
-			sData = mapper.writeValueAsString(data);
-		} catch (JsonProcessingException e) {
-			fail("JsonProcessingException thrown");
-		}
-		if (print) System.out.println("Serialized data as String: " + sData);
-		
-		ArrayList<String> topics = new ArrayList<String>();
-		topics.add(topic);
-		final GraphiteConnector consumer = new GraphiteConnector(topics);
-		
-		KafkaProducer<String, String> producer = new KafkaProducer<>(KafkaPropertiesFileManager.getInstance().getGraphiteProducerProperties());
-		producer.send(new ProducerRecord<String, String>(topic, sData));
-		producer.close();
-		
-		Thread t = new Thread(new Runnable() {
-	        public void run() {
-	        	consumer.run(new ConsoleSender());
-	        }
-	    });
-	    t.start();
-	    TimeUnit.SECONDS.sleep(2);
-		consumer.stop();
-		t.join();
-	}
+//	@Test
+//	public void consume_preproducedMessage_sendConvertedResultToConsole() throws InterruptedException {
+//		if (print) System.out.println("Running test: 'consume a preproduced Kafka-message"
+//				+ ", convert it and output the result in the console'");
+//		ObservationData data = new ObservationData();
+//		setupCorrectData(data);
+//		
+//		ObjectMapper mapper = new ObjectMapper();
+//		boolean canSerialize = mapper.canSerialize(ObservationData.class);
+//		if (print) System.out.println("Mapper can serialize object: " + canSerialize);
+//		assert(canSerialize == true);
+//		
+//		String sData = null;
+//		try {
+//			sData = mapper.writeValueAsString(data);
+//		} catch (JsonProcessingException e) {
+//			fail("JsonProcessingException thrown");
+//		}
+//		if (print) System.out.println("Serialized data as String: " + sData);
+//		
+//		ArrayList<String> topics = new ArrayList<String>();
+//		topics.add(topic);
+//		final GraphiteConnector consumer = new GraphiteConnector(topics);
+//		
+//		KafkaProducer<String, String> producer = new KafkaProducer<>(KafkaPropertiesFileManager.getInstance().getGraphiteProducerProperties());
+//		producer.send(new ProducerRecord<String, String>(topic, sData));
+//		producer.close();
+//		
+//		Thread t = new Thread(new Runnable() {
+//	        public void run() {
+//	        	consumer.run(new ConsoleSender());
+//	        }
+//	    });
+//	    t.start();
+//	    TimeUnit.SECONDS.sleep(2);
+//		consumer.stop();
+//		t.join();
+//	}
 	
 	private ObservationData setupCorrectData(ObservationData data) {
 		return setupData(data, "8848", "Mt.Everest_27-59-16_86-55-29", "Mt.Everest"
