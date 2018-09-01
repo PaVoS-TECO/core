@@ -32,7 +32,7 @@ public class GeoRectangleGridTest {
 		String property = "temperature_celsius";
 		data.observations.put(property, "14.0");
 		
-		Point2D.Double location1 = new  Point2D.Double(300.0, 80.0);
+		Point2D.Double location1 = new  Point2D.Double(150.0, 40.0);
 		grid.addObservation(location1, data);
 		
 		data = new ObservationData();
@@ -40,14 +40,15 @@ public class GeoRectangleGridTest {
 		data.observationDate = TimeUtil.getUTCDateTimeNowString();
 		data.observations.put(property, "28.0");
 		
-		Point2D.Double location2 = new  Point2D.Double(260.0, 80.0);
+		Point2D.Double location2 = new  Point2D.Double(130.0, 40.0);
 		grid.addObservation(location2, data);
 		
 		data = new ObservationData();
 		data.sensorID = "testSensorID3";
+		data.observationDate = TimeUtil.getUTCDateTimeNowString();
 		data.observations.put(property, "28.0");
 		
-		Point2D.Double location3 = new  Point2D.Double(260.0, 80.0);
+		Point2D.Double location3 = new  Point2D.Double(130.0, 40.0);
 		grid.addObservation(location3, data);
 		
 		try {

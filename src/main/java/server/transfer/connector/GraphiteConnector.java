@@ -4,16 +4,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 
+import server.core.properties.KafkaPropertiesFileManager;
 import server.transfer.config.GraphiteConfig;
-import server.transfer.config.KafkaConfig;
 import server.transfer.data.ObservationData;
-import server.transfer.data.ObservationDataDeserializer;
+import server.transfer.sender.GraphiteSender;
 import server.transfer.sender.Sender;
 
 /**
@@ -38,7 +37,7 @@ public class GraphiteConnector extends Connector {
     public boolean run(Sender sender) {
     	this.sender = sender;
     	
-    	Properties consumerProperties = getConsumerProperties();
+    	Properties consumerProperties = KafkaPropertiesFileManager.getInstance().getGraphiteConnectorProperties();
         consumer = new KafkaConsumer<String, ObservationData>(consumerProperties);
         consumer.subscribe(topics);
 
@@ -80,19 +79,6 @@ public class GraphiteConnector extends Connector {
         	Thread.currentThread().interrupt();
             logger.error("Exception thrown waiting for shutdown", e);
         }
-    }
-    
-    private Properties getConsumerProperties() {
-    	Properties configProperties = new Properties();
-        configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConfig.getKafkaHostName());
-        configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, 
-        		"org.apache.kafka.common.serialization.StringDeserializer");
-        configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, 
-        		ObservationDataDeserializer.class.getName());
-        configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, "GraphiteConsumers");
-        configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "GraphiteConsumer");
-        configProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        return configProperties;
     }
 
 }

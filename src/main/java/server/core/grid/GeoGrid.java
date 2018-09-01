@@ -236,6 +236,7 @@ public abstract class GeoGrid {
 	 * This method Produces recursively and starts with the smallest clusters.
 	 * @return 
 	 */
+	@Deprecated
 	public List<String> produceSensorDataMessages() {
 		GraphiteProducer producer = new GraphiteProducer();
 		List<String> topics = new ArrayList<>();
@@ -255,6 +256,7 @@ public abstract class GeoGrid {
 		dum.uploadData(observations, Destination.GRAPHITE);
 	}
 	
+	@Deprecated
 	public void transferSensorDataViaKafka() {
 		List<String> topics = produceSensorDataMessages();
 		transferToGraphite(topics);
@@ -290,6 +292,7 @@ public abstract class GeoGrid {
 		}
 	}
 	
+	@Deprecated
 	private void transferToGraphite(List<String> topics) {
 		TransferManager tm = new TransferManager();
 		tm.startDataTransfer(topics, Destination.GRAPHITE);

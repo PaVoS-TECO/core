@@ -16,7 +16,7 @@ public final class GraphiteConfig {
      * @return startFromBeginning Tells us whether a start from the beginning is required
      */
     public static boolean getStartFromBeginning() {
-    	return "true".equals(EnvironmentUtil.getEnvironmentVariable("WM_GRAPHITE_FROM_BEGINNING", "false"));
+    	return "true".equals(EnvironmentUtil.getEnvironmentVariable("PAVOS_GRAPHITE_FROM_BEGINNING", "false"));
     }
     
     /**
@@ -24,7 +24,7 @@ public final class GraphiteConfig {
      * @return name The Graphite-host-name
      */
     public static String getGraphiteHostName() {
-    	return EnvironmentUtil.getEnvironmentVariable("WM_GRAPHITE_HOST_NAME", "localhost");
+    	return EnvironmentUtil.getEnvironmentVariable("PAVOS_GRAPHITE_HOST_NAME", "localhost");
     }
 
     /**
@@ -32,7 +32,7 @@ public final class GraphiteConfig {
      * @return port The port of the Graphite-connection
      */
     public static Integer getGraphitePort() {
-    	String portString = EnvironmentUtil.getEnvironmentVariable("WM_GRAPHITE_PORT", "2004");
+    	String portString = EnvironmentUtil.getEnvironmentVariable("PAVOS_GRAPHITE_PORT", "2004");
     	return Integer.parseInt(portString);
     }
 

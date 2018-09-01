@@ -6,7 +6,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GradientPropertiesFileManager {
+public final class GradientPropertiesFileManager {
 	
 	private Properties properties;
 	public final String gradientPropertyFilePath = "src/main/resources/defaultGradients.properties";
