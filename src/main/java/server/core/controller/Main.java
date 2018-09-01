@@ -36,9 +36,8 @@ public class Main {
 		Thread.sleep(5000);
 		
 		//WebServer
-		WebServer webServer = WebServer.getInstance();
-		webServer.run();
+		new Thread(new WebServer()).start();
 		
-		logger.info("Main finished successfully!");
+		logger.info("Finished starting routines.");
 	}
 }

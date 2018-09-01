@@ -40,11 +40,11 @@ public final class GeoGridManager {
 	}
 	
 	public GeoGrid getNewestGrid() {
-		return this.grids.get(grids.size() - 1);
+		return this.grids.get(0);
 	}
 	
 	public void addGeoGrid(GeoGrid grid) {
-		this.grids.add(grid);
+		this.grids.add(0, grid);
 	}
 	
 	public GeoGrid getGrid(String gridID) {
