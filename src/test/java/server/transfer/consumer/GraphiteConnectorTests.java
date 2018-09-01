@@ -24,7 +24,7 @@ public class GraphiteConnectorTests {
 	private static boolean print = false;
 	private static final String topic = "GraphiteConsumerTest";
 	
-	@Test(timeout = 10000)
+	@Test
 	public void consume_preproducedMessage_sendConvertedResultToConsole() throws InterruptedException {
 		if (print) System.out.println("Running test: 'consume a preproduced Kafka-message"
 				+ ", convert it and output the result in the console'");
