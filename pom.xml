@@ -40,6 +40,7 @@
 				<configuration>
 					<archive>
 						<manifest>
+							<addClasspath>true</addClasspath>
 							<mainClass>server.core.controller.Main</mainClass>
 						</manifest>
 					</archive>
