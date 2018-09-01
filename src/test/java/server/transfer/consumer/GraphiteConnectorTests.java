@@ -48,7 +48,7 @@ public class GraphiteConnectorTests {
 		topics.add(topic);
 		final GraphiteConnector consumer = new GraphiteConnector(topics);
 		
-		KafkaProducer<String, String> producer = new KafkaProducer<>(KafkaPropertiesFileManager.getInstance().getGraphiteConnectorProperties());
+		KafkaProducer<String, String> producer = new KafkaProducer<>(KafkaPropertiesFileManager.getInstance().getGraphiteProducerProperties());
 		producer.send(new ProducerRecord<String, String>(topic, sData));
 		producer.close();
 		

@@ -90,6 +90,18 @@ public final class KafkaPropertiesFileManager {
         return configProperties;
 	}
 	
+	public Properties getGraphiteProducerProperties() {
+		Properties properties = new Properties();
+		properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getProperty(BOOTSTRAP_SERVERS_CONFIG));
+		properties.put(ProducerConfig.ACKS_CONFIG, "all");
+		properties.put(ProducerConfig.RETRIES_CONFIG, 0);
+		properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+				"org.apache.kafka.common.serialization.StringSerializer");
+		properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+				"org.apache.kafka.common.serialization.StringSerializer");
+		return properties;
+	}
+	
 	/**
 	 * @return Merge Stream Properties
 	 */
