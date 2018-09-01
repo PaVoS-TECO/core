@@ -168,7 +168,7 @@ public class GridProcess implements ProcessInterface, Runnable {
 			consumer.subscribe(Arrays.asList(inputTopic));
 			logger.info("Started consumer grid.");
 			grid = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.lngRange, -WorldMapData.latRange,
-					WorldMapData.lngRange * 2, WorldMapData.latRange * 2), 2, 2, 3);
+					WorldMapData.lngRange * 2, WorldMapData.latRange * 2), 2, 2, 5);
 
 			TimeUnit.SECONDS.sleep(1);
 
@@ -197,6 +197,22 @@ public class GridProcess implements ProcessInterface, Runnable {
 						grid.addObservation(location, data);
 					} catch (ParseException e) {
 						logger.warn("Could not parse FeatureOfInterest value to double.", e);
+					}catch (ClassCastException e2) {
+						
+						
+						String sensorID = record1.value().get("Datastream").toString();
+						ObservationData data = new ObservationData();
+
+						data.observationDate = time;
+						data.sensorID = sensorID;
+						data.observations.put("Temperature", resultValue);
+
+						double coord1 = Double.parseDouble(value.get("FeatureOfInterest").toString().split(",")[0]);
+						double coord2 = Double.parseDouble(value.get("FeatureOfInterest").toString().split(",")[1]);
+
+						Point2D.Double location = new Point2D.Double(coord1, coord2);
+						grid.addObservation(location, data);
+						
 					}
 
 				});

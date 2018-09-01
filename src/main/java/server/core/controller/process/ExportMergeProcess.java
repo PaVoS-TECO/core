@@ -90,37 +90,43 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 	@Override
 	public void apply(StreamsBuilder builder) {
 		final KStream<String, GenericRecord> observationStream = builder.stream("Observations");
-		final KStream<String, GenericRecord> foIStream = builder.stream("FeaturesOfInterest");
+		final KTable<String, GenericRecord> foITable = builder.table("FeaturesOfInterest");
 
-		final KStream<String, GenericRecord> foIStreamKey = foIStream
-				.map((key, value) -> KeyValue.pair(value.get("Observations").toString(), value));
+		final KStream<String, GenericRecord> ObsStreamKey = observationStream
+				.map((key, value) -> KeyValue.pair(value.get("FeatureOfInterest").toString(), value));
 
-		final KStream<String, GenericRecord> mergedFoIObs = observationStream.join(foIStreamKey, (value, location) -> {
+		final KStream<String, GenericRecord> mergedFoIObs = ObsStreamKey.join(foITable, (value, location) -> {
 			value.put("FeatureOfInterest", location.toString());
 			
 			return value;
-		}, JoinWindows.of(100000));
+		});
+		//*********************************************
+		//LEITFADEN : MINDERHEIT = TABLE
+		//KStream neu mappen auf key von minderheit 
+		//dann joinnen
+		//********************************************
 		
-		final KStream<String, GenericRecord> dataStream = builder.stream("Datastreams");
 		
-		// Transform merged to Equals Keys to DataStream.Iot
-		final KStream<String, GenericRecord> mergedKey = mergedFoIObs
-				.map((key, value) -> KeyValue.pair(value.get("Datastream").toString(), value));
+		final KTable<String, GenericRecord> dataTable = builder.table("Datastreams");
+//	
+//		// Transform merged to Equals Keys to DataStream.Iot
+			final KStream<String, GenericRecord> mergedKey = mergedFoIObs
+			.map((key, value) -> KeyValue.pair(value.get("Datastream").toString(), value));
 		
 		// Join the DataStream with MergedStream
-		final KStream<String, GenericRecord> mergedFoIObsData = mergedKey.join(dataStream, (value, data) -> {
+		final KStream<String, GenericRecord> mergedFoIObsData = mergedKey.join(dataTable, (value, data) -> {
 
 			value.put("Datastream", data.toString());
 			return value;
 
-		},JoinWindows.of(100000));
-		
-		final KTable<String, GenericRecord> thingStream = builder.table("Things");
-		
-		// Tranfrom mergedFoIObsData to Equals Key to Things
-		final KStream<String, GenericRecord> mergedKeyThing = mergedFoIObsData
-				.map((key, value) -> KeyValue.pair(toJson(value, "Datastream", "Thing"), value));
-		
+		});
+//		
+	final KTable<String, GenericRecord> thingStream = builder.table("Things");
+//		
+//		// Tranfrom mergedFoIObsData to Equals Key to Things
+	final KStream<String, GenericRecord> mergedKeyThing = mergedFoIObsData
+			.map((key, value) -> KeyValue.pair(toJson(value, "Datastream", "Thing"), value));
+	
 		 //Join ThingsStream with MergedStream
 		final KStream<String, GenericRecord> mergedFoIObsDataThing = mergedKeyThing.join(thingStream,
 				(value, thing) -> {
@@ -132,14 +138,14 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 					return value;
 
 				});
-
-		// get SensorStream
+//
+//		// get SensorStream
 		final KTable<String, GenericRecord> sensorStream = builder.table("Sensors");
-		// Tranfrom mergedFoIObsData to Equals Key to Sensor
+//		// Tranfrom mergedFoIObsData to Equals Key to Sensor
 		final KStream<String, GenericRecord> mergedFoIObsDataThingKey = mergedFoIObsDataThing
 				.map((key, value) -> KeyValue.pair(toJson(value, "Datastream", "Sensor"), value));
-
-		// Join ThingsStream with MergedStream
+//
+//		// Join ThingsStream with MergedStream
 		final KStream<String, GenericRecord> mergedFoIObsDataThingSensor = mergedFoIObsDataThingKey.leftJoin(sensorStream,
 				(value, thing) -> {
 
@@ -154,14 +160,14 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 					return value;
 
 				});
-		
-			// get ObsPro
-			final KStream<String, GenericRecord> propertyStream = builder.stream("ObservedProperties");
-			// Tranfrom mergedFoIObsData to Equals Key to Sensor
+//		
+//			// get ObsPro
+		final KTable<String, GenericRecord> propertyStream = builder.table("ObservedProperties");
+//			// Tranfrom mergedFoIObsData to Equals Key to Sensor
 			final KStream<String, GenericRecord> mergedFoIObsDataThingSensorKey = mergedFoIObsDataThingSensor
-					.map((key, value) -> KeyValue.pair(toJson(value, "Datastream", "ObservedProperty"), value));
-
-			// Join ThingsStream with MergedStream
+				.map((key, value) -> KeyValue.pair(toJson(value, "Datastream", "ObservedProperty"), value));
+//
+//			// Join ThingsStream with MergedStream
 			final KStream<String, String> finalStream = mergedFoIObsDataThingSensorKey.join(propertyStream,
 					(value, thing) -> {
 						
@@ -174,12 +180,12 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 						}
 						return toJson(value).toJSONString();
 
-					},JoinWindows.of(100000));
+					});
 	
 		
 		final Serde<String> stringSerde = Serdes.String();
 		
-		finalStream.to("AvroExport", Produced.with(stringSerde, stringSerde));
+		finalStream.to("AvroExportOliver1", Produced.with(stringSerde, stringSerde));
 		
 		stringSerde.close();
 	}

@@ -21,6 +21,7 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import server.core.controller.Main;
 
 public class ExportConsumer {
@@ -39,35 +40,30 @@ public class ExportConsumer {
         props.put(SESSION_TIMEOUT_MS_CONFIG, "30000");
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         
+      //  props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+    	//	  "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-    		  "org.apache.kafka.common.serialization.StringDeserializer");
+                KafkaAvroDeserializer.class.getName());
         props.put(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString());
         props.put(ConsumerConfig.CLIENT_ID_CONFIG, "your_client_id");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put("schema.registry.url", "http://192.168.56.3:8081");
 
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Arrays.asList("AvroExport11"));
+        KafkaConsumer<String, GenericRecord> consumer = new KafkaConsumer<>(props);
+        consumer.subscribe(Arrays.asList("AvroExport3"));
 
         System.out.println("Consumer A gestartet!");
 
         Thread t = new Thread(() -> {
 
-            final ConsumerRecords<String, String> foi =
+            final ConsumerRecords<String, GenericRecord> foi =
                     consumer.poll(100);
             System.out.println(foi.count());
             foi.forEach(record1 -> {
-               try {
-					JSONObject obs = (JSONObject) new JSONParser().parse(record1.value());
-
-
-//					JSONObject foiI =  (JSONObject) new JSONParser().parse((String) obs.get("FeatureOfInterest"));
-					JSONObject dataS =  (JSONObject) new JSONParser().parse((String) obs.get("Datastream"));
-					
-					System.out.println(dataS.get("iotId"));
-				} catch (ParseException e) {
-					logger.warn(JSON_PARSE_EXCEPTION);
-				}
+               //					JSONObject foiI =  (JSONObject) new JSONParser().parse((String) obs.get("FeatureOfInterest"));
+								JSONObject dataS =  (JSONObject) record1.value().get("Datastream");
+								
+								System.out.println(dataS.get("iotId"));
             });
         });
         t.start();
