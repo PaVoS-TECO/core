@@ -4,14 +4,13 @@ import java.net.ServerSocket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.Log4jLoggerFactory;
 
 public class WebServer implements Runnable {
 
 	private static final int PORT = 7700;
 	private static final int BACKLOG = 10000;
 	private boolean shutdown = false;
-	private static Logger logger = new Log4jLoggerFactory().getLogger(WebServer.class.toString());
+	private static Logger logger = LoggerFactory.getLogger(WebServer.class);
 	
 	public WebServer() {
 		

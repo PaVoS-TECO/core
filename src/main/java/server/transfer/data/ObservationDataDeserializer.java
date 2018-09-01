@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.Log4jLoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -16,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class ObservationDataDeserializer implements Deserializer<ObservationData> {
 
-	private Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Configures the deserializer

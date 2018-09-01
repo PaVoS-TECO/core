@@ -14,7 +14,6 @@ import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Produced;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.Log4jLoggerFactory;
 
 import server.core.properties.KafkaPropertiesFileManager;
 import server.core.properties.KafkaTopicAdmin;
@@ -34,7 +33,7 @@ public class MergeObsToFoiProcess implements ProcessInterface, Runnable {
 	private Properties props;
 	private KafkaStreams kafkaStreams;
 	private static final String THREAD_NAME = "MergeProcess";
-	private Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private boolean threadBoolean = true;
 	private Thread thread;
 	private CountDownLatch countdownLatch = null;

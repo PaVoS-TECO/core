@@ -14,13 +14,12 @@ import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.admin.TopicListing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.Log4jLoggerFactory;
 
 public final class KafkaTopicAdmin {
 
 	private AdminClient admin;
 	private static KafkaTopicAdmin instance;
-	private Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private Collection<TopicListing> topicListings = new ArrayList<>();
 
 	private KafkaTopicAdmin() {

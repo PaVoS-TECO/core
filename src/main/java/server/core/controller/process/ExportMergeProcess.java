@@ -18,7 +18,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.Log4jLoggerFactory;
 
 import server.core.properties.KafkaPropertiesFileManager;
 
@@ -35,7 +34,7 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 	private KafkaStreams kafkaStreams;
 	private static final String THREAD_NAME = "ExportProcess";
 	private boolean obsPro = false;
-	private Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private Thread thread;
 	private CountDownLatch countdownLatch = null;
 	

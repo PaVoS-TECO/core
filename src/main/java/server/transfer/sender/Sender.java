@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.Log4jLoggerFactory;
 
 import server.transfer.data.ObservationData;
 
@@ -14,7 +13,7 @@ import server.transfer.data.ObservationData;
  */
 public abstract class Sender {
 	
-	protected Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
     /**
      * Sends the recorded data

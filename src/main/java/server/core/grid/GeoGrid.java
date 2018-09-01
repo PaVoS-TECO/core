@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.Log4jLoggerFactory;
 
 import server.core.grid.config.Seperators;
 import server.core.grid.exceptions.ClusterNotFoundException;
@@ -40,7 +39,7 @@ public abstract class GeoGrid {
 	public final String id;
 	protected List<GeoPolygon> polygons = new ArrayList<>();
 	protected Map<String, Point2D.Double> sensorsAndLocations = new HashMap<>();
-	protected Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static final int CYCLES_UNTIL_RESET = 1;
 	private GeoGridManager manager = GeoGridManager.getInstance();
 	private int cyclesDone = 0;

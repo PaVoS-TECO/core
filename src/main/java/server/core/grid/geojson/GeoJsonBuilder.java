@@ -9,7 +9,6 @@ import java.util.List;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.Log4jLoggerFactory;
 
 import server.core.grid.GeoGrid;
 import server.core.grid.exceptions.ClusterNotFoundException;
@@ -26,7 +25,7 @@ public final class GeoJsonBuilder {
 	private StringBuilder builder;
 	private StringBuilder polygonsBuilder;
 	private StringBuilder sensorsBuilder;
-	private Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public GeoJsonBuilder(String keyProperty, String type) {
 		this.keyProperty = keyProperty;
