@@ -20,6 +20,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import server.core.controller.Main;
@@ -27,7 +28,7 @@ import server.core.controller.Main;
 public class ExportConsumer {
 	
 	private static final String JSON_PARSE_EXCEPTION = "Could not parse to JSONObject.";
-	private static Logger logger = LoggerFactory.getLogger(Main.class);
+	private static Logger logger = new Log4jLoggerFactory().getLogger(ExportConsumer.class.toString());
 	
     public static void main(String[] args) {
 

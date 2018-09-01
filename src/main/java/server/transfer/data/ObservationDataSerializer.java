@@ -5,13 +5,14 @@ import java.util.Map;
 import org.apache.kafka.common.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ObservationDataSerializer implements Serializer<ObservationData> {
 	
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
 	
 	@Override
 	public void configure(Map<String, ?> configs, boolean isKey) {

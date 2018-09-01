@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 /**
  * Reads the Property File to the System
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class PropertyFileReader {
 	
-	private static Logger logger = LoggerFactory.getLogger(PropertyFileReader.class);
+	private static Logger logger = new Log4jLoggerFactory().getLogger(PropertyFileReader.class.toString());
 	
 	/**
 	 * Default constructor

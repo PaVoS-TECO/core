@@ -17,6 +17,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 import server.core.grid.GeoGrid;
 import server.core.grid.GeoGridManager;
@@ -39,7 +40,7 @@ public class WebWorker implements Runnable {
 	Socket clientSocket;
 	private int statusCode = HttpStatus.SC_OK;
 	private String[] req;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
 	
     public WebWorker(Socket socket) {
         clientSocket = socket;

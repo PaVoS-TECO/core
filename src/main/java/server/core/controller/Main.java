@@ -2,6 +2,7 @@ package server.core.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 import server.core.controller.process.ExportMergeProcess;
 import server.core.controller.process.GridProcess;
@@ -11,7 +12,7 @@ import server.core.web.WebServer;
 
 public class Main {
 	
-	private static Logger logger = LoggerFactory.getLogger(Main.class);
+	private static Logger logger = new Log4jLoggerFactory().getLogger(Main.class.toString());
 
 	
 	public static void main(String[] args) throws InterruptedException {

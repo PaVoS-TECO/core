@@ -5,13 +5,14 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 public final class GradientPropertiesFileManager {
 	
 	private Properties properties;
 	public final String gradientPropertyFilePath = "src/main/resources/defaultGradients.properties";
 	private static GradientPropertiesFileManager instance;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());;
 	
 	/**
 	 * Default Constructor

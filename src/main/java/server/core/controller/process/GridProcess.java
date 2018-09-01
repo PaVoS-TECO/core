@@ -23,6 +23,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 import server.core.grid.GeoGrid;
 import server.core.grid.GeoRecRectangleGrid;
@@ -44,7 +45,7 @@ public class GridProcess implements ProcessInterface, Runnable {
 	private int timeIntervall;	
 	private String inputTopic;
 	private Properties props;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
 	private Thread thread;
 	private CountDownLatch countdownLatch = null;
 	private volatile GeoGrid grid;

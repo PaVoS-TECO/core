@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.python.core.PyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 import server.transfer.converter.util.PythonMetricUtil;
 import server.transfer.data.ObservationData;
@@ -13,7 +14,7 @@ import server.transfer.data.ObservationData;
  */
 public final class GraphiteConverter {
 	
-	private static final Logger logger = LoggerFactory.getLogger(GraphiteConverter.class);
+	private static final Logger logger = new Log4jLoggerFactory().getLogger(GraphiteConverter.class.toString());
 	
 	private GraphiteConverter() {
 		

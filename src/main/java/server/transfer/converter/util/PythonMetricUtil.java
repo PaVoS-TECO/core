@@ -14,6 +14,7 @@ import org.python.core.PyString;
 import org.python.core.PyTuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 import server.transfer.converter.GraphiteConverter;
 import server.transfer.data.ObservationData;
@@ -24,7 +25,7 @@ import server.transfer.data.util.GridTopicTranslator;
  */
 public final class PythonMetricUtil {
 	
-	private static final Logger logger = LoggerFactory.getLogger(GraphiteConverter.class);
+	private static final Logger logger = new Log4jLoggerFactory().getLogger(PythonMetricUtil.class.toString());
 	
 	private PythonMetricUtil() {
 		

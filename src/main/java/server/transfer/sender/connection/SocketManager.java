@@ -6,6 +6,7 @@ import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 /**
  * The {@code SocketManager} class manages basic operations that require a {@link Socket}.
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SocketManager {
 	
-	private Logger logger = LoggerFactory.getLogger(SocketManager.class);
+	private Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
 	private String host;
 	private int port;
 	private Socket socket;

@@ -11,6 +11,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClient;
@@ -22,7 +23,7 @@ import server.transfer.data.ObservationData;
  */
 public class ObservationDataToStorageProcessor {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
     private MemcachedClient cli;
 
     /**

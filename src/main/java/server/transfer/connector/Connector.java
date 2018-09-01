@@ -6,6 +6,7 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 import server.transfer.data.ObservationData;
 import server.transfer.sender.Sender;
@@ -18,7 +19,7 @@ public abstract class Connector {
     /**
      * Documents the activity of the Consumer
      */
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    Logger logger = new Log4jLoggerFactory().getLogger(this.getClass().toString());
 
     /**
      * Kafka-Topics that should be subscribed
