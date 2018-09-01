@@ -25,12 +25,26 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy-dependencies</id>
+						<id>copy</id>
 						<phase>package</phase>
 						<goals>
-							<goal>copy-dependencies</goal>
+							<goal>copy</goal>
 						</goals>
 						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.slf4j</groupId>
+									<artifactId>slf4j-api</artifactId>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.build.directory}/lib</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.slf4j</groupId>
+									<artifactId>slf4j-log4j12</artifactId>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.build.directory}/lib</outputDirectory>
+								</artifactItem>
+							</artifactItems>
 							<outputDirectory>${project.build.directory}</outputDirectory>
 							<overWriteReleases>false</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
