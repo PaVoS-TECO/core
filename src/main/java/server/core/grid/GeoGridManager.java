@@ -17,7 +17,7 @@ import server.transfer.data.ObservationData;
 public final class GeoGridManager {
 	
 	private static GeoGridManager instance;
-	private List<GeoGrid> grids = new ArrayList<>();
+	private volatile List<GeoGrid> grids = new ArrayList<>();
 	private ScheduledExecutorService execUpdate = Executors.newSingleThreadScheduledExecutor();
 	
 	private GeoGridManager() {

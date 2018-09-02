@@ -69,7 +69,7 @@ public abstract class GeoGrid {
 			this.sensorsAndLocations.put(data.sensorID, location);
 		} catch (PointNotOnMapException e) {
 			logger.warn("Could not add Observation to map. Point '" + location 
-					+ "' not in map boundaries! SensorID: " + data.sensorID + " " + e);
+					+ "' not in map boundaries! SensorID: " + data.sensorID + " ", e);
 		}
 	}
 	

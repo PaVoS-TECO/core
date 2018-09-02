@@ -31,10 +31,10 @@ public class Exporttester2 {
 
 public static  int counter = 0;
 
-
     public static void main(String[] args) throws InterruptedException {
 
 
+    	
         //Client Props
         Properties props = new Properties();
         props.put(BOOTSTRAP_SERVERS_CONFIG, "pavos.oliver.pw:9092");
@@ -60,7 +60,7 @@ public static  int counter = 0;
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
 
-        consumer.subscribe(Arrays.asList("AvroExportOliver1"));
+        consumer.subscribe(Arrays.asList("AvroExport"));
 
         System.out.println("Consumer A gestartet!");
 
@@ -84,7 +84,7 @@ public static  int counter = 0;
                     JSONObject Sensor =  (JSONObject) new JSONParser().parse((String) dataS.get("Sensor"));
                     JSONObject ObsPro =  (JSONObject) new JSONParser().parse((String) dataS.get("ObservedProperty"));
                     
-                    System.out.println(ObsPro);
+                   System.out.println(obs.get("iotId"));
 					
 					
 					

@@ -233,6 +233,15 @@ public abstract class GeoPolygon {
 		return this.sensorValues.values();
 	}
 	
+	public Collection<ObservationData> getSubSensorObservations() {
+		Collection<ObservationData> observations = new ArrayList<>();
+		for (GeoPolygon polygon : subPolygons) {
+			observations.addAll(polygon.getSubSensorObservations());
+			observations.addAll(getSensorDataList());
+		}
+		return observations;
+	}
+	
 	public Collection<ObservationData> getSubObservations() {
 		Collection<ObservationData> observations = new ArrayList<>();
 		for (GeoPolygon polygon : subPolygons) {

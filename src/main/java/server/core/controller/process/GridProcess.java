@@ -25,8 +25,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import server.core.grid.GeoGrid;
+import server.core.grid.GeoGridManager;
 import server.core.grid.GeoRecRectangleGrid;
 import server.core.grid.config.WorldMapData;
+import server.core.properties.GridPropertiesFileManager;
 import server.core.properties.KafkaPropertiesFileManager;
 import server.transfer.data.ObservationData;
 import server.transfer.sender.util.TimeUtil;
@@ -167,8 +169,11 @@ public class GridProcess implements ProcessInterface, Runnable {
 		try (KafkaConsumer<String, GenericRecord> consumer = new KafkaConsumer<>(props)) {
 			consumer.subscribe(Arrays.asList(inputTopic));
 			logger.info("Started consumer grid.");
-			grid = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.lngRange, -WorldMapData.latRange,
-					WorldMapData.lngRange * 2, WorldMapData.latRange * 2), 2, 2, 5);
+			GridPropertiesFileManager.getInstance();
+			GeoGridManager gridManager = GeoGridManager.getInstance();
+			grid = gridManager.getNewestGrid();
+
+			
 
 			TimeUnit.SECONDS.sleep(1);
 
@@ -180,6 +185,7 @@ public class GridProcess implements ProcessInterface, Runnable {
 
 					String time = TimeUtil.removeMillis((String) value.get("phenomenonTime").toString());
 					String resultValue = value.get("result").toString();
+
 					JSONParser parser = new JSONParser();
 					try {
 						JSONObject json = (JSONObject) parser.parse(resultValue);
@@ -206,12 +212,14 @@ public class GridProcess implements ProcessInterface, Runnable {
 						data.observationDate = time;
 						data.sensorID = sensorID;
 						data.observations.put("Temperature", resultValue);
+					
 
 						double coord1 = Double.parseDouble(value.get("FeatureOfInterest").toString().split(",")[0]);
 						double coord2 = Double.parseDouble(value.get("FeatureOfInterest").toString().split(",")[1]);
 
-						Point2D.Double location = new Point2D.Double(coord1, coord2);
+						Point2D.Double location = new Point2D.Double(-114, 50);
 						grid.addObservation(location, data);
+					
 						
 					}
 

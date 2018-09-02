@@ -32,7 +32,7 @@ public class GeoRectangleGridTest {
 		String property = "temperature_celsius";
 		data.observations.put(property, "14.0");
 		
-		Point2D.Double location1 = new  Point2D.Double(150.0, 40.0);
+		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
 		grid.addObservation(location1, data);
 		
 		data = new ObservationData();
