@@ -25,47 +25,16 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy</id>
+						<id>copy-dependencies</id>
 						<phase>package</phase>
 						<goals>
-							<goal>copy</goal>
+							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.slf4j</groupId>
-									<artifactId>slf4j-api</artifactId>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}/lib</outputDirectory>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.slf4j</groupId>
-									<artifactId>slf4j-log4j12</artifactId>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}/lib</outputDirectory>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.slf4j</groupId>
-									<artifactId>slf4j-log4j12</artifactId>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}/lib</outputDirectory>
-								</artifactItem>
-								<artifactItem>
-									<groupId>log4j</groupId>
-									<artifactId>log4j</artifactId>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}/lib</outputDirectory>
-								</artifactItem>
-								<artifactItem>
-									<groupId>joda-time</groupId>
-									<artifactId>joda-time</artifactId>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}/lib</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
+							<excludeArtifactIds>
+								avro
+							</excludeArtifactIds>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
