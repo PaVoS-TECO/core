@@ -6,9 +6,15 @@ import org.slf4j.LoggerFactory;
 import server.core.controller.process.ExportMergeProcess;
 import server.core.controller.process.GridProcess;
 import server.core.controller.process.MergeObsToFoiProcess;
+import server.core.grid.GeoGrid;
+import server.core.grid.GeoGridManager;
+import server.core.properties.GridPropertiesFileManager;
+import server.core.properties.KafkaTopicAdmin;
 import server.core.web.WebServer;
 
-public class Main {	
+public class Main {
+	
+	private static volatile GeoGrid grid1;
 	
 	private static Logger logger = LoggerFactory.getLogger(Main.class);
 

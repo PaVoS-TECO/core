@@ -17,7 +17,7 @@ public class Facade {
      * Default constructor
      */
     public Facade() {
-    	String host = EnvironmentUtil.getEnvironmentVariable("PAVOS_MEMCACHED_LOCATION", "localhost");
+    	String host = EnvironmentUtil.getEnvironmentVariable("PAVOS_MEMCACHED_LOCATION", "pavos.oliver.pw");
     	int port;
     	try {
     		port = Integer.parseInt(EnvironmentUtil.getEnvironmentVariable("PAVOS_MEMCACHED_PORT", "11211"));

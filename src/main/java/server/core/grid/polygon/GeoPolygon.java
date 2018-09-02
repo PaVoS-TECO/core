@@ -35,6 +35,7 @@ public abstract class GeoPolygon {
 	public final Rectangle2D.Double bounds;
 	public final int rows;
 	public final int columns;
+	public final double scale;
 	public final String id;
 	public final int levelsAfterThis;
 	protected Path2D.Double path;
@@ -56,6 +57,7 @@ public abstract class GeoPolygon {
 		this.rows = rows;
 		this.columns = columns;
 		this.id = id;
+		this.scale = 0;
 		this.levelsAfterThis = Math.max(levelsAfterThis, 0);
 		
 		commonConstructor();
@@ -279,7 +281,6 @@ public abstract class GeoPolygon {
 	 * @param producer {@link GraphiteProducer}
 	 * @return topics {@link List} of {@link String}s that define KafkaTopics
 	 */
-	@Deprecated
 	public List<String> produceSensorDataMessages(GraphiteProducer producer) {
 		List<String> topics = new ArrayList<>();
 		
