@@ -405,21 +405,21 @@ public abstract class GeoPolygon {
 	private DateTime selectDateTimeFromAllSources() {
 		DateTime dt = null;
 		for (GeoPolygon polygon : this.subPolygons) {
-			dt = earliestDateTime(dt, TimeUtil.getUTCDateTime(polygon.observationData.observationDate).toDateTime());
+			dt = latestDateTime(dt, TimeUtil.getUTCDateTime(polygon.observationData.observationDate).toDateTime());
 		}
 		for (ObservationData observation : this.sensorValues.values()) {
-			dt = earliestDateTime(dt, TimeUtil.getUTCDateTime(observation.observationDate).toDateTime());
+			dt = latestDateTime(dt, TimeUtil.getUTCDateTime(observation.observationDate).toDateTime());
 		}
 		if (dt == null) dt = TimeUtil.getUTCDateTimeNow().toDateTime();
 		return dt;
 	}
 	
-	private DateTime earliestDateTime(DateTime dt1, DateTime dt2) {
+	private DateTime latestDateTime(DateTime dt1, DateTime dt2) {
 		if ((dt1 == null && dt2 == null)) return null;
 		if (dt1 == null) return dt2;
 		if (dt2 == null) return dt1;
 		DateTime result = new DateTime(dt1.getMillis());
-		if (dt1.isBefore(dt2)) result = dt2;
+		if (dt1.isAfter(dt2)) result = dt2;
 		return result;
 	}
 	
