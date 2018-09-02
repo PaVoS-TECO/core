@@ -21,7 +21,7 @@ public class Main {
 	
 	public static void main(String[] args) throws InterruptedException {
 		
-//		//load existing grid setup from properties file
+		//load existing grid setup from properties file
 		
 		//init of the Topics
 
@@ -33,24 +33,21 @@ public class Main {
 		MergeObsToFoiProcess foiProcess = new MergeObsToFoiProcess();
 		foiProcess.kafkaStreamStart();
 		Thread.sleep(5000);
-//		
-//		//Grid Process
+		
+		//Grid Process
 		GridProcess gridProcess = new GridProcess();
 		gridProcess.kafkaStreamStart();
 	
 		Thread.sleep(5000);
-
-	
-	
-//		
+		
 		//ExportProcess
 		ExportMergeProcess exportMergeProcess = new ExportMergeProcess(false);
 		exportMergeProcess.kafkaStreamStart();
 		Thread.sleep(5000);
-//		
-//		//WebServer
-//		new Thread(new WebServer()).start();
-//		
+		
+		//WebServer
+		new Thread(new WebServer()).start();
+		
 		logger.info("Finished starting routines.");
 	}
 }
