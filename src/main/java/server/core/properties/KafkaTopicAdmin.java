@@ -38,7 +38,7 @@ public final class KafkaTopicAdmin {
 		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();
 		
 		adminp.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
-				propManager.getProperty("BOOTSTRAP_SERVERS_CONFIG"));
+				propManager.getProperty("PAVOS_BOOTSTRAP_SERVERS_CONFIG"));
 		admin = AdminClient.create(adminp);
 	}
 
