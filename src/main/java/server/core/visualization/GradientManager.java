@@ -2,9 +2,7 @@ package server.core.visualization;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import server.core.properties.GradientPropertiesFileManager;
 import server.core.visualization.gradients.MultiGradient;
@@ -13,14 +11,14 @@ import server.core.visualization.util.ColorUtil;
 public final class GradientManager {
 	
 	private static GradientManager instance;
-	private Map<MultiGradient, List<GradientRange>> gradients = new HashMap<>();
+	private List<MultiGradient> gradients = new ArrayList<>();
 	GradientPropertiesFileManager manager;
 	
 	private GradientManager() {
 		this.manager = GradientPropertiesFileManager.getInstance();
 		String colorsHex = manager.getProperty("temperature");
 		String rangeCelsius = manager.getProperty("temperature.range.celsius");
-		String rangeFahrenheit = manager.getProperty("temperature.range.celsius");
+		String rangeFahrenheit = manager.getProperty("temperature.range.fahrenheit");
 		addGradient(getGradient("temperature", colorsHex), getRange("celsius", rangeCelsius), getRange("Fahrenheit", rangeFahrenheit));
 	}
 	
@@ -31,34 +29,29 @@ public final class GradientManager {
 		return instance;
 	}
 	
-	public GradientRange getRangeFromName(String gradientName, String rangeName) {
-		return getRangeFromGradient(getGradient(gradientName), rangeName);
-	}
-	
-	public GradientRange getRangeFromGradient(MultiGradient gradient, String rangeName) {
-		List<GradientRange> ranges = this.gradients.get(gradient);
-		GradientRange range = new GradientRange(rangeName, 0, 0);
-		if (!ranges.contains(range)) return null;
-		return ranges.get(ranges.indexOf(range));
+	public List<MultiGradient> getAllGradients() {
+		List<MultiGradient> result = new ArrayList<>();
+		gradients.forEach((gradient) -> result.add(gradient));
+		return result;
 	}
 	
 	public MultiGradient getGradient(String name) {
 		MultiGradient grad = new MultiGradient(name);
-		for (MultiGradient key : this.gradients.keySet()) {
-			if (key.equals(grad)) {
-				return key;
-			}
-		}
-		return null;
+		return gradients.get(gradients.indexOf(grad));
+	}
+	
+	private void addGradient(MultiGradient gradient) {
+		if (gradient != null) gradients.add(gradient);
 	}
 	
 	private void addGradient(MultiGradient gradient, GradientRange...ranges) {
-		List<GradientRange> gradRanges = new ArrayList<>();
-		if (ranges.length < 1 || gradient == null) return;
+		if (gradient == null) return;
+		
 		for (int i = 0; i < ranges.length; i++) {
-			gradRanges.add(ranges[i]);
+			gradient.addRange(ranges[i]);
 		}
-		this.gradients.put(gradient, gradRanges);
+		
+		addGradient(gradient);
 	}
 	
 	private GradientRange getRange(String name, String range) {
@@ -74,5 +67,7 @@ public final class GradientManager {
 		}
 		return new MultiGradient(name, colors);
 	}
+	
+	
 	
 }

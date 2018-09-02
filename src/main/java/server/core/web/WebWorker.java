@@ -9,7 +9,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Properties;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.http.HttpStatus;
@@ -25,10 +25,7 @@ import server.core.grid.exceptions.PointNotOnMapException;
 import server.core.grid.exceptions.SensorNotFoundException;
 import server.core.grid.geojson.GeoJsonConverter;
 import server.core.grid.polygon.GeoPolygon;
-import server.core.properties.GradientPropertiesFileManager;
-import server.core.properties.PropertyFileReader;
 import server.core.visualization.GradientManager;
-import server.core.visualization.GradientRange;
 import server.core.visualization.gradients.MultiGradient;
 import server.database.Facade;
 import server.transfer.data.ObservationData;
@@ -95,9 +92,6 @@ public class WebWorker implements Runnable {
 			case "getGradient":
 				getGradient(out);
 				break;
-			case "getGradientRange":
-				getGradientRange(out);
-				break;
 			case "getAllGradients":
 				getAllGradients(out);
 				break;
@@ -106,6 +100,7 @@ public class WebWorker implements Runnable {
 				break;
 			}
 		} catch (IllegalArgumentException | ArrayIndexOutOfBoundsException | NullPointerException e) {
+			e.printStackTrace();
 			statusCode = HttpStatus.SC_BAD_REQUEST;
 			printOut(null, out);
 		}
@@ -118,17 +113,20 @@ public class WebWorker implements Runnable {
 	}
 
 	private void getAllGradients(PrintWriter out) {
-		GradientPropertiesFileManager manager = GradientPropertiesFileManager.getInstance();
-		Properties prop = PropertyFileReader.readPropertyFile(manager.gradientPropertyFilePath);
-		out.write(prop.toString());
-	}
-
-	private void getGradientRange(PrintWriter out) {
-		String gradientName = getParameter("gradientName");
-		String rangeName = getParameter("rangeName");
 		GradientManager manager = GradientManager.getInstance();
-		GradientRange range = manager.getRangeFromName(gradientName, rangeName);
-		printOut(range.toString(), out);
+		List<MultiGradient> gradients = manager.getAllGradients();
+		StringBuilder builder = new StringBuilder();
+		builder.append("{ ");
+		for (MultiGradient gradient : gradients) {
+			builder.append(gradient.toString());
+			if (gradients.indexOf(gradient) != gradients.size() - 1) {
+				builder.append(",");
+			}
+			builder.append(" ");
+		}
+		builder.append("}");
+		System.out.println(builder.toString());
+		printOut(builder.toString(), out);
 	}
 
 	private void getGradient(PrintWriter out) {

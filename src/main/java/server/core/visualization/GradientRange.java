@@ -14,7 +14,7 @@ public class GradientRange {
 	
 	@Override
 	public String toString() {
-		return VALUE_START + "," + VALUE_END;
+		return String.format("'_%s': [%s, %s]", NAME, VALUE_START, VALUE_END);
 	}
 	
 	@Override

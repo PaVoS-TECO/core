@@ -2,13 +2,16 @@ package server.core.visualization.gradients;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import server.core.visualization.GradientRange;
 import server.core.visualization.util.ColorUtil;
 
 public class MultiGradient {
 	
 	private List<SimpleGradient> gradients = new ArrayList<>();
+	private List<GradientRange> ranges = new ArrayList<>();
 	public final String NAME;
 	
 	public MultiGradient(String name, Color... colors) {
@@ -24,15 +27,60 @@ public class MultiGradient {
 		}
 	}
 	
+	public Color[] getColors() {
+		if (gradients.size() == 0) return new Color[0];
+		Color[] colors = new Color[gradients.size() + 1];
+		colors[0] = gradients.get(0).getColorAt(0);
+		for (int i = 0; i < gradients.size(); i++) {
+			colors[i] = gradients.get(i).getColorAt(1);
+		}
+		return colors;
+	}
+	
+	private String colorsToString(Color[] colors) {
+		if (colors.length == 0) return "";
+		StringBuilder builder = new StringBuilder();
+		builder.append("[");
+		for (int i = 0; i < colors.length; i++) {
+			builder.append(String.format("'%s'", ColorUtil.getHexFromColor(colors[i])));
+			if (i < colors.length - 1) builder.append(", ");
+		}
+		builder.append("]");
+		return builder.toString();
+	}
+	
 	@Override
 	public String toString() {
-		Color[] colors = getColors();
 		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < colors.length - 1; i++) {
-			builder.append(ColorUtil.getHexFromColor(colors[i]) + ",");
-		}
-		builder.append(ColorUtil.getHexFromColor(colors[colors.length - 1]));
+		builder.append(String.format("'%s': { ", this.NAME));
+		builder.append(gradientToString());
+		ranges.forEach((range) -> builder.append(String.format(", %s", range.toString())));
+		builder.append(" }");
 		return builder.toString();
+	}
+	
+	public String gradientToString() {
+		return "'gradient': " + colorsToString(getColors());
+	}
+	
+	public Collection<GradientRange> getRanges() {
+		Collection<GradientRange> result = new ArrayList<>();
+		ranges.forEach((range) -> result.add(range));
+		return result;
+	}
+	
+	public GradientRange getRange(String rangeName) {
+		GradientRange check = new GradientRange(rangeName, 0, 0);
+		return ranges.get(ranges.indexOf(check));
+	}
+	
+	public void addRange(GradientRange range) {
+		if (range != null) ranges.add(range);
+	}
+	
+	public GradientRange removeRange(int index) {
+		if (index >= 0 && index < ranges.size()) return ranges.remove(index);
+		return null;
 	}
 	
 	@Override
@@ -45,15 +93,6 @@ public class MultiGradient {
 	@Override
 	public int hashCode() {
 		return this.NAME.hashCode();
-	}
-	
-	public Color[] getColors() {
-		Color[] colors = new Color[gradients.size() + 1];
-		colors[0] = gradients.get(0).cStart;
-		for (int i = 0; i < gradients.size(); i++) {
-			colors[i + 1] = gradients.get(i).cEnd;
-		}
-		return colors;
 	}
 	
 	public Color getColorAt(double position) {

@@ -23,7 +23,9 @@ public class SimpleGradient {
 	}
 	
 	private float getValueInBetween(float val1, float val2, double position) {
-		return (float) ((val1 * (1.0 - position)) + (val2 * position));
+		double relVal1 = val1 / 255.0;
+		double relVal2 = val2 / 255.0;
+		return (float) ((relVal1 * (1.0 - position)) + (relVal2 * position));
 	}
 	
 }

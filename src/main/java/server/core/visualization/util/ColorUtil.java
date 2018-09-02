@@ -9,6 +9,7 @@ public final class ColorUtil {
 	}
 	
 	public static String getHexFromColor(Color color) {
+		if (color == null) return "";
 		return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
 	}
 	
