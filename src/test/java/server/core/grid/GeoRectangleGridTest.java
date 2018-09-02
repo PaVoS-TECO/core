@@ -1,5 +1,6 @@
 package server.core.grid;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.awt.geom.Point2D;
@@ -23,8 +24,77 @@ import server.transfer.sender.util.TimeUtil;
 public class GeoRectangleGridTest {
 
 	@Test
+	public void checkProperties() {
+		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
+				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+		
+		ObservationData startData = new ObservationData();
+		startData.observationDate = TimeUtil.getUTCDateTimeNowString();
+		startData.sensorID = "testSensorID";
+		String property = "temperature_celsius";
+		startData.observations.put(property, "14.0");
+		
+		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
+		grid.addObservation(location1, startData);
+		
+		Collection<ObservationData> observationCheck = grid.getGridObservations();
+		observationCheck.forEach((data) -> {
+			assertTrue(data.observations.isEmpty());
+		});
+		
+		grid.updateObservations();
+		
+		boolean isPropSaved = false;
+		observationCheck = grid.getGridObservations();
+		for (ObservationData data : observationCheck) {
+			if (!data.observations.isEmpty()) isPropSaved = true;
+		}
+		assertTrue(isPropSaved);
+		
+		grid.resetObservations();
+		
+		observationCheck = grid.getGridSensorObservations();
+		System.out.println(observationCheck);
+		observationCheck.forEach((data) -> {
+			assertTrue(data.observations.isEmpty());
+		});
+		
+		assertTrue(grid.getGridProperties().contains("temperature_celsius"));
+	}
+	
+	@Test
+	public void sendToGraphite() {
+		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
+				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+		
+		grid.updateObservations();
+		grid.transferSensorDataDirectly();
+	}
+	
+	@Test
+	public void testEquals() {
+		GeoGrid grid1 = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
+				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+		
+		GeoGrid grid2 = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
+				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+		
+		ObservationData startData = new ObservationData();
+		startData.observationDate = TimeUtil.getUTCDateTimeNowString();
+		startData.sensorID = "testSensorID";
+		String property = "temperature_celsius";
+		startData.observations.put(property, "14.0");
+		
+		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
+		grid1.addObservation(location1, startData);
+		
+		assertTrue(grid1.equals(grid2));
+	}
+	
+	@Test
 	public void test() {
-		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, - WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
+				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
 		
 		ObservationData data = new ObservationData();
 		data.observationDate = TimeUtil.getUTCDateTimeNowString();
@@ -34,6 +104,12 @@ public class GeoRectangleGridTest {
 		
 		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
 		grid.addObservation(location1, data);
+		
+		try {
+			assertTrue(grid.getSensorLocation(data.sensorID).equals(location1));
+		} catch (SensorNotFoundException e1) {
+			fail("Sensor not on map.");
+		}
 		
 		data = new ObservationData();
 		data.sensorID = "testSensorID2";

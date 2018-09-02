@@ -40,7 +40,7 @@ public abstract class GeoGrid {
 	protected List<GeoPolygon> polygons = new ArrayList<>();
 	protected Map<String, Point2D.Double> sensorsAndLocations = new HashMap<>();
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
-	private static final int CYCLES_UNTIL_RESET = 1;
+	private static final int CYCLES_UNTIL_RESET = 0;
 	private GeoGridManager manager = GeoGridManager.getInstance();
 	private int cyclesDone = 0;
 	
@@ -140,7 +140,7 @@ public abstract class GeoGrid {
 	public Collection<ObservationData> getGridSensorObservations() {
 		Collection<ObservationData> observations = new ArrayList<>();
 		for (GeoPolygon polygon : polygons) {
-			observations.addAll(polygon.getSubObservations());
+			observations.addAll(polygon.getSubSensorObservations());
 			observations.addAll(polygon.getSensorDataList());
 		}
 		return observations;

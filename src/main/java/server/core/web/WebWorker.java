@@ -100,7 +100,6 @@ public class WebWorker implements Runnable {
 				break;
 			}
 		} catch (IllegalArgumentException | ArrayIndexOutOfBoundsException | NullPointerException e) {
-			e.printStackTrace();
 			statusCode = HttpStatus.SC_BAD_REQUEST;
 			printOut(null, out);
 		}
