@@ -1,5 +1,6 @@
 package server.core.grid.polygon;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.awt.geom.Point2D;
@@ -18,8 +19,12 @@ public class GeoRectangleTest {
 	@Test
 	public void generateJson() {
 		System.out.println("Starting Test [generateJson]:");
-		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(2.3, 1.7, 10.0, 5.0), 1, 1, 0, "test1");
-		System.out.println(rect.getPoints());
+		Point2D.Double start = new Point2D.Double(2.3, 1.7);
+		Point2D.Double end = new Point2D.Double(10.0, 5.0);
+		
+		
+		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(start.getX(), start.getY(), end.getX(), end.getY()), 1, 1, 0, "test1");
+		assertEquals(new Point2D.Double[] {start, end}, rect.getPoints());
 		System.out.println(rect.getJson("pM10"));
 		System.out.println();
 	}

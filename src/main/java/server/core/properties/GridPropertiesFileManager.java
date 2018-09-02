@@ -50,7 +50,7 @@ public final class GridPropertiesFileManager {
 		
 		switch(name) {
 		case GeoRecRectangleGrid.NAME:
-			new GeoRecRectangleGrid(new Rectangle2D.Double(xMin, yMin, xMax, yMax), rows, columns, levels).getGridObservations();
+			new GeoRecRectangleGrid(new Rectangle2D.Double(xMin, yMin, xMax * 2, yMax * 2), rows, columns, levels);
 			break;
 		default:
 			throw new IllegalArgumentException("Grid not recognized. Exiting with Errors.");

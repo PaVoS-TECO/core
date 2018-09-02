@@ -28,6 +28,7 @@ public class ObservationDataToStorageProcessor {
     /**
      * Default constructor
      * @param host {@link String}
+     * @param port {@link Integer}
      */
     public ObservationDataToStorageProcessor(String host, int port) {
         try {
