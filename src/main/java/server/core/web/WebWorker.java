@@ -125,7 +125,6 @@ public class WebWorker implements Runnable {
 			builder.append(" ");
 		}
 		builder.append("}");
-		System.out.println(builder.toString());
 		printOut(builder.toString(), out);
 	}
 

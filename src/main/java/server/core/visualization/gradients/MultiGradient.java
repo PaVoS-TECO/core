@@ -32,7 +32,7 @@ public class MultiGradient {
 		Color[] colors = new Color[gradients.size() + 1];
 		colors[0] = gradients.get(0).getColorAt(0);
 		for (int i = 0; i < gradients.size(); i++) {
-			colors[i] = gradients.get(i).getColorAt(1);
+			colors[i + 1] = gradients.get(i).getColorAt(1);
 		}
 		return colors;
 	}
