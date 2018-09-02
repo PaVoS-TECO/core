@@ -56,6 +56,12 @@
 									<overWrite>false</overWrite>
 									<outputDirectory>${project.build.directory}/lib</outputDirectory>
 								</artifactItem>
+								<artifactItem>
+									<groupId>joda-time</groupId>
+									<artifactId>joda-time</artifactId>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.build.directory}/lib</outputDirectory>
+								</artifactItem>
 							</artifactItems>
 							<outputDirectory>${project.build.directory}</outputDirectory>
 							<overWriteReleases>false</overWriteReleases>
