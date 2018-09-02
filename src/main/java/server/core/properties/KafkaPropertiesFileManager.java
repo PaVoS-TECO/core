@@ -49,8 +49,8 @@ public final class KafkaPropertiesFileManager {
 		properties.put(M_CLIENT_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_M_CLIENT_ID_CONFIG", "m_client"));
 		properties.put(SCHEMA_REGISTRY_URL_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_SCHEMA_REGISTRY_URL_CONFIG", "http://pavos.oliver.pw:8081"));
 		properties.put(M_AUTO_OFFSET_RESET_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_M_AUTO_OFFSET_RESET_CONFIG", "earliest"));
-		properties.put(E_APPLICATION_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_E_APPLICATION_ID_CONFIG", "Export_application"));
-		properties.put(E_CLIENT_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_E_CLIENT_ID_CONFIG", "Export_client"));
+		properties.put(E_APPLICATION_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_E_APPLICATION_ID_CONFIG", "Export_application2"));
+		properties.put(E_CLIENT_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_E_CLIENT_ID_CONFIG", "Export_client2"));
 		properties.put(E_AUTO_OFFSET_RESET_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_E_AUTO_OFFSET_RESET_CONFIG", "earliest"));
 		properties.put(P_APPLICATION_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_P_APPLICATION_ID_CONFIG", "p_application"));
 		properties.put(P_CLIENT_ID_CONFIG, EnvironmentUtil.getEnvironmentVariable("PAVOS_P_CLIENT_ID_CONFIG", "p_client"));

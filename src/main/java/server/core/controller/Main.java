@@ -25,33 +25,28 @@ public class Main {
 		
 		//init of the Topics
 
-//		Initialisation initialisation = new Initialisation();
-//		initialisation.createPavosTopics();
-//		Thread.sleep(1000);
+		Initialisation initialisation = new Initialisation();
+		initialisation.createPavosTopics();
+		Thread.sleep(1000);
 		
 		//Merge process
-		//MergeObsToFoiProcess foiProcess = new MergeObsToFoiProcess();
-		//foiProcess.kafkaStreamStart();
-		//Thread.sleep(5000);
+		MergeObsToFoiProcess foiProcess = new MergeObsToFoiProcess();
+		foiProcess.kafkaStreamStart();
+		Thread.sleep(5000);
 //		
 //		//Grid Process
-	GridProcess gridProcess = new GridProcess();
-	gridProcess.kafkaStreamStart();
+		GridProcess gridProcess = new GridProcess();
+		gridProcess.kafkaStreamStart();
 	
-	Thread.sleep(6000);
-	System.out.println("Testing");
-	GeoGridManager gridManager = GeoGridManager.getInstance();
-	grid1 = gridManager.getNewestGrid();
-	grid1.updateObservations();
-	System.out.println(grid1);
-	System.out.println(grid1.getGridObservations());
+		Thread.sleep(5000);
+
 	
 	
 //		
 		//ExportProcess
-		//ExportMergeProcess exportMergeProcess = new ExportMergeProcess(false);
-		//exportMergeProcess.kafkaStreamStart();
-		//Thread.sleep(5000);
+		ExportMergeProcess exportMergeProcess = new ExportMergeProcess(false);
+		exportMergeProcess.kafkaStreamStart();
+		Thread.sleep(5000);
 //		
 //		//WebServer
 //		new Thread(new WebServer()).start();

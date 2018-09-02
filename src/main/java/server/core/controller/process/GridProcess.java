@@ -165,6 +165,8 @@ public class GridProcess implements ProcessInterface, Runnable {
 	 * @throws InterruptedException 
 	 */
 
+	// FIX Tempeture
+	
 	public void apply() throws InterruptedException {
 		try (KafkaConsumer<String, GenericRecord> consumer = new KafkaConsumer<>(props)) {
 			consumer.subscribe(Arrays.asList(inputTopic));

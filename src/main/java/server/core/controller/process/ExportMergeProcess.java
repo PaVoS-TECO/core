@@ -1,5 +1,6 @@
 package server.core.controller.process;
 
+import java.awt.geom.Point2D;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
@@ -19,6 +20,9 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import server.core.grid.GeoGrid;
+import server.core.grid.GeoGridManager;
+import server.core.grid.exceptions.PointNotOnMapException;
 import server.core.properties.KafkaPropertiesFileManager;
 
 /**
@@ -87,6 +91,12 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 		return false;
 	}
 	
+	
+	
+	//Change FOI Descrption
+	
+	
+	//TODO Polygons
 	@Override
 	public void apply(StreamsBuilder builder) {
 		final KStream<String, GenericRecord> observationStream = builder.stream("Observations");
@@ -96,6 +106,22 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 				.map((key, value) -> KeyValue.pair(value.get("FeatureOfInterest").toString(), value));
 
 		final KStream<String, GenericRecord> mergedFoIObs = ObsStreamKey.join(foITable, (value, location) -> {
+			
+			GenericRecord obj = (GenericRecord) location.get("feature");
+			String point = obj.get("coordinates").toString();
+			double coord1 = Double.parseDouble(point.split(",")[0]);
+			double coord2 = Double.parseDouble(point.split(",")[1]);
+
+			Point2D.Double location2 = new Point2D.Double(coord1, coord2);
+			GeoGrid grid = GeoGridManager.getInstance().getNewestGrid();
+			try {
+				System.out.println("---------");
+				System.out.println(grid.getClusterID(location2, grid.maxLevel));
+				location.put("description", grid.getClusterID(location2, grid.maxLevel));
+			} catch (PointNotOnMapException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			value.put("FeatureOfInterest", location.toString());
 			
 			return value;
@@ -185,7 +211,7 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 		
 		final Serde<String> stringSerde = Serdes.String();
 		
-		finalStream.to("AvroExport", Produced.with(stringSerde, stringSerde));
+		finalStream.to("AvroExport2", Produced.with(stringSerde, stringSerde));
 		
 		stringSerde.close();
 	}
