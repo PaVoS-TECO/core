@@ -24,7 +24,7 @@ public final class GraphiteConfig {
      * @return name The Graphite-host-name
      */
     public static String getGraphiteHostName() {
-    	return EnvironmentUtil.getEnvironmentVariable("PAVOS_GRAPHITE_HOST_NAME", "localhost");
+    	return EnvironmentUtil.getEnvironmentVariable("PAVOS_GRAPHITE_HOST_NAME", "pavos.oliver.pw");
     }
 
     /**

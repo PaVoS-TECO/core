@@ -31,9 +31,6 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<excludeArtifactIds>
-								avro
-							</excludeArtifactIds>
 							<outputDirectory>${project.build.directory}/lib</outputDirectory>
 						</configuration>
 					</execution>
