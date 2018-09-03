@@ -104,11 +104,13 @@ public class ObservationDataToStorageProcessor {
 				properties.add(key);
 			}
 			cli.set(gridID, dataExp, properties);
+			logger.debug("Successfully added item with key {}", dataKey);
+			logger.debug("\tTimestamp {} and properties {}", observationData.observationDate, String.join(", ", observationData.observations.keySet()));
 		} catch (TimeoutException e) {
 			logger.warn("Timeout when saving ObservationData to memcached!", e);
 		} catch (InterruptedException | MemcachedException e) {
 			if (e.getClass().equals(InterruptedException.class)) Thread.currentThread().interrupt();
-			logger.warn("Memcached error: " + e.getMessage(), e);
+			logger.warn("Memcached error: {}", e.getMessage(), e);
 		}
 	}
 	

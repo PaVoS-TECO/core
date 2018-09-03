@@ -54,7 +54,7 @@ public class ObservationDataToStorageProcessorTest {
 	
 	@Test
 	public void testUnreachableClient() {
-		new ObservationDataToStorageProcessor("0.0.0.0", 11211).get("", "", "");
+		new ObservationDataToStorageProcessor("0.0.0.0", 11211).get("key", "", "");
 	}
 	
 	@Test

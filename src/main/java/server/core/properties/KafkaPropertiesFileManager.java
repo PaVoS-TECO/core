@@ -166,7 +166,6 @@ public final class KafkaPropertiesFileManager {
 	/**
 	 * @return Grid Stream Properties
 	 */
-	
 	public Properties getGridStreamProperties() {
 		Properties props = new Properties();
 		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, getProperty(BOOTSTRAP_SERVERS_CONFIG));
