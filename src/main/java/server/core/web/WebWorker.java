@@ -170,13 +170,13 @@ public class WebWorker implements Runnable {
 		Facade f = new Facade();
 		Set<String> properties = f.getObservedProperties(gridID);
 		StringBuilder builder = new StringBuilder();
-		builder.append("{ ");
+		builder.append("[ ");
 		Iterator<String> it = properties.iterator();
 		it.forEachRemaining((property) -> {
 			builder.append("\"" + property + "\"");
 			if (it.hasNext()) builder.append(", ");
 		});
-		builder.append("}");
+		builder.append(" ]");
 	    printOut(builder.toString(), out);
 	}
 
