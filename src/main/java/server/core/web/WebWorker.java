@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -168,7 +169,15 @@ public class WebWorker implements Runnable {
 		String gridID = getParameter("gridID");
 		Facade f = new Facade();
 		Set<String> properties = f.getObservedProperties(gridID);
-	    printOut(properties.toString(), out);
+		StringBuilder builder = new StringBuilder();
+		builder.append("{ ");
+		Iterator<String> it = properties.iterator();
+		it.forEachRemaining((property) -> {
+			builder.append("\"" + property + "\"");
+			if (it.hasNext()) builder.append(", ");
+		});
+		builder.append("}");
+	    printOut(builder.toString(), out);
 	}
 
 	private void reportSensor(PrintWriter out) {

@@ -21,8 +21,6 @@ public class Main {
 	
 	public static void main(String[] args) throws InterruptedException {
 		
-		//load existing grid setup from properties file
-		
 		//init of the Topics
 
 		Initialisation initialisation = new Initialisation();
