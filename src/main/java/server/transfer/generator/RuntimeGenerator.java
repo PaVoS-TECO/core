@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import server.core.grid.GeoGrid;
 import server.core.grid.GeoRecRectangleGrid;
 import server.core.grid.config.WorldMapData;
+import server.core.web.WebServer;
 import server.transfer.data.ObservationData;
 import server.transfer.sender.util.TimeUtil;
 
@@ -21,6 +22,7 @@ public class RuntimeGenerator {
 			grid.addObservation(randomLocation(), generateRandom(randomSensor(), "temperature_celsius", 40.0));
 			grid.addObservation(randomLocation(), generateRandom(randomSensor(), "pM_10", 40.0));
 		}, 0, 8, TimeUnit.SECONDS);
+		new Thread(new WebServer()).start();
 	}
 	
 	private static String randomSensor() {

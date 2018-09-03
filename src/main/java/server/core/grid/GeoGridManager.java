@@ -3,6 +3,7 @@ package server.core.grid;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -16,88 +17,115 @@ import server.transfer.data.ObservationData;
 
 public final class GeoGridManager {
 	
-	private static GeoGridManager instance;
-	private volatile List<GeoGrid> grids = new ArrayList<>();
+	private static final Object lock = new Object();
+	private static volatile GeoGridManager instance;
+	private static volatile List<GeoGrid> grids = Collections.synchronizedList(new ArrayList<>());
 	private ScheduledExecutorService execUpdate = Executors.newSingleThreadScheduledExecutor();
 	
 	private GeoGridManager() {
 		execUpdate.scheduleAtFixedRate(() -> {
-			for (GeoGrid grid : grids) {
-				grid.updateObservations();
-				grid.transferSensorDataDirectly();
-				grid.updateDatabase();
-				grid.resetObservations();
+			synchronized (grids) {
+				for (GeoGrid grid : grids) {
+					grid.updateObservations();
+					grid.transferSensorDataDirectly();
+					grid.updateDatabase();
+					grid.resetObservations();
+				}
 			}
 		}, 0, 10, TimeUnit.SECONDS);
-		
 	}
 	
 	public static GeoGridManager getInstance() {
-		if (instance == null) {
-			instance = new GeoGridManager();
+		GeoGridManager result = instance;
+		if (result == null) {
+			synchronized (lock) {
+				result = instance;
+				if (result == null) {
+					result = new GeoGridManager();
+					instance = result;
+				}
+			}
 		}
-		return instance;
+		return result;
 	}
 	
 	public GeoGrid getNewestGrid() {
-		return this.grids.get(0);
+		synchronized (grids) {
+			return grids.get(0);
+		}
 	}
 	
 	public void addGeoGrid(GeoGrid grid) {
-		this.grids.add(0, grid);
+		synchronized (grids) {
+			grids.add(0, grid);
+		}
 	}
 	
 	public GeoGrid getGrid(String gridID) {
-		for (GeoGrid entry : this.grids) {
-			if (entry.id.equals(gridID)) {
-				return entry;
+		synchronized (grids) {
+			for (GeoGrid entry : grids) {
+				if (entry.id.equals(gridID)) {
+					return entry;
+				}
 			}
+			return null;
 		}
-		return null;
 	}
 	
 	public boolean isGridActive(GeoGrid grid) {
-		return this.grids.contains(grid);
+		synchronized (grids) {
+			return grids.contains(grid);
+		}
 	}
 	
 	public boolean isGridActive(String gridID) {
-		for (GeoGrid entry : this.grids) {
-			if (entry.id.equals(gridID)) {
-				return true;
+		synchronized (grids) {
+			for (GeoGrid entry : grids) {
+				if (entry.id.equals(gridID)) {
+					return true;
+				}
 			}
+			return false;
 		}
-		return false;
 	}
 	
 	public void removeGeoGrid(GeoGrid grid) {
-		this.grids.remove(grid);
+		synchronized (grids) {
+			grids.remove(grid);
+		}
 	}
 	
 	public Collection<String> getAllProperties() {
-		Collection<String> properties = new HashSet<>();
-		for (GeoGrid grid : this.grids) {
-			properties.addAll(grid.getGridProperties());
+		synchronized (grids) {
+			Collection<String> properties = new HashSet<>();
+			for (GeoGrid grid : grids) {
+				properties.addAll(grid.getGridProperties());
+			}
+			return properties;
 		}
-		return properties;
 	}
 	
 	public Collection<ObservationData> getAllSensorObservations() {
-		Collection<ObservationData> observations = new HashSet<>();
-		for (GeoGrid grid : this.grids) {
-			observations.addAll(grid.getGridSensorObservations());
+		synchronized (grids) {
+			Collection<ObservationData> observations = new HashSet<>();
+			for (GeoGrid grid : grids) {
+				observations.addAll(grid.getGridSensorObservations());
+			}
+			return observations;
 		}
-		return observations;
 	}
 	
 	public ObservationData getSensorObservation(String sensorID, String gridID) 
 			throws GridNotFoundException, SensorNotFoundException, PointNotOnMapException {
-		for (GeoGrid grid : this.grids) {
-			if (grid.id.equals(gridID)) {
-				Point2D.Double point = grid.getSensorLocation(sensorID);
-				return grid.getSensorObservation(sensorID, point);
+		synchronized (grids) {
+			for (GeoGrid grid : grids) {
+				if (grid.id.equals(gridID)) {
+					Point2D.Double point = grid.getSensorLocation(sensorID);
+					return grid.getSensorObservation(sensorID, point);
+				}
 			}
+			throw new GridNotFoundException(gridID);
 		}
-		throw new GridNotFoundException(gridID);
 	}
 	
 }

@@ -41,7 +41,7 @@ public abstract class GeoGrid {
 	protected Map<String, Point2D.Double> sensorsAndLocations = new HashMap<>();
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static final int CYCLES_UNTIL_RESET = 0;
-	private GeoGridManager manager = GeoGridManager.getInstance();
+	private static volatile GeoGridManager manager = GeoGridManager.getInstance();
 	private int cyclesDone = 0;
 	
 	public GeoGrid(Rectangle2D.Double mapBounds, int rows, int columns, int maxLevel, String gridID) {
@@ -51,7 +51,7 @@ public abstract class GeoGrid {
 		this.maxLevel = maxLevel;
 		this.id = gridID;
 		
-		this.manager.addGeoGrid(this);
+		manager.addGeoGrid(this);
 	}
 	
 	/**

@@ -98,6 +98,9 @@ public class WebWorker implements Runnable {
 			case "getGridID":
 				getGridID(out);
 				break;
+			case "getGridBounds":
+				getGridBounds(out);
+				break;
 			}
 		} catch (IllegalArgumentException | ArrayIndexOutOfBoundsException | NullPointerException e) {
 			statusCode = HttpStatus.SC_BAD_REQUEST;
@@ -105,6 +108,12 @@ public class WebWorker implements Runnable {
 		}
 	}
 	
+	private void getGridBounds(PrintWriter out) {
+		GeoGridManager manager = GeoGridManager.getInstance();
+		GeoGrid grid = manager.getNewestGrid();
+		printOut(grid.mapBounds.toString(), out);
+	}
+
 	private void getGridID(PrintWriter out) {
 		GeoGridManager manager = GeoGridManager.getInstance();
 		GeoGrid grid = manager.getNewestGrid();
