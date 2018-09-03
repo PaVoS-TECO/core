@@ -42,7 +42,7 @@ public class MultiGradient {
 		StringBuilder builder = new StringBuilder();
 		builder.append("[");
 		for (int i = 0; i < colors.length; i++) {
-			builder.append(String.format("'%s'", ColorUtil.getHexFromColor(colors[i])));
+			builder.append(String.format("\"%s\"", ColorUtil.getHexFromColor(colors[i])));
 			if (i < colors.length - 1) builder.append(", ");
 		}
 		builder.append("]");
@@ -52,7 +52,7 @@ public class MultiGradient {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("'%s': { ", this.NAME));
+		builder.append(String.format("\"%s\": { ", this.NAME));
 		builder.append(gradientToString());
 		ranges.forEach((range) -> builder.append(String.format(", %s", range.toString())));
 		builder.append(" }");
@@ -60,7 +60,7 @@ public class MultiGradient {
 	}
 	
 	public String gradientToString() {
-		return "'gradient': " + colorsToString(getColors());
+		return "\"gradient\": " + colorsToString(getColors());
 	}
 	
 	public Collection<GradientRange> getRanges() {

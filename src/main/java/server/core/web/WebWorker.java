@@ -104,6 +104,7 @@ public class WebWorker implements Runnable {
 				break;
 			}
 		} catch (IllegalArgumentException | ArrayIndexOutOfBoundsException | NullPointerException e) {
+			e.printStackTrace();
 			statusCode = HttpStatus.SC_BAD_REQUEST;
 			printOut(null, out);
 		}
@@ -156,7 +157,11 @@ public class WebWorker implements Runnable {
 		String name = getParameter("name");
 		GradientManager manager = GradientManager.getInstance();
 		MultiGradient gradient = manager.getGradient(name);
-		printOut(gradient.toString(), out);
+		StringBuilder builder = new StringBuilder();
+		builder.append("{ ");
+		builder.append(gradient.toString());
+		builder.append(" }");
+		printOut(builder.toString(), out);
 	}
 	
 	private void getObservationTypes(PrintWriter out) {

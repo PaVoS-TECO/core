@@ -74,7 +74,7 @@ public abstract class GeoGrid {
 	}
 	
 	public void close() {
-		this.manager.removeGeoGrid(this);
+		manager.removeGeoGrid(this);
 	}
 	
 	@Override

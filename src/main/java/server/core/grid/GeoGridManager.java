@@ -23,16 +23,18 @@ public final class GeoGridManager {
 	private ScheduledExecutorService execUpdate = Executors.newSingleThreadScheduledExecutor();
 	
 	private GeoGridManager() {
-		execUpdate.scheduleAtFixedRate(() -> {
-			synchronized (grids) {
-				for (GeoGrid grid : grids) {
-					grid.updateObservations();
-					grid.transferSensorDataDirectly();
-					grid.updateDatabase();
-					grid.resetObservations();
+		new Thread(() -> {
+			execUpdate.scheduleAtFixedRate(() -> {
+				synchronized (grids) {
+					for (GeoGrid grid : grids) {
+						grid.updateObservations();
+						grid.transferSensorDataDirectly();
+						grid.updateDatabase();
+						grid.resetObservations();
+					}
 				}
-			}
-		}, 0, 10, TimeUnit.SECONDS);
+			}, 0, 10, TimeUnit.SECONDS);
+		}).start();
 	}
 	
 	public static GeoGridManager getInstance() {
