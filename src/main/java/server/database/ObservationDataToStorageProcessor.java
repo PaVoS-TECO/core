@@ -135,14 +135,15 @@ public class ObservationDataToStorageProcessor {
      * @param clusterID The cluster from which to get the value
      * @param timestamp The time to check
      * @param observedProperty The observedProperty needed
-     * @return The value to the observedProperty key. Returns {@code null} in any of the following cases:<br>
-     * - There is no entry for the cluster<br>
-     * - There is no entry for the cluster before or at the given timestamp<br>
-     * - There is no {@code observedProperty} key in the observations Map<br>
-     * - The value to the {@code observedProperty} key is literally {@code null}<br>
-     * - Any of the parameters is badly formatted (see logs)
+     * @return The value to the observedProperty key. Returns {@code null} in case of an error. See logs for details.
      */
 	public String get(String clusterID, String timestamp, String observedProperty) {
+		
+		if (clusterID == null || timestamp == null || observedProperty == null) {
+			logger.warn("Parameters may not be null.");
+			return null;
+		}
+		
 		// get counter for clusterID
 		Long counter = null;
 		
