@@ -1,6 +1,7 @@
 package server.core.web;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -111,7 +112,22 @@ public class WebWorker implements Runnable {
 	private void getGridBounds(PrintWriter out) {
 		GeoGridManager manager = GeoGridManager.getInstance();
 		GeoGrid grid = manager.getNewestGrid();
-		printOut(grid.mapBounds.toString(), out);
+		printOut(rectangleToString(grid.mapBounds), out);
+	}
+	
+	private String rectangleToString(Rectangle2D.Double rect) {
+		StringBuilder builder = new StringBuilder();
+		String comma = ", ";
+		builder.append("{");
+		builder.append(rect.getX());
+		builder.append(comma);
+		builder.append(rect.getY());
+		builder.append(comma);
+		builder.append(rect.getWidth());
+		builder.append(comma);
+		builder.append(rect.getHeight());
+		builder.append("}");
+		return builder.toString();
 	}
 
 	private void getGridID(PrintWriter out) {
