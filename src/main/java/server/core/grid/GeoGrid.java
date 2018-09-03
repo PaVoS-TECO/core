@@ -37,12 +37,12 @@ public abstract class GeoGrid {
 	public final int columns;
 	public final int maxLevel;
 	public final String id;
-	protected List<GeoPolygon> polygons = new ArrayList<>();
-	protected Map<String, Point2D.Double> sensorsAndLocations = new HashMap<>();
+	protected volatile List<GeoPolygon> polygons = new ArrayList<>();
+	protected volatile Map<String, Point2D.Double> sensorsAndLocations = new HashMap<>();
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static final int CYCLES_UNTIL_RESET = 0;
 	private static volatile GeoGridManager manager = GeoGridManager.getInstance();
-	private int cyclesDone = 0;
+	private volatile int cyclesDone = 0;
 	
 	public GeoGrid(Rectangle2D.Double mapBounds, int rows, int columns, int maxLevel, String gridID) {
 		this.mapBounds = mapBounds;
@@ -61,7 +61,7 @@ public abstract class GeoGrid {
 	 * @param location The {@link Point2D.Double} point on the map
 	 * @param data The {@link ObservationData} to be added
 	 */
-	public void addObservation(Point2D.Double location, ObservationData data) {
+	public synchronized void addObservation(Point2D.Double location, ObservationData data) {
 		GeoPolygon targetPolygon = null;
 		try {
 			targetPolygon = getPolygonContaining(location, maxLevel);

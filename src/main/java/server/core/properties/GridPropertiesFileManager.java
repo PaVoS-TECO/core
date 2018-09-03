@@ -3,6 +3,9 @@ package server.core.properties;
 import java.awt.geom.Rectangle2D;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import server.core.grid.GeoRecRectangleGrid;
 import server.transfer.config.util.EnvironmentUtil;
 
@@ -18,6 +21,7 @@ public final class GridPropertiesFileManager {
 	private static final String DEFAULT_GRID_Y_MAX = "PAVOS_DEFAULT_GRID_Y_MAX";
 	private Properties properties = new Properties();
 	private static GridPropertiesFileManager instance;
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private void loadGridProperties() {
 		properties.put(DEFAULT_GRID_NAME, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_NAME", "recursiveRectangleGrid"));
@@ -48,12 +52,21 @@ public final class GridPropertiesFileManager {
 		double yMin = Double.parseDouble(getProperty(DEFAULT_GRID_Y_MIN));
 		double yMax = Double.parseDouble(getProperty(DEFAULT_GRID_Y_MAX));
 		
-		switch(name) {
-		case GeoRecRectangleGrid.NAME:
-			new GeoRecRectangleGrid(new Rectangle2D.Double(xMin, yMin, xMax * 2, yMax * 2), rows, columns, levels);
-			break;
-		default:
-			throw new IllegalArgumentException("Grid not recognized. Exiting with Errors.");
+		Thread t = new Thread(() ->  {
+			switch(name) {
+			case GeoRecRectangleGrid.NAME:
+				new GeoRecRectangleGrid(new Rectangle2D.Double(xMin, yMin, xMax * 2, yMax * 2), rows, columns, levels);
+				break;
+			default:
+				throw new IllegalArgumentException("Grid not recognized. Exiting with Errors.");
+			}
+		});
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			t.interrupt();
+			logger.error("Thread was interrupted.");
 		}
 	}
 	

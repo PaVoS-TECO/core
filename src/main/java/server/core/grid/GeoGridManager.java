@@ -27,10 +27,12 @@ public final class GeoGridManager {
 			execUpdate.scheduleAtFixedRate(() -> {
 				synchronized (grids) {
 					for (GeoGrid grid : grids) {
-						grid.updateObservations();
-						grid.transferSensorDataDirectly();
-						grid.updateDatabase();
-						grid.resetObservations();
+						synchronized (grid) {
+							grid.updateObservations();
+							grid.transferSensorDataDirectly();
+							grid.updateDatabase();
+							grid.resetObservations();
+						}
 					}
 				}
 			}, 0, 10, TimeUnit.SECONDS);
