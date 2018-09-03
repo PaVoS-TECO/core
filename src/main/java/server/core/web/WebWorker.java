@@ -118,15 +118,15 @@ public class WebWorker implements Runnable {
 	private String rectangleToString(Rectangle2D.Double rect) {
 		StringBuilder builder = new StringBuilder();
 		String comma = ", ";
-		builder.append("{");
+		builder.append("{[");
 		builder.append(rect.getX());
 		builder.append(comma);
 		builder.append(rect.getY());
+		builder.append("], [");
+		builder.append(rect.getMaxX());
 		builder.append(comma);
-		builder.append(rect.getWidth());
-		builder.append(comma);
-		builder.append(rect.getHeight());
-		builder.append("}");
+		builder.append(rect.getMaxY());
+		builder.append("]}");
 		return builder.toString();
 	}
 
