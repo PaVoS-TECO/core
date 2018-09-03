@@ -323,7 +323,7 @@ public class WebWorker implements Runnable {
 	private void printOut(String result, PrintWriter out) {
         // Start sending our reply, using the HTTP 1.1 protocol
         out.print("HTTP/1.1 " + statusCode + " \r\n"); 			// Version & status code
-        out.print("Access-Control-Allow-Origin: *"); // CORS
+        out.print("Access-Control-Allow-Origin: * \r\n"); // CORS
         out.print("Content-Type: text/plain\r\n"); 	// The type of data
         out.print("Connection: close\r\n"); 		// Will close stream
         out.print("\r\n"); 							// End of headers
