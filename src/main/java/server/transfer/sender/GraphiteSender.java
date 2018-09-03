@@ -47,6 +47,8 @@ public class GraphiteSender extends Sender {
 	public boolean send(Collection<ObservationData> records) {
 		if (som == null) return false;
 		if (som.isConnectionClosed()) som.reconnect();
+		if (som.isConnectionClosed()) return false;
+		
 		PyList list = new PyList();
 		
 		for (ObservationData record : records) {
