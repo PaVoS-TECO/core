@@ -25,6 +25,7 @@ public class WebServer implements Runnable {
 	public void run() {
 		shutdown = false;
 		try (ServerSocket serverSocket = new ServerSocket(PORT, BACKLOG)) {
+			logger.info(String.format("WebServer for GeoGrid-informations has started. IP=%s PORT=%s", serverSocket.getInetAddress(), PORT));
 			while (!shutdown) {
 				processClients(serverSocket);
 			}
