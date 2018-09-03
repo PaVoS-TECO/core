@@ -45,6 +45,38 @@ define(function() {
             return result;
         },
         /**
+          * Concat all array entries with the submitted separator
+          * 
+          * @param {*} array the array
+          * @param {*} separator the separator
+          */
+        concat: function(array, separator) {
+            var output = array[0];
+            for (i = 1; i < array.length; i++) {
+                output = output + separator + array[i];
+            }
+            return output;
+        },
+        /**
+          * Replaces all occurences of toBeReplaced in input with the submitted replacement.
+          * 
+          * @param {*} input the input
+          * @param {*} toBeReplaced an array containing the strings that should be replaced
+          * @param {*} replacement an array containing the strings that should be put in instead
+          */
+        replaceAll: function(input, toBeReplaced, replacement) {
+            if (toBeReplaced.constructor !== Array) {
+                return input.split(toBeReplaced).join(replacement);
+            } else {
+                var output = input;
+                for(i = 0; i < toBeReplaced.length; i++) {
+                    output = output.split(toBeReplaced[i]).join(replacement[i]);
+                }
+                return output;
+            }
+        },
+
+        /**
          * Convert the submitted component to a hexadecimal number.
          * 
          * @param {*} c the submitted component
@@ -74,6 +106,24 @@ define(function() {
          */
         getRandomInt: function(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
+        },
+
+        /**
+          * Returns the hash value of the submitted input. Equivalent to Java's String.hashCode() method.
+          * 
+          * @param {*} input the input that is supposed to be hashed
+          */
+        getHashCode: function(input) {
+            var hash = 0;
+            if (String(input).length == 0) {
+                return hash;
+            }
+            for (var i = 0; i < String(input).length; i++) {
+                var char = String(input).charCodeAt(i);
+                hash = ((hash<<5)-hash)+char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return hash;
         }
     }
 });

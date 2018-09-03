@@ -17,13 +17,34 @@ require.config({
         'appState': '../../resources/js/app/appState',
         'appManager': '../../resources/js/app/appManager',
         'initializer': '../../resources/js/app/initializer',
+        'routine': '../../resources/js/app/routine',
+        'requestor': '../../resources/js/app/requestor',
+        'requestHandler': '../../resources/js/app/requestHandler',
+        'mapManager': '../../resources/js/app/mapManager',
+
+        'initializationRoutine': '../../resources/js/app/routine/initializationRoutine',
+        'fetchRoutine': '../../resources/js/app/routine/fetchRoutine',
+        'exportRoutine': '../../resources/js/app/routine/exportRoutine',
+        'exportFormatFetchRoutine': '../../resources/js/app/routine/exportFormatFetchRoutine',
+        'clusterGeoJsonFetchRoutine': '../../resources/js/app/routine/clusterGeoJsonFetchRoutine',
+        'colorGradientFetchRoutine': '../../resources/js/app/routine/colorGradientFetchRoutine',
+        'sensorGeoJsonFetchRoutine': '../../resources/js/app/routine/sensorGeoJsonFetchRoutine',
+        'sensorReportRoutine': '../../resources/js/app/routine/sensorReportRoutine',
+        'sensorTypeFetchRoutine': '../../resources/js/app/routine/sensorTypeFetchRoutine',
+        'gridIDFetchRoutine': '../../resources/js/app/routine/gridIDFetchRoutine',
+
         'grid': '../../resources/js/grid/grid',
         'recursiveRectangleGrid': '../../resources/js/grid/recursiveRectangleGrid',
         'cluster': '../../resources/js/grid/cluster',
         'recursiveRectangleCluster': '../../resources/js/grid/recursiveRectangleCluster',
         'bounds': '../../resources/js/grid/bounds',
         'dimension': '../../resources/js/grid/dimension',
-        'requestor': '../../resources/js/requestor/requestor',
+
+        'color': '../../resources/js/visualization/color',
+        'colorGradient': '../../resources/js/visualization/colorGradient',
+        'multiColorGradient': '../../resources/js/visualization/multiColorGradient',
+
+        'parser': '../../resources/js/util/parser',
         'dateTime': '../../resources/js/util/dateTime',
         'dynamicHtmlBuilder': '../../resources/js/util/dynamicHtmlBuilder',
         'utcDateTime': '../../resources/js/util/utcDateTime',
@@ -65,34 +86,16 @@ require.config({
     }
 });
 
-require(['app', 'appState', 'recursiveRectangleGrid', 'bounds', 'utcDateTime', 'dynamicHtmlBuilder', 'jquery', 
-         'bootstrap', 'bootstrapDatetimepicker', 'bootstrapTouchspin', 'leaflet', 'leafletFullscreen', 'leafletCoordinates', 
-         'fontAwesome', 'fontAwesomeSolid', 'loadingOverlay'], 
-         function(App, AppState, RecursiveRectangleGrid, Bounds, UTCDateTime, DynamicHtmlBuilder) {
+require(['app', 
+         'jquery', 
+         'bootstrap', 'bootstrapDatetimepicker', 'bootstrapTouchspin', 
+         'leaflet', 'leafletFullscreen', 'leafletCoordinates', 
+         'fontAwesome', 'fontAwesomeSolid', 
+         'loadingOverlay'], 
+         function(App) {
 
-    var grid = new RecursiveRectangleGrid(new Bounds([-180, -90], [180, 90]), 10, 10, 5);
+    var app = new App();
 
-    var appState = new AppState("",
-                                [grid.getClusterContainingCoordinate([49, 8], 2), grid.getClusterContainingCoordinate([53, 15], 2)],
-                                "pollution", 
-                                "CSV",
-                                [[new UTCDateTime(2018, 1, 1, 0, 0, 0)], [new UTCDateTime(2018, 8, 1, 0, 0, 0)]], 
-                                new UTCDateTime(2018, 7, 23, 12, 25, 0),
-                                10000,
-                                2500,
-                                true);
-    var app = new App(appState);
-
-    app.init();
     app.run();
-
-    // ================================================================================================================= //
-
-    // setInterval(tempMethod, 5000);
-
-    // function tempMethod( )
-    // {
-    //   console.log(ViewState.toString());
-    // }
 
 });

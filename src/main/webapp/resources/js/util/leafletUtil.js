@@ -66,6 +66,19 @@ define(['util', 'mathUtil', 'leaflet'], function(Util, MathUtil) {
         },
 
         /**
+          * Returns a layer containing the geojson with the onEachFeature function applied to each feature.
+          * 
+          * @param {*} map the map
+          * @param {*} geoJson the geojson
+          * @param {*} onEachFeature the function that should be applied on each feature
+          */
+        createLayerFromGeoJson: function(geoJson, onEachFeature) {
+            return L.geoJSON(geoJson, {
+                onEachFeature: onEachFeature
+            })
+        },
+
+        /**
          * Displays the submitted GeoJson on the leaflet map.
          * 
          * @param {*} map the leaflet map
@@ -100,6 +113,28 @@ define(['util', 'mathUtil', 'leaflet'], function(Util, MathUtil) {
                 formattedCoordinates.push(LeafletUtil.switchLatLon(element));
             });
             return formattedCoordinates;
+        },
+
+        getStyle: function(min, max, value, colorGradient, fillOp, borderOp, borderWeight) {
+            var fillCol = '#ffffff';
+            var fillOpac = 0;
+            var borderColor = '#ffffff';
+            var borderOpacity = 0;
+
+            if (!isNaN(value)) {
+                var fillCol = colorGradient.getColor(min, max, value).getHex();
+                var fillOpac = fillOp;
+                var borderColor = colorGradient.getColor(min, max, value).getHex();
+                var borderOpacity = borderOp;
+            }
+
+            return {
+                fillColor: fillCol,
+                fillOpacity: fillOpac,
+                color: borderColor,
+                opcaity: borderOpacity,
+                weight: borderWeight
+            }
         },
 
         // ----------------------------------------------------------------------------------------------- //

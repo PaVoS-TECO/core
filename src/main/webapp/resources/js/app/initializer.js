@@ -1,74 +1,60 @@
-define(['jquery', 'app', 'appState', 'appManager', 'recursiveRectangleGrid','recursiveRectangleCluster', 'bounds', 'dynamicHtmlBuilder', 'utcDateTime', 'leafletUtil', 'geoJsonUtil', 'storageUtil', 'requestor',
+define(['jquery', 'app', 'appState', 'appManager', 'fetchRoutine', 'exportRoutine', 'recursiveRectangleGrid','recursiveRectangleCluster', 'bounds', 'dynamicHtmlBuilder', 'utcDateTime', 'leafletUtil', 'geoJsonUtil', 'storageUtil', 'requestor', 'mapManager',
         'leaflet', 'bootstrapDatetimepicker', 'bootstrapTouchspin'],
-function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangleCluster, Bounds, DynamicHtmlBuilder, UTCDateTime, LeafletUtil, GeoJsonUtil, StorageUtil, Requestor) {
-    // Latitude - Longitude
-    var KARLSRUHE = [49.007, 8.404];
-    var KARLSRUHE_TECO = [49.013, 8.424];
-
-    var LEAFLET_MAP_CONTAINER = 'mapContainer';
-    var BASEMAP_URL = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
-
-    var BASEMAP_ATTRIBUTION = { attribution: 'Positron', minZoom: 2, maxZoom: 15 };
-    var INITIAL_COORDINATES = KARLSRUHE;
-    var INITIAL_ZOOMLEVEL = 10;
-    var IS_FULLSCREEN_AVAILABLE = true;
-    var IS_MOUSE_COORDINATES_VISIBLE = true;
-
+function($, App, AppState, AppManager, FetchRoutine, ExportRoutine, RecursiveRectangleGrid, RecursiveRectangleCluster, Bounds, DynamicHtmlBuilder, UTCDateTime, LeafletUtil, GeoJsonUtil, StorageUtil, Requestor, MapManager) {
     var exportModalTemp;
     var favoritesModalTemp;
     var addFavoritesModalTemp;
     var timeSettingsModalTemp;
-  
+
     var leafletMap;
     var startStopChecked;
 
     return {
-        init: function(app){
-            exportModalTemp = app.getAppState().clone();
-            sensortypeModalTemp = app.getAppState().clone();
+        start: function(){
+            exportModalTemp = AppManager.APP_STATE.clone();
+            sensortypeModalTemp = AppManager.APP_STATE.clone();
             favoritesModalTemp = new AppState();
-            addFavoritesModalTemp = app.getAppState().clone();
-            timeSettingsModalTemp = app.getAppState().clone();
+            addFavoritesModalTemp = AppManager.APP_STATE.clone();
+            timeSettingsModalTemp = AppManager.APP_STATE.clone();
 
             startStopChecked = true;
 
-            this.initLeafletMap(app);
-            this.initExportModal(app);
-            this.initSensortypeModal(app);
-            this.initFavoritesModal(app);
-            this.initAddFavoriteModal(app);
-            this.initContentTable(app);
-            this.initTimetstampSlider(app);
-
-            this.initStartStopUpdateButtons(app);
-            this.initTimeSettingsModal(app);
+            this.initLeafletMap();
+            this.initExportModal();
+            this.initSensortypeModal();
+            this.initFavoritesModal();
+            this.initAddFavoriteModal();
+            this.initContentTable();
+            this.initTimetstampSlider();
+            this.initStartStopUpdateButtons();
+            this.initTimeSettingsModal();
         },
 
-        initLeafletMap: function(app) {
+        initLeafletMap: function() {
             AppManager.MAP = LeafletUtil.createLeafletMap(
-                LEAFLET_MAP_CONTAINER,
-                BASEMAP_URL, BASEMAP_ATTRIBUTION,
-                INITIAL_COORDINATES, INITIAL_ZOOMLEVEL,
-                IS_FULLSCREEN_AVAILABLE, IS_MOUSE_COORDINATES_VISIBLE);
+                AppManager.LEAFLET_MAP_CONTAINER,
+                AppManager.BASEMAP_URL, AppManager.BASEMAP_ATTRIBUTION,
+                AppManager.INITIAL_COORDINATES, AppManager.INITIAL_ZOOMLEVEL,
+                AppManager.IS_FULLSCREEN_AVAILABLE, AppManager.IS_MOUSE_COORDINATES_VISIBLE);
 
             AppManager.MAP.on("moveend", function () {
                 var leafletMapBounds = AppManager.MAP.getBounds();
-                console.log(AppManager.GRID.getClustersContainedInBounds(new Bounds([leafletMapBounds._southWest.lat, leafletMapBounds._southWest.lng],
-                                                                         [leafletMapBounds._northEast.lat, leafletMapBounds._northEast.lng]), 
-                                                                         LeafletUtil.calculateGridLevel(AppManager.MAP.getZoom())));
+                // console.log(AppManager.GRID.getClustersContainedInBounds(new Bounds([leafletMapBounds._southWest.lat, leafletMapBounds._southWest.lng],
+                //                                                          [leafletMapBounds._northEast.lat, leafletMapBounds._northEast.lng]), 
+                //                                                          LeafletUtil.calculateGridLevel(AppManager.MAP.getZoom())));
             });
 
             AppManager.MAP.on("zoomend", function () {
                 var leafletMapBounds = AppManager.MAP.getBounds();
-                console.log(AppManager.GRID.getClustersContainedInBounds(new Bounds([leafletMapBounds._southWest.lat, leafletMapBounds._southWest.lng],
-                                                                         [leafletMapBounds._northEast.lat, leafletMapBounds._northEast.lng]), 
-                                                                         LeafletUtil.calculateGridLevel(AppManager.MAP.getZoom())));
+                // console.log(AppManager.GRID.getClustersContainedInBounds(new Bounds([leafletMapBounds._southWest.lat, leafletMapBounds._southWest.lng],
+                //                                                          [leafletMapBounds._northEast.lat, leafletMapBounds._northEast.lng]), 
+                //                                                          LeafletUtil.calculateGridLevel(AppManager.MAP.getZoom())));
             });
-            
-            LeafletUtil.initializeGrid(AppManager.MAP);
+
+            // LeafletUtil.initializeGrid(AppManager.MAP);
         },
 
-        initExportModal: function(app) {
+        initExportModal: function() {
             DynamicHtmlBuilder.buildRadioButtonGroup('#exportModalSensorTypeRadioButtons', 'exportModalSensorTypeRadioButtons', AppManager.AVAILABLE_SENSORTYPES, 'temperature_celsius');
             DynamicHtmlBuilder.buildRadioButtonGroup('#exportModalExportFormatRadioButtons', 'exportModalExportFormatRadioButtons', AppManager.AVAILABLE_EXPORTFORMATS, 'CSV');
 
@@ -85,12 +71,12 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             
             // Insert current app state into each component when export modal is opened
             $('#exportModal').on('shown.bs.modal', function (e) {
-                $('#exportFrom-datetimepicker').val(app.getAppState().getSelectedTimeframe()[0].toString());
-                $('#exportTo-datetimepicker').val(app.getAppState().getSelectedTimeframe()[1].toString());
-                $('#selectedClusters-inputForm').val(JSON.stringify(app.getAppState().getSelectedClusters()));
-                $('input[name=' + 'exportModalSensorTypeRadioButtons' + '][value=' + app.getAppState().getSelectedSensortype() + ']').prop("checked",true);
-                $('input[name=' + 'exportModalExportFormatRadioButtons' + '][value=' + app.getAppState().getSelectedExportformat() + ']').prop("checked",true);
-                exportModalTemp = app.getAppState().clone();
+                $('#exportFrom-datetimepicker').val(AppManager.APP_STATE.getSelectedTimeframe()[0].toString());
+                $('#exportTo-datetimepicker').val(AppManager.APP_STATE.getSelectedTimeframe()[1].toString());
+                $('#selectedClusters-inputForm').val(JSON.stringify(AppManager.APP_STATE.getSelectedClusters()));
+                $('input[name=' + 'exportModalSensorTypeRadioButtons' + '][value=' + AppManager.APP_STATE.getSelectedSensortype() + ']').prop("checked",true);
+                $('input[name=' + 'exportModalExportFormatRadioButtons' + '][value=' + AppManager.APP_STATE.getSelectedExportformat() + ']').prop("checked",true);
+                exportModalTemp = AppManager.APP_STATE.clone();
             })
 
             $('#exportFrom-datetimepicker').change(function() {
@@ -116,7 +102,7 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             });
 
             $('#exportModalselectedClustersDropdownSelected').click(function() {
-                $('#selectedClusters-inputForm').val(JSON.stringify(app.getAppState().getSelectedClusters()));
+                $('#selectedClusters-inputForm').val(JSON.stringify(AppManager.APP_STATE.getSelectedClusters()));
                 $('#selectedClusters-inputForm').trigger('change');
             });
 
@@ -159,22 +145,27 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             });
 
             $("#exportModalApplyButton").click(function() {
-                // Requestor.startLoadAnimation(3500);
-                // $("#exportModal").modal('toggle');
-                console.log(exportModalTemp);
+                var exportRoutine = new ExportRoutine(
+                    AppManager.EXPORT_TIMOUT, 
+                    AppManager.EXPORT_STATUS_TIMEOUT, 
+                    exportModalTemp.getSelectedExportformat(),
+                    exportModalTemp.getSelectedTimeframe(),
+                    exportModalTemp.getSelectedSensortype(),
+                    exportModalTemp.getSelectedClusters());
+                exportRoutine.run();
+
+                $("#exportModal").modal('toggle');
             });
 
-            $("#exportModalCancelButton").click(function() {
-                Requestor.stopLoadAnimation();
-            });
+            // $("#exportModalCancelButton").click(function() { });
         },
 
-        initSensortypeModal: function(app) {
+        initSensortypeModal: function() {
             DynamicHtmlBuilder.buildRadioButtonGroup('#sensorTypeModalRadioButtons', 'sensorTypeModalSensorTypeRadioButtons', AppManager.AVAILABLE_SENSORTYPES, 'temperature_celsius');
-          
+
             $('#sensortypeModal').on('shown.bs.modal', function(){
-                sensortypeModalTemp.setSelectedSensortype(app.getAppState().getSelectedSensortype());
-                $('input[name=' + 'sensorTypeModalSensorTypeRadioButtons' + '][value=' + app.getAppState().getSelectedSensortype() + ']').prop("checked",true);
+                sensortypeModalTemp.setSelectedSensortype(AppManager.APP_STATE.getSelectedSensortype());
+                $('input[name=' + 'sensorTypeModalSensorTypeRadioButtons' + '][value=' + AppManager.APP_STATE.getSelectedSensortype() + ']').prop("checked",true);
             });
 
             $('input[name=' + 'sensorTypeModalSensorTypeRadioButtons' + ']').change(function() {
@@ -182,14 +173,14 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             });
 
             $('#sensortypeModalApplyButton').click(function() {
-                app.getAppState().setSelectedSensortype(sensortypeModalTemp.getSelectedSensortype());
+                AppManager.APP_STATE.setSelectedSensortype(sensortypeModalTemp.getSelectedSensortype());
                 addFavoritesModalTemp.setSelectedSensortype(sensortypeModalTemp.getSelectedSensortype());
 
                 $('#sensortypeModal').modal('toggle');
             });
         },
 
-        initFavoritesModal: function(app) {
+        initFavoritesModal: function() {
             $("#favoritesModal").on('shown.bs.modal', function(){
                 favoritesModalTemp = new AppState();
 
@@ -207,7 +198,7 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
               */
              $(document).on("click", "#favoritesTable td", function() {
                 if (favoritesModalTemp.parse(JSON.parse(localStorage.getItem($(this)[0].innerHTML)))) {
-                    $("#selectedFavoriteOutput").val(app.getAppState().toString());
+                    $("#selectedFavoriteOutput").val(AppManager.APP_STATE.toString());
                 } else {
                     alert("The selected favorite has an incompatible format.");
                 }
@@ -239,7 +230,7 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             });
 
             $('#favoritesModalApplyButton').click(function() {
-                app.getAppState().update(favoritesModalTemp);
+                AppManager.APP_STATE.update(favoritesModalTemp);
                 exportModalTemp.update(favoritesModalTemp);
                 addFavoritesModalTemp.update(favoritesModalTemp);
                 timeSettingsModalTemp.update(favoritesModalTemp);
@@ -248,7 +239,7 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             });
         },
 
-        initAddFavoriteModal: function(app) {
+        initAddFavoriteModal: function() {
             $("#addFavoriteModal").on('shown.bs.modal', function(){
                 $('#yourFavoriteInput').val(addFavoritesModalTemp.toString());
             });
@@ -265,7 +256,7 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             });
         },
         
-        initContentTable: function(app) {
+        initContentTable: function() {
             DynamicHtmlBuilder.buildTableContentFromArray('#sensortable', AppManager.CONTENT_TABLE[0], AppManager.CONTENT_TABLE[1]);
 
             $("#sensortable tr").click(function() {
@@ -273,23 +264,34 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             });
         },
 
-        initTimetstampSlider: function(app) {
+        initTimetstampSlider: function() {
             setInterval(function(){
-                if (startStopChecked) {
+                if (!startStopChecked) {
                     $('#timeStampSlider').val((Number($('#timeStampSlider').val()) + 5) % 100);
                     // AppManager.MAP.trigger('moveend');
                 }
             }, 750);
+
+            $('#timeStampSlider').popover({
+                title: "Title",
+                content: "Content",
+                placement: "bottom"
+            });
+
+            // $('#timeStampSlider').hover(function() {
+            //     console.log("HELLO");
+            // });
         },
 
-        initStartStopUpdateButtons: function(app) {
+        initStartStopUpdateButtons: function() {
             /**
              * Encapsulates the state switch logic of starting and stopping the
              * current routine, as well as updating the current context.
              */
             $('#startStopUpdateButton').click(function () {
-                startStopChecked = $('input', this).is(':checked');
-                $('span', this).toggleClass('glyphicon-play glyphicon-pause');
+                // startStopChecked = $('input', this).is(':checked');
+                // $('span', this).toggleClass('glyphicon-play glyphicon-pause');
+                FetchRoutine.run();
             });
 
             /**
@@ -302,7 +304,7 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             });
         },
 
-        initTimeSettingsModal: function(app) {
+        initTimeSettingsModal: function() {
             DynamicHtmlBuilder.buildRadioButtonGroup('#timeSettingsAutomaticManualRefreshRadioButtons', 'timeSettingsAutomaticManualRefreshRadioButtons', AppManager.AVAILABLE_REFRESH_STATES, 'Automatic');
 
             // Adding Z (-> symbolizes +00:00) at the end of the format doesn't work yet
@@ -337,7 +339,7 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             });
 
             $('#timeSettingsModal').on('shown.bs.modal', function() {
-                timeSettingsModalTemp.update(app.getAppState());
+                timeSettingsModalTemp.update(AppManager.APP_STATE);
 
                 $('#timeSettingsFrom-datetimepicker').val(timeSettingsModalTemp.getSelectedTimeframe()[0]);
                 $('#timeSettingsTo-datetimepicker').val(timeSettingsModalTemp.getSelectedTimeframe()[1]);
@@ -379,7 +381,7 @@ function($, App, AppState, AppManager, RecursiveRectangleGrid, RecursiveRectangl
             });
 
             $('#timeSettingsModalApplyButton').click(function() {
-                app.getAppState().update(timeSettingsModalTemp);
+                AppManager.APP_STATE.update(timeSettingsModalTemp);
                 addFavoritesModalTemp.update(timeSettingsModalTemp);
 
                 $('#timeSettingsModal').modal('toggle');
