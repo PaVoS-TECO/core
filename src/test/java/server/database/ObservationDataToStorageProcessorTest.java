@@ -4,6 +4,7 @@
 package server.database;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,8 +39,10 @@ public class ObservationDataToStorageProcessorTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		odtsp = new ObservationDataToStorageProcessor("192.168.56.101", 11211);
 		cli = new XMemcachedClient("192.168.56.101", 11211);
+		assumeTrue(!cli.isShutdown());
+		odtsp = new ObservationDataToStorageProcessor("192.168.56.101", 11211);
+		assumeTrue(odtsp.isConnected());
 	}
 
 	/**

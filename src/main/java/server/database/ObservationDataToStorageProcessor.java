@@ -24,6 +24,7 @@ public class ObservationDataToStorageProcessor {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private MemcachedClient cli;
+    private boolean isConnected = false;
 
     /**
      * Default constructor
@@ -33,9 +34,20 @@ public class ObservationDataToStorageProcessor {
     public ObservationDataToStorageProcessor(String host, int port) {
         try {
             cli = new XMemcachedClient(host, port);
-        } catch (IOException e) {
+            cli.set("testConnection", 1000, "TEST");
+            if (cli.get("testConnection") == null) {
+            	isConnected = false;
+            } else {
+            	cli.delete("testConnection");
+            	isConnected = true;
+            }
+        } catch (IOException | TimeoutException | InterruptedException | MemcachedException e) {
             logger.error("Could not connect to memcached client!", e);
         }
+    }
+    
+    public boolean isConnected() {
+    	return isConnected;
     }
 
     /**
