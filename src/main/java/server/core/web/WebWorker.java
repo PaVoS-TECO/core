@@ -167,7 +167,7 @@ public class WebWorker implements Runnable {
 	
 	private void getObservationTypes(PrintWriter out) {
 		String gridID = getParameter("gridID");
-		Facade f = new Facade();
+		Facade f = Facade.getInstance();
 		Set<String> properties = f.getObservedProperties(gridID);
 		StringBuilder builder = new StringBuilder();
 		builder.append("[ ");
@@ -274,7 +274,7 @@ public class WebWorker implements Runnable {
 	private String getDatabaseDataCluster(String gridID, String keyProperty, String[] clusterIDs, String[] time, String stepsString) {
 		if (time.length == 1) {
 			
-			Facade database = new Facade();
+			Facade database = Facade.getInstance();
 			Collection<ObservationData> observations = new HashSet<>();
 			
 			for (String clusterID : clusterIDs) {

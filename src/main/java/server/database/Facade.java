@@ -11,12 +11,13 @@ import server.transfer.data.ObservationDataDeserializer;
  */
 public class Facade {
 
-	private ObservationDataToStorageProcessor storageProcessor;
+	private static volatile ObservationDataToStorageProcessor storageProcessor;
+	private static volatile Facade instance;
 	
     /**
      * Default constructor
      */
-    public Facade() {
+    private Facade() {
     	String host = EnvironmentUtil.getEnvironmentVariable("PAVOS_MEMCACHED_LOCATION", "pavos.oliver.pw");
     	int port;
     	try {
@@ -78,6 +79,13 @@ public class Facade {
      */
     public Set<String> getObservedProperties(String gridID) {
     	return storageProcessor.getObservedProperties(gridID);
+    }
+    
+    public synchronized static Facade getInstance() {
+    	if (storageProcessor == null || !storageProcessor.isConnected()) {
+    		instance = new Facade();
+    	}
+    	return instance;
     }
 
 }

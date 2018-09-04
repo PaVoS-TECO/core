@@ -303,7 +303,7 @@ public abstract class GeoGrid {
 	 * Updates the Database.
 	 */
 	public void updateDatabase() {
-		Facade database = new Facade();
+		Facade database = Facade.getInstance();
 		Collection<ObservationData> observations = getGridObservations();
 		for (ObservationData entry : observations) {
 			database.addObservationData(entry);
