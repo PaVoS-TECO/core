@@ -24,7 +24,8 @@ public class ObservationDataToStorageProcessor {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private MemcachedClient cli;
-    private boolean isConnected = false;
+    private final String host;
+    private final int port;
 
     /**
      * Default constructor
@@ -32,22 +33,44 @@ public class ObservationDataToStorageProcessor {
      * @param port {@link Integer}
      */
     public ObservationDataToStorageProcessor(String host, int port) {
-        try {
+    	this.host = host;
+    	this.port = port;
+    	connect();
+    }
+    
+    private boolean connect() {
+    	try {
             cli = new XMemcachedClient(host, port);
             cli.set("testConnection", 1000, "TEST");
             if (cli.get("testConnection") == null) {
-            	isConnected = false;
+            	return false;
             } else {
             	cli.delete("testConnection");
-            	isConnected = true;
+            	return true;
             }
         } catch (IOException | TimeoutException | InterruptedException | MemcachedException e) {
             logger.error("Could not connect to memcached client!", e);
+            return false;
         }
     }
     
+    /**
+     * Check if this instance is connected to Memcached.
+     * @return {@code true} if connected, {@code false} if not.
+     */
     public boolean isConnected() {
-    	return isConnected;
+    	return !cli.isShutdown();
+    }
+    
+    /**
+     * Tries to reconnect to Memcached.
+     * @return {@code true} if connection could be established, {@code false} if not.
+     */
+    public boolean reconnect() {
+    	if (!cli.isShutdown()) {
+    		return true;
+    	}
+    	return connect();
     }
 
     /**
@@ -55,6 +78,11 @@ public class ObservationDataToStorageProcessor {
      * @param observationData
      */
 	public void add(ObservationData observationData) {
+		
+		if (cli.isShutdown()) {
+			logger.warn("Memcached is not connected! ObservationData could not be added to database!");
+			return;
+		}
 		// A singular pipe character is used as delimiter, so it is an illegal character for clusterID.
 		if (observationData.clusterID.contains("|")) {
 			logger.warn("ClusterID of ObservationData object contains illegal character '|': {}", observationData.clusterID);
@@ -153,6 +181,11 @@ public class ObservationDataToStorageProcessor {
      */
 	public String get(String clusterID, String timestamp, String observedProperty) {
 		
+		if (cli.isShutdown()) {
+			logger.warn("Memcached is not connected! ObservationData could not be added to database!");
+			return null;
+		}
+		
 		if (clusterID == null || timestamp == null || observedProperty == null) {
 			logger.warn("Parameters may not be null.");
 			return null;
@@ -184,6 +217,12 @@ public class ObservationDataToStorageProcessor {
 	}
 	
 	private String getObservationValue(long counter, String clusterID, LocalDateTime givenTime, Object observedProperty) {
+		
+		if (cli.isShutdown()) {
+			logger.warn("Memcached is not connected! ObservationData could not be added to database!");
+			return null;
+		}
+		
 		ObservationData od = null;
 		
 		try {
@@ -247,6 +286,12 @@ public class ObservationDataToStorageProcessor {
      * @return A HashSet containing the observed properties
      */
 	public Set<String> getObservedProperties(String gridID) {
+		
+		if (cli.isShutdown()) {
+			logger.warn("Memcached is not connected! ObservationData could not be added to database!");
+			return new HashSet<>();
+		}
+		
 		try {
 			return cli.get(gridID);
 		} catch (TimeoutException | InterruptedException | MemcachedException e) {
