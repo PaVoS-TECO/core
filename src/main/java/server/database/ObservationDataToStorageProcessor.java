@@ -182,7 +182,7 @@ public class ObservationDataToStorageProcessor {
 	public String get(String clusterID, String timestamp, String observedProperty) {
 		
 		if (cli.isShutdown()) {
-			logger.warn("Memcached is not connected! ObservationData could not be added to database!");
+			logger.warn("Memcached is not connected! ObservationData could not be fetched from database!");
 			return null;
 		}
 		
@@ -217,11 +217,6 @@ public class ObservationDataToStorageProcessor {
 	}
 	
 	private String getObservationValue(long counter, String clusterID, LocalDateTime givenTime, Object observedProperty) {
-		
-		if (cli.isShutdown()) {
-			logger.warn("Memcached is not connected! ObservationData could not be added to database!");
-			return null;
-		}
 		
 		ObservationData od = null;
 		
@@ -288,7 +283,7 @@ public class ObservationDataToStorageProcessor {
 	public Set<String> getObservedProperties(String gridID) {
 		
 		if (cli.isShutdown()) {
-			logger.warn("Memcached is not connected! ObservationData could not be added to database!");
+			logger.warn("Memcached is not connected! ObservedProperties could not be fetched from database!");
 			return new HashSet<>();
 		}
 		
