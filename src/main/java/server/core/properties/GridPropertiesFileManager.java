@@ -19,19 +19,23 @@ public final class GridPropertiesFileManager {
 	private static final String DEFAULT_GRID_X_MAX = "PAVOS_DEFAULT_GRID_X_MAX";
 	private static final String DEFAULT_GRID_Y_MIN = "PAVOS_DEFAULT_GRID_Y_MIN";
 	private static final String DEFAULT_GRID_Y_MAX = "PAVOS_DEFAULT_GRID_Y_MAX";
-	private Properties properties = new Properties();
+	private Properties gridProperties = new Properties();
 	private static GridPropertiesFileManager instance;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private void loadGridProperties() {
-		properties.put(DEFAULT_GRID_NAME, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_NAME", "recursiveRectangleGrid"));
-		properties.put(DEFAULT_GRID_ROWS, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_ROWS", "2"));
-		properties.put(DEFAULT_GRID_COLUMNS, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_COLUMNS", "2"));
-		properties.put(DEFAULT_GRID_LEVELS, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_LEVELS", "3"));
-		properties.put(DEFAULT_GRID_X_MIN, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_X_MIN", "-180.0"));
-		properties.put(DEFAULT_GRID_X_MAX, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_X_MAX", "180.0"));
-		properties.put(DEFAULT_GRID_Y_MIN, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_Y_MIN", "-85.0"));
-		properties.put(DEFAULT_GRID_Y_MAX, EnvironmentUtil.getEnvironmentVariable("PAVOS_DEFAULT_GRID_Y_MAX", "85.0"));
+		load(DEFAULT_GRID_NAME, "recursiveRectangleGrid");
+		load(DEFAULT_GRID_ROWS, "2");
+		load(DEFAULT_GRID_COLUMNS, "2");
+		load(DEFAULT_GRID_LEVELS, "3");
+		load(DEFAULT_GRID_X_MIN, "-180.0");
+		load(DEFAULT_GRID_X_MAX, "180.0");
+		load(DEFAULT_GRID_Y_MIN, "-85.0");
+		load(DEFAULT_GRID_Y_MAX, "85.0");
+	}
+	
+	private void load(String property, String defaultValue) {
+		gridProperties.put(property, EnvironmentUtil.getEnvironmentVariable(property, defaultValue));
 	}
 	
 	/**
@@ -82,7 +86,7 @@ public final class GridPropertiesFileManager {
 	}
 	
 	public String getProperty(String key) {
-		return properties.getProperty(key);
+		return gridProperties.getProperty(key);
 	}
 	
 }

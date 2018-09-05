@@ -6,10 +6,17 @@ import java.util.HashSet;
 import server.transfer.data.ObservationData;
 import server.transfer.sender.Sender;
 
+/**
+ * Preforms any necessary steps before establishing a connection to Graphite.
+ */
 public class GraphiteConnector extends Connector {
 
 	Collection<ObservationData> records = new HashSet<>();
 	
+	/**
+	 * Creates a {@link GraphiteConnector}
+	 * @param records {@link Collection} of {@link ObservationData}
+	 */
 	public GraphiteConnector(Collection<ObservationData> records) {
 		this.records = records;
 	}

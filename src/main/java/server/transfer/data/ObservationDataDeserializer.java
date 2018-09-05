@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Deserializes KafkaObservationData objects
+ * Deserializes {@link ObservationData}
  */
 public class ObservationDataDeserializer implements Deserializer<ObservationData> {
 

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Collection;
-import java.util.Map;
 
 import org.python.core.PyList;
 import org.python.core.PyString;
@@ -24,7 +23,7 @@ public class GraphiteSender extends Sender {
 	private SocketManager som;
 
 	/**
-	 * Default constructor
+	 * Generates a {@link GraphiteSender} and establishes a connection to Graphite.
 	 */
 	public GraphiteSender() {
 		this.som = new SocketManager(); 
@@ -35,8 +34,8 @@ public class GraphiteSender extends Sender {
 	 * Sends the recorded data to Graphite.
 	 * Uses a record of multiple data objects.
 	 * <p>
-	 * @param records {@link Map}<{@link String}, {@link ObservationData}> records
-	 * @return 
+	 * @param records {@link Collection} of {@link ObservationData}
+	 * @return sendingSuccessful {@link Boolean}
 	 */
 	public boolean send(Collection<ObservationData> records) {
 		if (som == null) return false;

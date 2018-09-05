@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Serializes {@link ObservationData}
+ */
 public class ObservationDataSerializer implements Serializer<ObservationData> {
 	
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -29,18 +32,6 @@ public class ObservationDataSerializer implements Serializer<ObservationData> {
 			logger.error("Could not serialize object " + data.getClass(), e);
 		}
 		return bData;
-	}
-	
-	public String convertToJson(ObservationData data) {
-		ObjectMapper mapper = new ObjectMapper();
-
-		String json = null;
-		try {
-			json = mapper.writeValueAsString(data);
-		} catch (JsonProcessingException e) {
-			logger.error("Could not convert object to JSON " + data.getClass(), e);
-		}
-		return json;
 	}
 
 	@Override

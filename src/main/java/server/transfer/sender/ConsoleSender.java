@@ -1,8 +1,8 @@
 package server.transfer.sender;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
 
 import org.python.core.PyList;
 import org.python.core.PyString;
@@ -18,11 +18,11 @@ import server.transfer.data.ObservationData;
 public class ConsoleSender extends Sender {
 	
 	/**
-	 * Sends the recorded data to Graphite.
+	 * Sends the recorded data to the console.
 	 * Uses a record of multiple data objects.
 	 * <p>
-	 * @param records {@link Map}<{@link String}, {@link ObservationData}> records
-	 * @return 
+	 * @param records {@link Collection} of {@link ObservationData}
+	 * @return sendingSuccessful {@link Boolean}
 	 */
 	public boolean send(Collection<ObservationData> records) {
 		
@@ -35,7 +35,7 @@ public class ConsoleSender extends Sender {
 		PyString payload = cPickle.dumps(list);
 		byte[] header = ByteBuffer.allocate(4).putInt(payload.__len__()).array();
 		
-		logger.debug("Sender-Header: " + header.toString());
+		logger.debug("Sender-Header: " + Arrays.toString(header));
 		logger.debug("Sender-Payload: " + payload.toString());
 		return true;
 	}

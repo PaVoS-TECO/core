@@ -55,7 +55,7 @@ public final class PythonMetricUtil {
 
     private static void logMetric(PyTuple metric) {
     	if (logger != null) {
-    		logger.info("Added metric: " + metric.toString());
+    		logger.debug("Added metric: " + metric.toString());
     	}
     }
 	

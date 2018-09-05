@@ -22,6 +22,10 @@ public final class TimeUtil {
 		return getUTCDateTimeString(LocalDateTime.parse(localDateTime, DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")));
 	}
 	
+	/**
+	 * Returns the currently used TimeFormat as a Regex {@link String}.
+	 * @return regex {@link String}
+	 */
 	public static String getDateTimeRegex() {
 		return "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z";
 	}
