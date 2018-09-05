@@ -30,7 +30,6 @@ import server.transfer.data.ObservationData;
  * @author Oliver
  *
  */
-@Ignore
 public class ObservationDataToStorageProcessorTest {
 
 	public static ObservationDataToStorageProcessor odtsp;

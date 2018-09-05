@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import server.core.visualization.GradientRange;
 import server.core.visualization.util.ColorUtil;
@@ -15,8 +16,12 @@ public class MultiGradient {
 	public final String NAME;
 	
 	public MultiGradient(String name, Color... colors) {
-		this.NAME = name;
-	    if (colors.length < 1) {
+		if (name != null) {
+			this.NAME = name;
+		} else {
+			this.NAME = String.valueOf(new Random().nextInt());
+		}
+	    if (colors == null || colors.length < 1) {
 	    	gradients.add(new SimpleGradient(new Color(0, 0, 0), new Color(0, 0, 0)));
 	    } else if (colors.length == 1) {
 			gradients.add(new SimpleGradient(colors[0], colors[0]));
@@ -87,7 +92,7 @@ public class MultiGradient {
 	public boolean equals(Object o) {
 		if (o == null || !o.getClass().equals(this.getClass())) return false;
 		MultiGradient oGrad = (MultiGradient) o;
-		return oGrad.NAME.equals(this.NAME);
+		return oGrad.hashCode() == this.hashCode();
 	}
 	
 	@Override
@@ -103,12 +108,16 @@ public class MultiGradient {
 		double ratio = (double) amount;
 		double subPosition = 0.0;
 		int gradIndex = 0;
-		for (int i = 1; i < amount; i++) {
-			if (position <= ((double) i) * gradLength) {
-				gradIndex = i - 1;
-				double subMin = gradLength * (double) gradIndex;
-				subPosition = position - subMin;
+		if (amount > 1) {
+			for (int i = 1; i < amount; i++) {
+				if (position <= ((double) i) * gradLength) {
+					gradIndex = i - 1;
+					double subMin = gradLength * (double) gradIndex;
+					subPosition = position - subMin;
+				}
 			}
+		} else {
+			subPosition = position;
 		}
 		subPosition = subPosition * ratio;
 		return gradients.get(gradIndex).getColorAt(subPosition);

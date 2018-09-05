@@ -22,9 +22,7 @@ import server.core.grid.polygon.GeoPolygon;
 import server.database.Facade;
 import server.transfer.Destination;
 import server.transfer.DirectUploadManager;
-import server.transfer.TransferManager;
 import server.transfer.data.ObservationData;
-import server.transfer.producer.GraphiteProducer;
 
 /**
  * A geographically oriented approach to a polygon-tiled map.<br>
@@ -234,23 +232,6 @@ public abstract class GeoGrid {
 		return targetPolygon;
 	}
 	
-	/**
-	 * Produces messages for the output kafka-topic.
-	 * Each message contains a single {@link ObservationData} object.
-	 * This method Produces recursively and starts with the smallest clusters.
-	 * @return 
-	 */
-	@Deprecated
-	public List<String> produceSensorDataMessages() {
-		GraphiteProducer producer = new GraphiteProducer();
-		List<String> topics = new ArrayList<>();
-		for (GeoPolygon polygon : polygons) {
-			topics.addAll(polygon.produceSensorDataMessages(producer));
-		}
-		producer.close();
-		return topics;
-	}
-	
 	public void transferSensorDataDirectly() {
 		Set<ObservationData> observations = new HashSet<>();
 		for (GeoPolygon polygon : polygons) {
@@ -258,12 +239,6 @@ public abstract class GeoGrid {
 		}
 		DirectUploadManager dum = new DirectUploadManager();
 		dum.uploadData(observations, Destination.GRAPHITE);
-	}
-	
-	@Deprecated
-	public void transferSensorDataViaKafka() {
-		List<String> topics = produceSensorDataMessages();
-		transferToGraphite(topics);
 	}
 	
 	/**
@@ -294,13 +269,6 @@ public abstract class GeoGrid {
 		for (GeoPolygon polygon : polygons) {
 			polygon.resetObservations();
 		}
-	}
-	
-	@Deprecated
-	private void transferToGraphite(List<String> topics) {
-		TransferManager tm = new TransferManager();
-		tm.startDataTransfer(topics, Destination.GRAPHITE);
-		tm.stopDataTransfer();
 	}
 	
 	/**

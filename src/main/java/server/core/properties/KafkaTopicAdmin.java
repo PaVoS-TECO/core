@@ -91,11 +91,9 @@ public final class KafkaTopicAdmin {
 		}
 		return topicListings;
 	}
-
+	
 	public boolean deleteTopic(String topic) {
-		topicListings = getExistingTopics();
-		TopicListing tl = new TopicListing(topic, false);
-		if (!topicListings.contains(tl)) return true;
+		if (!existsTopic(topic)) return true;
 
 		Collection<String> topicsToRemove = new ArrayList<>();
 		topicsToRemove.add(topic);

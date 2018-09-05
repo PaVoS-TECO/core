@@ -23,7 +23,7 @@ import server.transfer.data.ObservationData;
 import server.transfer.sender.util.TimeUtil;
 
 public class GeoRecRectangleGridTest {
-
+	
 	@Test
 	public void checkProperties() {
 		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 

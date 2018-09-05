@@ -2,7 +2,6 @@ package server.transfer.sender;
 
 import java.util.Collection;
 
-import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,14 +13,6 @@ import server.transfer.data.ObservationData;
 public abstract class Sender {
 	
 	protected Logger logger = LoggerFactory.getLogger(getClass());
-	
-    /**
-     * Sends the recorded data
-     * @param records Multiple records of data from Kafka
-     * @param graphTopic The Graphite / Grafana topic name, where all data will be sent to
-     * @return 
-     */
-    public abstract boolean send(ConsumerRecords<String, ObservationData> records);
     
     /**
      * Sends the recorded data

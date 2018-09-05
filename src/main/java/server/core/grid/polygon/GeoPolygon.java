@@ -20,8 +20,6 @@ import server.core.grid.geojson.GeoJsonConverter;
 import server.core.grid.polygon.math.Tuple2D;
 import server.core.grid.polygon.math.Tuple3D;
 import server.transfer.data.ObservationData;
-import server.transfer.data.util.GridTopicTranslator;
-import server.transfer.producer.GraphiteProducer;
 import server.transfer.sender.util.TimeUtil;
 
 /**
@@ -263,7 +261,7 @@ public abstract class GeoPolygon {
 	 */
 	public GeoPolygon getSubPolygon(String clusterID) throws ClusterNotFoundException {
 		for (GeoPolygon polygon : this.subPolygons) {
-			if (polygon.id == clusterID) {
+			if (polygon.id.equals(clusterID)) {
 				return polygon;
 			}
 		}
@@ -276,32 +274,6 @@ public abstract class GeoPolygon {
 	 */
 	public List<GeoPolygon> getSubPolygons() {
 		return subPolygons;
-	}
-	
-	/**
-	 * Produces messages for the output kafka-topic.
-	 * This method Produces recursively and starts with the smallest clusters.
-	 * @param topic {@link String}
-	 * @param producer {@link GraphiteProducer}
-	 * @return topics {@link List} of {@link String}s that define KafkaTopics
-	 */
-	public List<String> produceSensorDataMessages(GraphiteProducer producer) {
-		List<String> topics = new ArrayList<>();
-		
-		for (GeoPolygon subPolygon : subPolygons) {
-			topics.addAll(subPolygon.produceSensorDataMessages(producer));
-		}
-		
-		if (!sensorValues.isEmpty()) {
-			Collection<String> sensorIDs = sensorValues.keySet();
-			Map<String, String> sensorTopicMap = GridTopicTranslator.getTopic(sensorIDs, this);
-			for (String sensorID : sensorIDs) {
-				String topic = sensorTopicMap.get(sensorID);
-				producer.produceMessage(topic, sensorValues.get(sensorID));
-				topics.add(topic);
-			}
-		}
-		return topics;
 	}
 	
 	public Collection<ObservationData> transferSensorDataDirectly() {

@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import server.core.grid.exceptions.ClusterNotFoundException;
 import server.core.grid.polygon.GeoPolygon;
 import server.core.grid.polygon.GeoRectangle;
 import server.transfer.data.ObservationData;
@@ -22,7 +23,7 @@ import server.transfer.sender.util.TimeUtil;
 public class GeoRectangleTest {
 
 	@Test
-	public void generateJson() {
+	public void testGenerateJson() {
 		Point2D.Double start = new Point2D.Double(2.3, 1.7);
 		Point2D.Double dim = new Point2D.Double(10.0, 5.0);
 		List<Point2D.Double> points = new ArrayList<>();
@@ -40,7 +41,7 @@ public class GeoRectangleTest {
 	}
 	
 	@Test
-	public void addValueAndGetNumberOfSensors() {
+	public void testAddValueAndGetNumberOfSensors() {
 		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 1, 1, 0, "test");
 		ObservationData data = new ObservationData();
 		data.observationDate = TimeUtil.getUTCDateTimeNowString();
@@ -77,6 +78,11 @@ public class GeoRectangleTest {
 				it.next().getPoints().toString());
 		assertEquals("[Point2D.Double[5.0, 2.5], Point2D.Double[10.0, 2.5], Point2D.Double[10.0, 5.0], Point2D.Double[5.0, 5.0]]",
 				it.next().getPoints().toString());
+		try {
+			rect.getSubPolygon("test-0_0");
+		} catch (ClusterNotFoundException e) {
+			fail(e.getMessage());
+		}
 	}
 	
 	@Test

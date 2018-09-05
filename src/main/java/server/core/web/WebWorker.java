@@ -273,7 +273,6 @@ public class WebWorker implements Runnable {
 	
 	private String getDatabaseDataCluster(String gridID, String keyProperty, String[] clusterIDs, String[] time, String stepsString) {
 		if (time.length == 1) {
-			System.out.println("... getting Database Cluster ...");
 			Facade database = Facade.getInstance();
 			Collection<ObservationData> observations = new HashSet<>();
 			
@@ -308,7 +307,8 @@ public class WebWorker implements Runnable {
 				DateTime dtCurrent = new DateTime(currentMillis, DateTimeZone.UTC);
 				String[] currentTimestamp = new String[1];
 				currentTimestamp[0] = TimeUtil.getUTCDateTimeString(dtCurrent.toLocalDateTime());
-				builder.append(getDatabaseDataCluster(gridID, keyProperty, clusterIDs, time, stepsString));
+				builder.append(getDatabaseDataCluster(
+						gridID, keyProperty, clusterIDs, currentTimestamp, String.valueOf(1)));
 				if (i < steps - 1) {
 					builder.append(", ");
 				}

@@ -12,7 +12,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +41,7 @@ public class WebWorkerTest {
 		server = new WebServer();
 		service.execute(server);
 		try {
-			TimeUnit.SECONDS.sleep(1);
+			TimeUnit.MILLISECONDS.sleep(500);
 		} catch (InterruptedException e) {
 			fail(e.getMessage());
 		}
@@ -66,12 +65,23 @@ public class WebWorkerTest {
 	}
 	
 	@Test
-	public void testGetGeoJsonCluster_Memcached_SingleTime() {
+	public void testGetGeoJsonCluster_Memcached_SingleTimestamp() {
 		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
 				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
 		
 		List<String> answer = askServer("getGeoJsonCluster?&clusterID=recursiveRectangleGrid-2_2_3:1_0,"
-				+ "recursiveRectangleGrid-2_2_3:0_0&property=pM_10&time=2018-05-19T13:52:15Z&steps=1");
+				+ "recursiveRectangleGrid-2_2_3:0_0&property=pM_10&time=2018-05-19T13:52:15Z&steps=2");
+		assertTrue(answer.get(0).startsWith("HTTP/1.1 200"));
+		GeoGridManager.getInstance().removeGeoGrid(grid);
+	}
+	
+	@Test
+	public void testGetGeoJsonCluster_Memcached_TwoTimestamps() {
+		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
+				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+		
+		List<String> answer = askServer("getGeoJsonCluster?&clusterID=recursiveRectangleGrid-2_2_3:1_0,"
+				+ "recursiveRectangleGrid-2_2_3:0_0&property=pM_10&time=2018-05-19T13:52:15Z,2000-05-19T13:52:15Z&steps=2");
 		assertTrue(answer.get(0).startsWith("HTTP/1.1 200"));
 		GeoGridManager.getInstance().removeGeoGrid(grid);
 	}

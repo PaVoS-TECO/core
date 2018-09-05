@@ -21,8 +21,7 @@ public class GradientRange {
 	public boolean equals(Object o) {
 		if (o ==null || !o.getClass().equals(this.getClass())) return false;
 		GradientRange oRange = (GradientRange) o;
-		if (!oRange.NAME.equals(this.NAME)) return false;
-		return true;
+		return oRange.hashCode() == this.hashCode();
 	}
 	
 	@Override
