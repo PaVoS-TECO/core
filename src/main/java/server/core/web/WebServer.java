@@ -1,10 +1,16 @@
 package server.core.web;
 
+import java.lang.reflect.Array;
 import java.net.ServerSocket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A server based on the {@link ServerSocket}.
+ * Handles http-requests and sends a http-answer.
+ * Is used to communicate with the webinterface.
+ */
 public class WebServer implements Runnable {
 
 	private static final int PORT = 7700;
@@ -12,10 +18,10 @@ public class WebServer implements Runnable {
 	private volatile boolean shutdown = false;
 	private static Logger logger = LoggerFactory.getLogger(WebServer.class);
 	
-	public WebServer() {
-		
-	}
-	
+	/**
+	 * Allows to be started without any other components.
+	 * @param args {@link String} {@link Array}
+	 */
 	public static void main(String[] args) {
 		WebServer server = new WebServer();
 		server.run();
@@ -43,6 +49,9 @@ public class WebServer implements Runnable {
 		}
 	}
 	
+	/**
+	 * Shuts the server down smoothly by finishing all existing request first.
+	 */
 	public void close() {
 		shutdown = true;
 	}

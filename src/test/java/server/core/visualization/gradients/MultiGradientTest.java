@@ -14,7 +14,7 @@ public class MultiGradientTest {
 	public void testNullColorsAndNullName() {
 		Color[] colors = null;
 		MultiGradient grad = new MultiGradient(null, colors);
-		assertTrue(grad.NAME != null);
+		assertTrue(grad.ID != null);
 		assertTrue(grad.getColors().length != 0);
 	}
 	

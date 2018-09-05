@@ -8,6 +8,9 @@ import server.core.properties.GradientPropertiesFileManager;
 import server.core.visualization.gradients.MultiGradient;
 import server.core.visualization.util.ColorUtil;
 
+/**
+ * The {@link GradientManager} is a singleton that manages all existing {@link MultiGradient}s.
+ */
 public final class GradientManager {
 	
 	private static GradientManager instance;
@@ -22,6 +25,10 @@ public final class GradientManager {
 		addGradient(getGradient("temperature", colorsHex), getRange("celsius", rangeCelsius), getRange("Fahrenheit", rangeFahrenheit));
 	}
 	
+	/**
+	 * Returns the instance of this {@link GradientManager} or generates a new one if it does not exists.
+	 * @return {@link GradientManager}
+	 */
 	public static GradientManager getInstance() {
 		if (instance == null) {
 			instance = new GradientManager();
@@ -29,14 +36,23 @@ public final class GradientManager {
 		return instance;
 	}
 	
+	/**
+	 * Returns all {@link MultiGradient}s of this {@link GradientManager}s knowledge
+	 * @return gradients {@link List} of {@link MultiGradient}s
+	 */
 	public List<MultiGradient> getAllGradients() {
 		List<MultiGradient> result = new ArrayList<>();
 		gradients.forEach((gradient) -> result.add(gradient));
 		return result;
 	}
 	
-	public MultiGradient getGradient(String name) {
-		MultiGradient grad = new MultiGradient(name);
+	/**
+	 * Returns a single {@link MultiGradient}.
+	 * @param id {@link String}
+	 * @return gradient {@link MultiGradient}
+	 */
+	public MultiGradient getGradient(String id) {
+		MultiGradient grad = new MultiGradient(id);
 		return gradients.get(gradients.indexOf(grad));
 	}
 	
@@ -44,7 +60,12 @@ public final class GradientManager {
 		if (gradient != null) gradients.add(gradient);
 	}
 	
-	private void addGradient(MultiGradient gradient, GradientRange...ranges) {
+	/**
+	 * Adds the specified {@link MultiGradient}s to the knowledge of this {@link GradientManager}.
+	 * @param gradient {@link MultiGradient}
+	 * @param ranges {@link GradientRange}
+	 */
+	public void addGradient(MultiGradient gradient, GradientRange...ranges) {
 		if (gradient == null) return;
 		
 		for (int i = 0; i < ranges.length; i++) {

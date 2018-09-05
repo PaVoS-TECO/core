@@ -33,6 +33,9 @@ import server.database.Facade;
 import server.transfer.data.ObservationData;
 import server.transfer.sender.util.TimeUtil;
 
+/**
+ * The {@link WebWorker} handles http-requests and sends a http-answer.
+ */
 public class WebWorker implements Runnable {
 	
 	Socket clientSocket;
@@ -40,6 +43,10 @@ public class WebWorker implements Runnable {
 	private String[] req;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	/**
+	 * Creates a new {@link WebWorker} that handles a single request of the client-socket.
+	 * @param socket {@link Socket} of the client
+	 */
     public WebWorker(Socket socket) {
         clientSocket = socket;
     }
