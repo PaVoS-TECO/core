@@ -138,12 +138,16 @@ public abstract class GeoGrid {
 	}
 	
 	public Collection<ObservationData> getGridSensorObservations() {
-		Collection<ObservationData> observations = new ArrayList<>();
-		for (GeoPolygon polygon : polygons) {
-			observations.addAll(polygon.getSubSensorObservations());
-			observations.addAll(polygon.getSensorDataList());
+		synchronized (polygons) {
+			Collection<ObservationData> observations = new ArrayList<>();
+			for (GeoPolygon polygon : polygons) {
+				synchronized(polygon) {
+					observations.addAll(polygon.getSubSensorObservations());
+					observations.addAll(polygon.getSensorDataList());
+				}
+			}
+			return observations;
 		}
-		return observations;
 	}
 	
 	/**
@@ -304,6 +308,7 @@ public abstract class GeoGrid {
 	 */
 	public void updateDatabase() {
 		Facade database = Facade.getInstance();
+		if (!database.isConnected()) return;
 		Collection<ObservationData> observations = getGridObservations();
 		for (ObservationData entry : observations) {
 			database.addObservationData(entry);

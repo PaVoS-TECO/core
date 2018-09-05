@@ -15,7 +15,7 @@ import server.transfer.data.ObservationDataDeserializer;
 import server.transfer.data.ObservationType;
 import server.transfer.sender.util.TimeUtil;
 
-public class ObservationDataDeserializerTests {
+public class ObservationDataDeserializerTest {
 
 	private static boolean print = true;
 	

@@ -1,5 +1,6 @@
 package server.core.grid;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -21,7 +22,7 @@ import server.core.grid.polygon.GeoPolygon;
 import server.transfer.data.ObservationData;
 import server.transfer.sender.util.TimeUtil;
 
-public class GeoRectangleGridTest {
+public class GeoRecRectangleGridTest {
 
 	@Test
 	public void checkProperties() {
@@ -92,7 +93,7 @@ public class GeoRectangleGridTest {
 	}
 	
 	@Test
-	public void test() {
+	public void testSensorAddedToGrid() {
 		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
 				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
 		
@@ -132,8 +133,12 @@ public class GeoRectangleGridTest {
 		} catch (PointNotOnMapException | SensorNotFoundException e) {
 			fail(e.getMessage());
 		}
-		System.out.println(data.observationDate);
-		System.out.println(GeoJsonConverter.convertSensorObservations(data, property, new  Point2D.Double(260.0, 80.0)));
+		assertTrue(data.observationDate.matches(TimeUtil.getDateTimeRegex()));
+		assertTrue(GeoJsonConverter.convertSensorObservations(data, property, new  Point2D.Double(260.0, 80.0)).matches(
+				"\\{ \"type\": \"FeatureCollection\", \"timestamp\": \"" + TimeUtil.getDateTimeRegex() 
+				+ "\", \"observationType\": \"temperature_celsius\", \"features\": "
+				+ "\\[ \\{ \"type\": \"Feature\", \"properties\": \\{ \"value\": 28\\.0, \"sensorID\": \"testSensorID2\"\\}, "
+				+ "\"geometry\": \\{ \"type\": \"Point\", \"coordinates\": \\[ 260\\.0, 80\\.0\\]\\} \\}\\] \\}"));
 		
 		String clusterID = null;
 		GeoPolygon poly = null;
@@ -143,10 +148,11 @@ public class GeoRectangleGridTest {
 		} catch (PointNotOnMapException e) {
 			fail("Location out of map bounds.");
 		}
-		System.out.println("ClusterID: " + clusterID);
-		System.out.println("Total sensors: " + poly.getNumberOfSensors());
-		System.out.println("Sensors with property '" + property + "': " + poly.getNumberOfSensors(property));
+		assertEquals("recursiveRectangleGrid-2_2_3:1_0-0_0-1_0", clusterID);
+		assertEquals(1, poly.getNumberOfSensors());
+		assertEquals(1, poly.getNumberOfSensors(property));
 		System.out.println(observationsToString(poly.getSensorDataList()));
+		
 		
 		for (GeoPolygon poly0 : grid.polygons) {
 			System.out.println(observationToString(poly0.cloneObservation()));

@@ -273,7 +273,7 @@ public class WebWorker implements Runnable {
 	
 	private String getDatabaseDataCluster(String gridID, String keyProperty, String[] clusterIDs, String[] time, String stepsString) {
 		if (time.length == 1) {
-			
+			System.out.println("... getting Database Cluster ...");
 			Facade database = Facade.getInstance();
 			Collection<ObservationData> observations = new HashSet<>();
 			

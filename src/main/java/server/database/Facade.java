@@ -28,6 +28,10 @@ public class Facade {
     	storageProcessor = new ObservationDataToStorageProcessor(host, port);
     }
     
+    public boolean isConnected() {
+    	return storageProcessor.isConnected();
+    }
+    
     /**
      * Add an ObservationData object to the storage solution.
      * @param observationData The ObservationData object.

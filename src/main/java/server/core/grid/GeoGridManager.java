@@ -35,7 +35,7 @@ public final class GeoGridManager {
 						}
 					}
 				}
-			}, 0, 10, TimeUnit.SECONDS);
+			}, 10, 10, TimeUnit.SECONDS);
 		}).start();
 	}
 	
@@ -93,9 +93,9 @@ public final class GeoGridManager {
 		}
 	}
 	
-	public void removeGeoGrid(GeoGrid grid) {
+	public boolean removeGeoGrid(GeoGrid grid) {
 		synchronized (grids) {
-			grids.remove(grid);
+			return grids.remove(grid);
 		}
 	}
 	
@@ -103,7 +103,9 @@ public final class GeoGridManager {
 		synchronized (grids) {
 			Collection<String> properties = new HashSet<>();
 			for (GeoGrid grid : grids) {
-				properties.addAll(grid.getGridProperties());
+				synchronized (grid) {
+					properties.addAll(grid.getGridProperties());
+				}
 			}
 			return properties;
 		}
@@ -113,7 +115,9 @@ public final class GeoGridManager {
 		synchronized (grids) {
 			Collection<ObservationData> observations = new HashSet<>();
 			for (GeoGrid grid : grids) {
-				observations.addAll(grid.getGridSensorObservations());
+				synchronized (grid) {
+					observations.addAll(grid.getGridSensorObservations());
+				}
 			}
 			return observations;
 		}
@@ -123,9 +127,11 @@ public final class GeoGridManager {
 			throws GridNotFoundException, SensorNotFoundException, PointNotOnMapException {
 		synchronized (grids) {
 			for (GeoGrid grid : grids) {
-				if (grid.id.equals(gridID)) {
-					Point2D.Double point = grid.getSensorLocation(sensorID);
-					return grid.getSensorObservation(sensorID, point);
+				synchronized (grid) {
+					if (grid.id.equals(gridID)) {
+						Point2D.Double point = grid.getSensorLocation(sensorID);
+						return grid.getSensorObservation(sensorID, point);
+					}
 				}
 			}
 			throw new GridNotFoundException(gridID);

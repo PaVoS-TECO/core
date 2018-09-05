@@ -9,7 +9,7 @@ public class WebServer implements Runnable {
 
 	private static final int PORT = 7700;
 	private static final int BACKLOG = 10000;
-	private boolean shutdown = false;
+	private volatile boolean shutdown = false;
 	private static Logger logger = LoggerFactory.getLogger(WebServer.class);
 	
 	public WebServer() {

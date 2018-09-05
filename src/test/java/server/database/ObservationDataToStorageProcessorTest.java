@@ -18,6 +18,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.rubyeye.xmemcached.MemcachedClient;
@@ -29,6 +30,7 @@ import server.transfer.data.ObservationData;
  * @author Oliver
  *
  */
+@Ignore
 public class ObservationDataToStorageProcessorTest {
 
 	public static ObservationDataToStorageProcessor odtsp;

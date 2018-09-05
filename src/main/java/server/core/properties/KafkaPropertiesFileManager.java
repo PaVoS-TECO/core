@@ -169,7 +169,6 @@ public final class KafkaPropertiesFileManager {
 	public Properties getGridStreamProperties() {
 		Properties props = new Properties();
 		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, getProperty(BOOTSTRAP_SERVERS_CONFIG));
-		props.put(ConsumerConfig.GROUP_ID_CONFIG, "i");
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
 		props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
 		props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");

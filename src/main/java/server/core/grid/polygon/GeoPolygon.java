@@ -38,10 +38,10 @@ public abstract class GeoPolygon {
 	public final double scale;
 	public final String id;
 	public final int levelsAfterThis;
-	protected Path2D.Double path;
-	protected List<GeoPolygon> subPolygons;
-	protected Map<String, ObservationData> sensorValues;
-	protected ObservationData observationData;
+	protected volatile Path2D.Double path;
+	protected volatile List<GeoPolygon> subPolygons;
+	protected volatile Map<String, ObservationData> sensorValues;
+	protected volatile ObservationData observationData;
 	
 	/**
 	 * Creates a {@link GeoPolygon} with the given offsets, width, height and id.<p>
@@ -78,7 +78,9 @@ public abstract class GeoPolygon {
 	 */
 	public void addObservation(ObservationData data) {
 		data.clusterID = this.id;
-		this.sensorValues.put(data.sensorID, data);
+		synchronized (sensorValues) {
+			this.sensorValues.put(data.sensorID, data);
+		}
 	}
 	
 	/**
@@ -226,19 +228,21 @@ public abstract class GeoPolygon {
 	
 	/**
 	 * Returns the current {@link ObservationData} data as a {@link Collection} over all sensors.
-	 * The new sensorID will consist of the {@link GeoPolygon}.ID and the original sensorID.
+	 * The new clusterID will be the {@link GeoPolygon}.ID
 	 * @return sensorDataSet {@code Collection<ObservationData>}
 	 */
 	public Collection<ObservationData> getSensorDataList() {
-		return this.sensorValues.values();
+		synchronized (sensorValues) {
+			return this.sensorValues.values();
+		}
 	}
 	
 	public Collection<ObservationData> getSubSensorObservations() {
 		Collection<ObservationData> observations = new ArrayList<>();
 		for (GeoPolygon polygon : subPolygons) {
 			observations.addAll(polygon.getSubSensorObservations());
-			observations.addAll(getSensorDataList());
 		}
+		observations.addAll(getSensorDataList());
 		return observations;
 	}
 	
