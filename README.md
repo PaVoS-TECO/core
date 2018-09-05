@@ -60,16 +60,16 @@ See https://github.com/PaVoS-TECO/pavos-source/wiki/Data-transfer
 See https://github.com/PaVoS-TECO/java-mqtt-kafka-bridge/blob/master/README.md
 
 ### Core
-`git clone https://github.com/PaVoS-TECO/pavos-source.git`
-`cd pavos-source`
-`mvn clean install`
-`java -jar target/*.jar`
+1. `git clone https://github.com/PaVoS-TECO/pavos-source.git`
+2. `cd pavos-source`
+3. `mvn clean install`
+4. `java -jar target/*.jar`
 
 To pull new changes:
-`git pull origin master`
+- `git pull origin master`
 
 To log console output into a logfile:
-`java -jar target/*.jar 2>&1 | tee logfile`
+- `java -jar target/*.jar 2>&1 | tee logfile`
 
 ### Webinterface
 
