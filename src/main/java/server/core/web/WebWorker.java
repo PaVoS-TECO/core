@@ -321,6 +321,7 @@ public class WebWorker implements Runnable {
 				}
 			}
 			
+			return builder.toString();
 		}
 		
 		throw new IllegalArgumentException("Time format unacceptable.");
