@@ -9,10 +9,18 @@ public class SensorNotFoundException extends Exception {
 	private static final long serialVersionUID = -461574811099025580L;
 	private String sensorID;
 	
+	/**
+	 * Creates a new {@link SensorNotFoundException}.
+	 * @param sensorID {@link String}
+	 */
 	public SensorNotFoundException(String sensorID) {
 		this.sensorID = sensorID;
 	}
 	
+	/**
+	 * Returns the identifier of the sensor that caused this {@link Exception}.
+	 * @return sensorID {@link String}
+	 */
 	public String getSensor() {
 		return this.sensorID;
 	}

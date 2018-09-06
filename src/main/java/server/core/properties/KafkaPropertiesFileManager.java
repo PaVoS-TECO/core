@@ -11,22 +11,20 @@ import org.apache.kafka.streams.StreamsConfig;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
+import server.core.controller.process.ExportMergeProcess;
+import server.core.controller.process.GridProcess;
+import server.core.controller.process.MergeObsToFoiProcess;
 import server.transfer.config.util.EnvironmentUtil;
+import server.transfer.data.ObservationData;
 import server.transfer.data.ObservationDataDeserializer;
 import server.transfer.data.ObservationDataSerializer;
 
 /**
- * @author Patrick
- *
+ * The {@link KafkaPropertiesFileManager} manages different properties
+ * that are needed to communicate with Kafka
+ * and stores them in a {@link Properties} object.
  */
-/**
- * The PropertyFile is a special form of associative memory in which
- * key-value pairs are always of type string. Since the entries can be stored in
- * a file and read out again, hardwired character strings can be externalized
- * from the program text so that the values ​​can be easily changed without
- * retranslation.
- */
-public final class KafkaPropertiesFileManager {
+public final class KafkaPropertiesFileManager extends PropertiesFileManager {
 	
 	private static final String BOOTSTRAP_SERVERS_CONFIG = "PAVOS_BOOTSTRAP_SERVERS_CONFIG";
 	private static final String M_APPLICATION_ID_CONFIG = "PAVOS_M_APPLICATION_ID_CONFIG";
@@ -43,7 +41,6 @@ public final class KafkaPropertiesFileManager {
 	private static final String STRING_DESERIALIZER = "org.apache.kafka.common.serialization.StringDeserializer";
 	private static final String STRING_SERIALIZER = "org.apache.kafka.common.serialization.StringSerializer";
 	private static KafkaPropertiesFileManager instance;
-	private Properties kafkaProperties = new Properties();
 	
 	private void loadKafkaCoreProperties() {
 		load(BOOTSTRAP_SERVERS_CONFIG, "pavos.oliver.pw:9092");
@@ -61,19 +58,16 @@ public final class KafkaPropertiesFileManager {
 	}
 	
 	private void load(String property, String defaultValue) {
-		kafkaProperties.put(property, EnvironmentUtil.getEnvironmentVariable(property, defaultValue));
+		properties.put(property, EnvironmentUtil.getEnvironmentVariable(property, defaultValue));
 	}
 	
-	/**
-	 * Default Constructor
-	 */
 	private KafkaPropertiesFileManager() {
 		loadKafkaCoreProperties();
 	}
 	
 	/**
-	 * 
-	 * @return it Self
+	 * Returns the instance of this {@link KafkaPropertiesFileManager} or generates a new one if it does not exists.
+	 * @return {@link KafkaPropertiesFileManager}
 	 */
 	public static KafkaPropertiesFileManager getInstance() {
 		if (instance == null) {
@@ -82,8 +76,12 @@ public final class KafkaPropertiesFileManager {
 		return instance;
 	}
 
-	
-	public Properties getGraphiteConnectorProperties() {
+	/**
+	 * Returns the {@link Properties} for consuming {@link ObservationData}
+	 * objects from Kafka.
+	 * @return properties {@link Properties}
+	 */
+	public Properties getObservationDataConsumerProperties() {
 		Properties configProperties = new Properties();
         configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getProperty(BOOTSTRAP_SERVERS_CONFIG));
         configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, STRING_DESERIALIZER);
@@ -95,7 +93,12 @@ public final class KafkaPropertiesFileManager {
         return configProperties;
 	}
 	
-	public Properties getGraphiteProducerProperties() {
+	/**
+	 * Returns the {@link Properties} for producing {@link ObservationData}
+	 * objects and sending them to Kafka.
+	 * @return properties {@link Properties}
+	 */
+	public Properties getObservationDataProducerProperties() {
 		Properties properties = new Properties();
 		properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getProperty(BOOTSTRAP_SERVERS_CONFIG));
 		properties.put(ProducerConfig.ACKS_CONFIG, "all");
@@ -106,7 +109,8 @@ public final class KafkaPropertiesFileManager {
 	}
 	
 	/**
-	 * @return Merge Stream Properties
+	 * Returns the {@link Properties} for the {@link MergeObsToFoiProcess}.
+	 * @return properties {@link Properties}
 	 */
 	public Properties getMergeStreamProperties() {
 		Properties props = new Properties();
@@ -121,7 +125,8 @@ public final class KafkaPropertiesFileManager {
 	}
 	
 	/**
-	 * @return Export Stream Properties
+	 * Returns the {@link Properties} for the {@link ExportMergeProcess}.
+	 * @return properties {@link Properties}
 	 */
 	public Properties getExportStreamProperties() {
 		Properties props = new Properties();
@@ -136,9 +141,9 @@ public final class KafkaPropertiesFileManager {
 	}
 	
 	/**
-	 * @return Default/Test Stream Properties
+	 * Returns the {@link Properties} for dummy streams-applications.
+	 * @return properties {@link Properties}
 	 */
-	
 	public Properties getDummyStreamProperties() {
 		Properties props = new Properties();
 		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, getProperty(BOOTSTRAP_SERVERS_CONFIG));
@@ -151,10 +156,10 @@ public final class KafkaPropertiesFileManager {
 	}
 
 	/**
-	 * @return Graphite Stream Properties
+	 * Returns the {@link Properties} for an Avro streams-application.
+	 * @return properties {@link Properties}
 	 */
-
-	public Properties getGraphiteStreamProperties() {
+	public Properties getAvroStreamProperties() {
 		Properties props = new Properties();
 		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, getProperty(BOOTSTRAP_SERVERS_CONFIG));
 		props.put(StreamsConfig.APPLICATION_ID_CONFIG, getProperty(P_APPLICATION_ID_CONFIG));
@@ -167,7 +172,8 @@ public final class KafkaPropertiesFileManager {
 	}
 	
 	/**
-	 * @return Grid Stream Properties
+	 * Returns the {@link Properties} for the {@link GridProcess}.
+	 * @return properties {@link Properties}
 	 */
 	public Properties getGridStreamProperties() {
 		Properties props = new Properties();
@@ -186,10 +192,10 @@ public final class KafkaPropertiesFileManager {
 	}
 	
 	/**
-	 * @return Simple Producer Properties
+	 * Returns the {@link Properties} for a grid producer-application.
+	 * @return properties {@link Properties}
 	 */
-	
-	public Properties getProducerGridProperties() {
+	public Properties getGridProducerProperties() {
     	Properties configProperties = new Properties();
     	configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getProperty(BOOTSTRAP_SERVERS_CONFIG));
         configProperties.put(ProducerConfig.ACKS_CONFIG, "all");
@@ -198,14 +204,5 @@ public final class KafkaPropertiesFileManager {
         configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, STRING_SERIALIZER);
         return configProperties;
     }
-	
-	/**
-	 * @param key 
-	 * @return Prpoerty from selected key
-	 */
-
-	public String getProperty(String key) {
-		return kafkaProperties.getProperty(key);
-	}
 	
 }

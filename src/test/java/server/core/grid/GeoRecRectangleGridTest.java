@@ -60,7 +60,7 @@ public class GeoRecRectangleGridTest {
 			assertTrue(data.observations.isEmpty());
 		});
 		
-		assertTrue(grid.getGridProperties().contains("temperature_celsius"));
+		assertTrue(grid.getGridObservationTypes().contains("temperature_celsius"));
 	}
 	
 	@Test
@@ -187,7 +187,7 @@ public class GeoRecRectangleGridTest {
 		} catch (ClusterNotFoundException e) {
 			fail(e.getMessage());
 		}
-		System.out.println(jsonPoly.getJson(property));
+		System.out.println(jsonPoly.getGeoJson(property));
 		
 		ObservationData dataClone = jsonPoly.cloneObservation();
 		dataClone.observations.put(property, "10.799999999999998");

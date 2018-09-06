@@ -104,7 +104,7 @@ public final class GeoGridManager {
 			Collection<String> properties = new HashSet<>();
 			for (GeoGrid grid : grids) {
 				synchronized (grid) {
-					properties.addAll(grid.getGridProperties());
+					properties.addAll(grid.getGridObservationTypes());
 				}
 			}
 			return properties;

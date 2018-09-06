@@ -2,32 +2,27 @@ package server.core.properties;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Reads the Property File to the System
- * 
- * @author Patrick
- *
+ * Takes a specified {@link Path} and initializes a {@link Properties} object with the content of the file.
  */
 public final class PropertyFileReader {
 	
 	private static Logger logger = LoggerFactory.getLogger(PropertyFileReader.class);
 	
-	/**
-	 * Default constructor
-	 */
 	private PropertyFileReader() {
 
 	}
 
 	/**
-	 * Read the file form the Path
-	 * @param filePath
-	 * @return
+	 * Read the {@link Properties} form the file-{@link Path}.
+	 * @param filePath {@link Path}
+	 * @return properties {@link Properties}
 	 */
 	public static Properties readPropertyFile(String filePath) {
 		Properties properties = new Properties();

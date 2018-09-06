@@ -16,7 +16,7 @@ public class KafkaPropertiesFileManagerTest {
 	@Test
 	public void testGetGraphiteConnectorProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();
-		Properties props = manager.getGraphiteConnectorProperties();
+		Properties props = manager.getObservationDataConsumerProperties();
 		assertTrue(props.containsKey(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG));
 		assertTrue(props.containsKey(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG));
 		assertTrue(props.containsKey(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG));
@@ -28,7 +28,7 @@ public class KafkaPropertiesFileManagerTest {
 	@Test
 	public void testGetGraphiteProducerProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();
-		Properties props = manager.getGraphiteProducerProperties();
+		Properties props = manager.getObservationDataProducerProperties();
 		assertTrue(props.containsKey(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG));
 		assertTrue(props.containsKey(ProducerConfig.ACKS_CONFIG));
 		assertTrue(props.containsKey(ProducerConfig.RETRIES_CONFIG));
@@ -62,7 +62,7 @@ public class KafkaPropertiesFileManagerTest {
 	@Test
 	public void testGetGraphiteStreamProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();
-		Properties props = manager.getGraphiteStreamProperties();
+		Properties props = manager.getAvroStreamProperties();
 		assertBACDDA(props);
 	}
 	
@@ -85,7 +85,7 @@ public class KafkaPropertiesFileManagerTest {
 	@Test
 	public void testGetProducerGridProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();
-		Properties props = manager.getProducerGridProperties();
+		Properties props = manager.getGridProducerProperties();
 		assertTrue(props.containsKey(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG));
 		assertTrue(props.containsKey(ProducerConfig.ACKS_CONFIG));
 		assertTrue(props.containsKey(ProducerConfig.RETRIES_CONFIG));

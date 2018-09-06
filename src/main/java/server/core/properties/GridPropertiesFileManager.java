@@ -3,13 +3,16 @@ package server.core.properties;
 import java.awt.geom.Rectangle2D;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import server.core.grid.GeoGrid;
 import server.core.grid.GeoRecRectangleGrid;
 import server.transfer.config.util.EnvironmentUtil;
 
-public final class GridPropertiesFileManager {
+/**
+ * The {@link GridPropertiesFileManager} manages different properties
+ * that are needed to create a {@link GeoGrid}
+ * and stores them in a {@link Properties} object.
+ */
+public final class GridPropertiesFileManager extends PropertiesFileManager {
 	
 	private static final String DEFAULT_GRID_NAME = "PAVOS_DEFAULT_GRID_NAME";
 	private static final String DEFAULT_GRID_ROWS = "PAVOS_DEFAULT_GRID_ROWS";
@@ -19,9 +22,7 @@ public final class GridPropertiesFileManager {
 	private static final String DEFAULT_GRID_X_MAX = "PAVOS_DEFAULT_GRID_X_MAX";
 	private static final String DEFAULT_GRID_Y_MIN = "PAVOS_DEFAULT_GRID_Y_MIN";
 	private static final String DEFAULT_GRID_Y_MAX = "PAVOS_DEFAULT_GRID_Y_MAX";
-	private Properties gridProperties = new Properties();
 	private static GridPropertiesFileManager instance;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private void loadGridProperties() {
 		load(DEFAULT_GRID_NAME, "recursiveRectangleGrid");
@@ -35,12 +36,9 @@ public final class GridPropertiesFileManager {
 	}
 	
 	private void load(String property, String defaultValue) {
-		gridProperties.put(property, EnvironmentUtil.getEnvironmentVariable(property, defaultValue));
+		properties.put(property, EnvironmentUtil.getEnvironmentVariable(property, defaultValue));
 	}
 	
-	/**
-	 * Default Constructor
-	 */
 	private GridPropertiesFileManager() {
 		loadGridProperties();
 		loadGrid();
@@ -75,18 +73,14 @@ public final class GridPropertiesFileManager {
 	}
 	
 	/**
-	 * 
-	 * @return it Self
+	 * Returns the instance of this {@link GridPropertiesFileManager} or generates a new one if it does not exists.
+	 * @return {@link GridPropertiesFileManager}
 	 */
 	public static GridPropertiesFileManager getInstance() {
 		if (instance == null) {
 			instance = new GridPropertiesFileManager();
 		}
 		return instance;
-	}
-	
-	public String getProperty(String key) {
-		return gridProperties.getProperty(key);
 	}
 	
 }

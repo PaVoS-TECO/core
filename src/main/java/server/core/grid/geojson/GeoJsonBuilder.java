@@ -16,27 +16,42 @@ import server.core.grid.polygon.GeoPolygon;
 import server.transfer.data.ObservationData;
 import server.transfer.sender.util.TimeUtil;
 
+/**
+ * A utility class that lets you create a {@link String}
+ * in GeoJson format which holds information about the
+ * form, the values and the observation.
+ */
 public final class GeoJsonBuilder {
 	
 	private static final String COMMA = ", ";
-	private final String keyProperty;
-	private final String type;
+	private final String observationType;
+	private final String format;
 	private String ldtString;
 	private StringBuilder builder;
 	private StringBuilder polygonsBuilder;
 	private StringBuilder sensorsBuilder;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	public GeoJsonBuilder(String keyProperty, String type) {
-		this.keyProperty = keyProperty;
-		this.type = type;
+	/**
+	 * Creates a new {@link GeoJsonBuilder}.
+	 * @param observationType {@link String}
+	 * @param format {@link String}
+	 */
+	public GeoJsonBuilder(String observationType, String format) {
+		this.observationType = observationType;
+		this.format = format;
 		
 		this.builder = new StringBuilder();
 		this.polygonsBuilder = new StringBuilder();
 		this.sensorsBuilder = new StringBuilder();
 	}
 	
-	public void addDBClusterObservations(Collection<ObservationData> observations, GeoGrid geoGrid) {
+	/**
+	 * Adds {@link GeoPolygon}s in form of a {@link Collection} of {@link ObservationData}.
+	 * @param observations {@link Collection} of {@link ObservationData}
+	 * @param grid {@link GeoGrid}
+	 */
+	public void addDBClusterObservations(Collection<ObservationData> observations, GeoGrid grid) {
 		Collection<GeoPolygon> geoPolygons = new HashSet<>();
 		StringBuilder polyBuilder = new StringBuilder();
 		
@@ -44,7 +59,7 @@ public final class GeoJsonBuilder {
 		for (ObservationData data : observations) {
 			GeoPolygon geoPolygon;
 			try {
-				geoPolygon = geoGrid.getPolygon(data.clusterID);
+				geoPolygon = grid.getPolygon(data.clusterID);
 				polyBuilder.append(geoPolygonToStringQuick(data, geoPolygon.getSubPolygons(), geoPolygon.getPoints()));
 				if (countFeature < geoPolygons.size()) {
 					polyBuilder.append(COMMA);
@@ -58,10 +73,15 @@ public final class GeoJsonBuilder {
 		this.polygonsBuilder.append(polyBuilder.toString());
 	}
 	
-	public void addDBSensorObservation(ObservationData observation, Point2D.Double point) {
+	/**
+	 * Adds a sensor in form of a single {@link ObservationData}.
+	 * @param observation {@link ObservationData}
+	 * @param location {@link Point2D.Double}
+	 */
+	public void addDBSensorObservation(ObservationData observation, Point2D.Double location) {
 		StringBuilder sensorBuilder = new StringBuilder();
 		
-		sensorBuilder.append(geoSensorToStringQuick(observation, point));
+		sensorBuilder.append(geoSensorToStringQuick(observation, location));
 			
 		this.sensorsBuilder.append(sensorBuilder.toString());
 	}
@@ -75,7 +95,7 @@ public final class GeoJsonBuilder {
 		StringBuilder polyBuilder = new StringBuilder();
 		polyBuilder.append("{ " + toSProperty("type", "Feature") + COMMA);
 		polyBuilder.append(toEntry("properties") + ": { ");
-		polyBuilder.append(toNProperty("value", data.observations.get(keyProperty)) + COMMA);
+		polyBuilder.append(toNProperty("value", data.observations.get(observationType)) + COMMA);
 		polyBuilder.append(toSProperty("sensorID", data.sensorID));
 		
 		polyBuilder.append("}" + COMMA);
@@ -103,9 +123,9 @@ public final class GeoJsonBuilder {
 	
 	@Override
 	public String toString() {
-		if (type.equals("polygon")) {
+		if (format.equals("polygon")) {
 			return buildPolygon();
-		} else if (type.equals("sensor")) {
+		} else if (format.equals("sensor")) {
 			return buildSensor();
 		}
 		throw new NullPointerException("No building type selected for GeoJsonBuilder.");
@@ -114,7 +134,7 @@ public final class GeoJsonBuilder {
 	private String buildPolygon() {
 	builder.append("{ " + toSProperty("type", "FeatureCollection") + COMMA);
 	builder.append(toSProperty("timestamp", ldtString) + COMMA);
-	builder.append(toSProperty("observationType", keyProperty) + COMMA);
+	builder.append(toSProperty("observationType", observationType) + COMMA);
 	builder.append(toEntry("features") + ": [ ");
 	builder.append(polygonsBuilder.toString());
 	builder.append("] }");
@@ -124,7 +144,7 @@ public final class GeoJsonBuilder {
 	private String buildSensor() {
 		builder.append("{ " + toSProperty("type", "FeatureCollection") + COMMA);
 		builder.append(toSProperty("timestamp", ldtString) + COMMA);
-		builder.append(toSProperty("observationType", keyProperty) + COMMA);
+		builder.append(toSProperty("observationType", observationType) + COMMA);
 		builder.append(toEntry("features") + ": [ ");
 		builder.append(sensorsBuilder.toString());
 		builder.append("] }");
@@ -144,7 +164,7 @@ public final class GeoJsonBuilder {
 		StringBuilder polyBuilder = new StringBuilder();
 		polyBuilder.append("{ " + toSProperty("type", "Feature") + COMMA);
 		polyBuilder.append(toEntry("properties") + ": { ");
-		polyBuilder.append(toNProperty("value", data.observations.get(keyProperty)) + COMMA);
+		polyBuilder.append(toNProperty("value", data.observations.get(observationType)) + COMMA);
 		polyBuilder.append(toSProperty("clusterID", data.clusterID) + COMMA);
 		polyBuilder.append(toEntry("content") + ": [ ");
 		int count = 1;

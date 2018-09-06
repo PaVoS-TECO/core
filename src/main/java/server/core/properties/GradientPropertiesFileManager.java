@@ -1,28 +1,28 @@
 package server.core.properties;
 
+import java.nio.file.Path;
 import java.security.InvalidParameterException;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import server.core.visualization.gradients.MultiGradient;
 
-public final class GradientPropertiesFileManager {
+/**
+ * The {@link GradientPropertiesFileManager} manages different properties
+ * that are needed to handle {@link MultiGradient}s
+ * and stores them in a {@link Properties} object.
+ */
+public final class GradientPropertiesFileManager extends PropertiesFileManager {
 	
-	private Properties properties;
 	public final String gradientPropertyFilePath = "src/main/resources/defaultGradients.properties";
 	private static GradientPropertiesFileManager instance;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	/**
-	 * Default Constructor
-	 */
 	private GradientPropertiesFileManager() {
 		loadGradientProperties();
 	}
 	
 	/**
-	 * 
-	 * @return it Self
+	 * Returns the instance of this {@link GradientPropertiesFileManager} or generates a new one if it does not exists.
+	 * @return {@link GradientPropertiesFileManager}
 	 */
 	public static GradientPropertiesFileManager getInstance() {
 		if (instance == null) {
@@ -31,13 +31,9 @@ public final class GradientPropertiesFileManager {
 		return instance;
 	}
 	
-	public String getProperty(String key) {
-		return properties.getProperty(key);
-	}
 	/**
-	 * Load from File Properties
+	 * Load {@link Properties} from the specified {@link Path}.
 	 */
-	
 	private void loadGradientProperties() {
 		try {
 			properties = PropertyFileReader.readPropertyFile(gradientPropertyFilePath);

@@ -1,20 +1,24 @@
 package server.core.grid.polygon;
 
+import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 
 import server.core.grid.config.Seperators;
+import server.transfer.data.ObservationData;
 
 /**
- * A geographically oriented rectangle-polygon.
- * For more information see {@link GeoPolygon}.
+ * A geographically oriented approach to polygons with double precision.<p>
+ * Uses {@link Path2D.Double} for the polygon base.
+ * Can contain sub-{@link GeoRectangle}s.
+ * Can contain {@link ObservationData} from sensors.
  */
 public class GeoRectangle extends GeoPolygon {
 	
 	/**
-	 * Creates a {@link GeoRectangle} with the given offsets, width, height and id.<p>
+	 * Creates a {@link GeoRectangle} with the given bounds, rows, columns and levels.<p>
 	 * @param bounds {@link Rectangle2D.Double} a bounding-box around our {@link GeoRectangle}
-	 * @param rows 
-	 * @param columns 
+	 * @param rows How many times the {@link GeoRectangle} will be subdivided horizontally
+	 * @param columns How many times the {@link GeoRectangle} will be subdivided vertically
 	 * @param levelsAfterThis The depth of the map
 	 * @param id The identifier {@link String} of this {@link GeoRectangle}
 	 */

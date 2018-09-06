@@ -42,6 +42,14 @@ public abstract class GeoGrid {
 	private static volatile GeoGridManager manager = GeoGridManager.getInstance();
 	private volatile int cyclesDone = 0;
 	
+	/**
+	 * Creates a new {@link GeoGrid} and supplies the {@link GeoGridManager} with this grid.
+	 * @param mapBounds {@link Rectangle2D.Double}
+	 * @param rows {@link Integer}
+	 * @param columns {@link Integer}
+	 * @param maxLevel {@link Integer}
+	 * @param gridID {@link String}
+	 */
 	public GeoGrid(Rectangle2D.Double mapBounds, int rows, int columns, int maxLevel, String gridID) {
 		this.mapBounds = mapBounds;
 		this.rows = rows;
@@ -54,23 +62,25 @@ public abstract class GeoGrid {
 	
 	/**
 	 * Adds a single observation to the {@link GeoGrid}.
-	 * Searches for the smallest cluster to put the values into.
-	 * @param sensorID The id of the sensor
+	 * Searches for the deepest cluster to put the values into.
 	 * @param location The {@link Point2D.Double} point on the map
-	 * @param data The {@link ObservationData} to be added
+	 * @param observation {@link ObservationData}
 	 */
-	public synchronized void addObservation(Point2D.Double location, ObservationData data) {
+	public synchronized void addObservation(Point2D.Double location, ObservationData observation) {
 		GeoPolygon targetPolygon = null;
 		try {
 			targetPolygon = getPolygonContaining(location, maxLevel);
-			targetPolygon.addObservation(data);
-			this.sensorsAndLocations.put(data.sensorID, location);
+			targetPolygon.addObservation(observation);
+			this.sensorsAndLocations.put(observation.sensorID, location);
 		} catch (PointNotOnMapException e) {
 			logger.warn("Could not add Observation to map. Point '" + location 
-					+ "' not in map boundaries! SensorID: " + data.sensorID + " ", e);
+					+ "' not in map boundaries! SensorID: " + observation.sensorID + " ", e);
 		}
 	}
 	
+	/**
+	 * Closes this grid, deleting it from the {@link GeoGridManager}.
+	 */
 	public void close() {
 		manager.removeGeoGrid(this);
 	}
@@ -79,7 +89,7 @@ public abstract class GeoGrid {
 	public boolean equals(Object o) {
 		if (o == null || !o.getClass().equals(this.getClass())) return false;
 		GeoGrid oGrid = (GeoGrid) o;
-		return (this.id.equals(oGrid.id));
+		return oGrid.hashCode() == this.hashCode();
 	}
 	
 	@Override
@@ -88,21 +98,31 @@ public abstract class GeoGrid {
 	}
 	
 	/**
-	 * Returns the ID for the Cluster which contains the {@link Point2D.Double} point. If the point is not on the mapped area, returns {@link null}!<p>
+	 * Returns the ID for the Cluster which contains the {@link Point2D.Double} point.
+	 * If the point is not on the mapped area, returns {@link null}!<p>
 	 * The ID is also specified by the {@link int} level of grid-scaling.
 	 * The level ranges from 0 to {@code MAX_LEVEL}.
-	 * A higher level means more {@link GeoPolygon}s to check but gives a better representation for the selected {@link Point2D.Double}.
-	 * @param point The {@link Point2D.Double} that is contained by the cluster that we are searching for
-	 * @param level The {@link int} that controls the level of detail
-	 * @return id The cluster id
+	 * A higher level means more {@link GeoPolygon}s to check but gives a better
+	 * representation for the selected {@link Point2D.Double} location.
+	 * @param location The {@link Point2D.Double} that is contained by the cluster
+	 * @param level The {@link int} level controls how deep we search
+	 * @return clusterID {@link String}
 	 * @throws PointNotOnMapException Thrown when the Point was not located in the map-boundaries.
 	 */
-	public String getClusterID(Point2D.Double point, int level) throws PointNotOnMapException {
-		return getPolygonContaining(point, level).id;
+	public String getClusterID(Point2D.Double location, int level) throws PointNotOnMapException {
+		return getPolygonContaining(location, level).id;
 	}
 	
-	public ObservationData getSensorObservation(String sensorID, Point2D.Double point) throws PointNotOnMapException, SensorNotFoundException {
-		GeoPolygon polygon = getPolygonContaining(point, maxLevel);
+	/**
+	 * Returns the {@link ObservationData} of a single sensor at a given {@link Point2D.Double} location.
+	 * @param sensorID {@link String}
+	 * @param location {@link Point2D.Double}
+	 * @return observation {@link ObservationData}
+	 * @throws PointNotOnMapException
+	 * @throws SensorNotFoundException
+	 */
+	public ObservationData getSensorObservation(String sensorID, Point2D.Double location) throws PointNotOnMapException, SensorNotFoundException {
+		GeoPolygon polygon = getPolygonContaining(location, maxLevel);
 		for (ObservationData observation : polygon.getSensorDataList()) {
 			if (observation.sensorID.equals(sensorID)) {
 				return observation;
@@ -113,7 +133,7 @@ public abstract class GeoGrid {
 	
 	/**
 	 * Returns all {@link ObservationData} objects of clusters in this {@link GeoGrid}.
-	 * @return gridObservations {@link Collection} of {@link ObservationData}
+	 * @return clusterObservations {@link Collection} of {@link ObservationData}
 	 */
 	public Collection<ObservationData> getGridObservations() {
 		Collection<ObservationData> observations = new ArrayList<>();
@@ -124,17 +144,25 @@ public abstract class GeoGrid {
 		return observations;
 	}
 	
-	public Collection<String> getGridProperties() {
-		Collection<String> properties = new HashSet<>();
+	/**
+	 * Returns all observed data types like temperature of this {@link GeoGrid}.
+	 * @return observedTypes {@link Collection} of {@link String}
+	 */
+	public Collection<String> getGridObservationTypes() {
+		Collection<String> observedTypes = new HashSet<>();
 		Collection<ObservationData> observations = getGridObservations();
 		for (ObservationData observation : observations) {
 			for (String key : observation.observations.keySet()) {
-				properties.add(key);
+				observedTypes.add(key);
 			}
 		}
-		return properties;
+		return observedTypes;
 	}
 	
+	/**
+	 * Returns all {@link ObservationData} objects of sensors in this {@link GeoGrid}.
+	 * @return sensorObservations {@link Collection} of {@link ObservationData}
+	 */
 	public Collection<ObservationData> getGridSensorObservations() {
 		synchronized (polygons) {
 			Collection<ObservationData> observations = new ArrayList<>();
@@ -156,6 +184,12 @@ public abstract class GeoGrid {
 		return this.id + ".out";
 	}
 	
+	/**
+	 * Returns the location of a given {@link String} sensorID.
+	 * @param sensorID {@link String}
+	 * @return location {@link Point2D.Double}
+	 * @throws SensorNotFoundException
+	 */
 	public Point2D.Double getSensorLocation(String sensorID) throws SensorNotFoundException {
 		Point2D.Double result = this.sensorsAndLocations.get(sensorID);
 		if (result == null) throw new SensorNotFoundException(sensorID);
@@ -166,7 +200,7 @@ public abstract class GeoGrid {
 	 * Returns the {@link GeoPolygon} that is associated with the specified {@link String} clusterID.
 	 * @param clusterID {@link String}
 	 * @return polygon {@link GeoPolygon}
-	 * @throws ClusterNotFoundException 
+	 * @throws ClusterNotFoundException
 	 */
 	public GeoPolygon getPolygon(String clusterID) throws ClusterNotFoundException {
 		GeoPolygon result = null;
@@ -210,20 +244,20 @@ public abstract class GeoGrid {
 	 * The ID is also specified by the {@link int} level of grid-scaling.
 	 * The level ranges from 0 to {@code MAX_LEVEL}.
 	 * A higher level means more {@link GeoPolygon}s to check but gives a better representation for the selected {@link Point2D.Double}.
-	 * @param point The {@link Point2D.Double} that is contained by the cluster that we are searching for
-	 * @param level The {@link int} that controls the level of detail
-	 * @return id The cluster id
+	 * @param location The {@link Point2D.Double} that is contained by the cluster
+	 * @param level The {@link int} level controls how deep we search
+	 * @return clusterID {@link String}
 	 * @throws PointNotOnMapException Thrown when the Point was not located in the map-boundaries.
 	 */
-	public GeoPolygon getPolygonContaining(Point2D.Double point, int level) throws PointNotOnMapException {
-		GeoPolygon targetPolygon = getPolygonContainingPointFromCollection(point, polygons);
+	public GeoPolygon getPolygonContaining(Point2D.Double location, int level) throws PointNotOnMapException {
+		GeoPolygon targetPolygon = getPolygonContainingPointFromCollection(location, polygons);
 		
 		// t2Polygon, meaning: tier-2-polygon
 		GeoPolygon t2Polygon = targetPolygon;
 		int levelBounds = Math.min(level, maxLevel);
 		for (int currentLevel = 1; currentLevel < levelBounds; currentLevel++) {
 			try {
-				t2Polygon = getPolygonContainingPointFromCollection(point, t2Polygon.getSubPolygons());
+				t2Polygon = getPolygonContainingPointFromCollection(location, t2Polygon.getSubPolygons());
 				targetPolygon = t2Polygon;
 			} catch (PointNotOnMapException e) {
 				break;
@@ -232,10 +266,13 @@ public abstract class GeoGrid {
 		return targetPolygon;
 	}
 	
+	/**
+	 * Transfers all {@link ObservationData} from sensors to Graphite using a {@link DirectUploadManager}.
+	 */
 	public void transferSensorDataDirectly() {
 		Set<ObservationData> observations = new HashSet<>();
 		for (GeoPolygon polygon : polygons) {
-			observations.addAll(polygon.transferSensorDataDirectly());
+			observations.addAll(polygon.getSensorObservations());
 		}
 		DirectUploadManager dum = new DirectUploadManager();
 		dum.uploadData(observations, Destination.GRAPHITE);
@@ -255,6 +292,13 @@ public abstract class GeoGrid {
 		}
 	}
 	
+	/**
+	 * Resets all {@link ObservationData} of sensors in this {@link GeoGrid}.
+	 * Is used to reduce heavy loads.
+	 * Should be called at any point after the invocation of {@code updateObservations()}
+	 * but before the next invocation to eliminate phantom-data.
+	 * Waits until enough invocation-cycles have been completed, before removing the data.
+	 */
 	public void resetObservations() {
 		if (cyclesDone == CYCLES_UNTIL_RESET) {
 			resetObservationsNow();
@@ -265,6 +309,13 @@ public abstract class GeoGrid {
 		}
 	}
 	
+	/**
+	 * Resets all {@link ObservationData} of sensors in this {@link GeoGrid}.
+	 * Is used to reduce heavy loads.
+	 * Should be called at any point after the invocation of {@code updateObservations()}
+	 * but before the next invocation to eliminate phantom-data.
+	 * Removes the data instantly.
+	 */
 	public void resetObservationsNow() {
 		for (GeoPolygon polygon : polygons) {
 			polygon.resetObservations();
@@ -273,6 +324,7 @@ public abstract class GeoGrid {
 	
 	/**
 	 * Updates the Database.
+	 * Saves {@link ObservationData} values of {@link GeoPolygon} clusters only.
 	 */
 	public void updateDatabase() {
 		Facade database = Facade.getInstance();

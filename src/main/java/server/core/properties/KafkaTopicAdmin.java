@@ -1,5 +1,6 @@
 package server.core.properties;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,6 +16,10 @@ import org.apache.kafka.clients.admin.TopicListing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The {@link KafkaTopicAdmin} manages existing topics in Kafka,
+ * creating new ones and deleting existing ones on demand.
+ */
 public final class KafkaTopicAdmin {
 
 	private AdminClient admin;
@@ -26,6 +31,10 @@ public final class KafkaTopicAdmin {
 		init();
 	}
 	
+	/**
+	 * Returns the instance of this {@link KafkaTopicAdmin} or generates a new one if it does not exists.
+	 * @return {@link KafkaTopicAdmin}
+	 */
 	public static KafkaTopicAdmin getInstance() {
 		if (instance == null) {
 			instance = new KafkaTopicAdmin();
@@ -41,7 +50,12 @@ public final class KafkaTopicAdmin {
 				propManager.getProperty("PAVOS_BOOTSTRAP_SERVERS_CONFIG"));
 		admin = AdminClient.create(adminp);
 	}
-
+	
+	/**
+	 * Returns true if the specified topic already exists.
+	 * @param topicNames {@link Array} of {@link String}
+	 * @return exists {@link Boolean}
+	 */
 	public boolean existsTopic(String... topicNames) {
 		Collection<String> topicNamesColl = new ArrayList<>();
 		for (int i = 0; i < topicNames.length; i++) {
@@ -51,6 +65,11 @@ public final class KafkaTopicAdmin {
 		return existsTopic(topicNamesColl);
 	}
 
+	/**
+	 * Returns true if the specified topic already exists.
+	 * @param topicNames {@link Collection} of {@link String}
+	 * @return exists {@link Boolean}
+	 */
 	public boolean existsTopic(Collection<String> topicNames) {
 		Collection<TopicListing> allListings = getExistingTopics();
 		Collection<TopicListing> listingsToCheck = new ArrayList<>();
@@ -92,6 +111,12 @@ public final class KafkaTopicAdmin {
 		return topicListings;
 	}
 	
+	/**
+	 * Deletes an existing topic and returns true if the topic is no longer
+	 * present after the operation.
+	 * @param topic {@link String}
+	 * @return operationSuccessful {@link Boolean}
+	 */
 	public boolean deleteTopic(String topic) {
 		if (!existsTopic(topic)) return true;
 
@@ -102,10 +127,23 @@ public final class KafkaTopicAdmin {
 		return result.all().isDone();
 	}
 	
+	/**
+	 * Creates a new topic with the specified name.
+	 * @param topic {@link String}
+	 * @return operationSuccessful {@link Boolean}
+	 */
 	public boolean createTopic(String topic) {
 		return createTopic(topic, 1, (short) 1);
 	}
 	
+	/**
+	 * Creates a new topic with the specified name, amount of partitions
+	 * and replicationFactor.
+	 * @param topic {@link String}
+	 * @param partitions {@link Integer}
+	 * @param replicationFactor {@link Short}
+	 * @return operationSuccessful {@link Boolean}
+	 */
 	public boolean createTopic(String topic, int partitions, short replicationFactor) {
 		if (existsTopic(topic)) return true;
 		

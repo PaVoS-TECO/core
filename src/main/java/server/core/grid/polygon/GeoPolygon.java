@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.joda.time.DateTime;
 
@@ -26,7 +25,7 @@ import server.transfer.sender.util.TimeUtil;
  * A geographically oriented approach to polygons with double precision.<p>
  * Uses {@link Path2D.Double} for the polygon base.
  * Can contain sub-{@link GeoPolygon}s.
- * Provides a method to convert this polygon to a JSON-{@link String}.
+ * Can contain {@link ObservationData} from sensors.
  */
 public abstract class GeoPolygon {
 	
@@ -42,8 +41,7 @@ public abstract class GeoPolygon {
 	protected volatile ObservationData observationData;
 	
 	/**
-	 * Creates a {@link GeoPolygon} with the given offsets, width, height and id.<p>
-	 * Sets {@code USE_SCALE} to {@code false}!
+	 * Creates a {@link GeoPolygon} with the given bounds, rows, columns, levels and id.<p>
 	 * @param bounds {@link Rectangle2D.Double} a bounding-box around our {@link GeoPolygon}
 	 * @param rows How many times the {@link GeoPolygon} will be subdivided horizontally
 	 * @param columns How many times the {@link GeoPolygon} will be subdivided vertically
@@ -71,7 +69,7 @@ public abstract class GeoPolygon {
 	
 	/**
 	 * Creates or overrides a map-entry with the new value in double-precision.
-	 * @param sensorID The {@link String} ID of the Sensor. Not a cluster.
+	 * SensorID has to be set in the {@link ObservationData}.
 	 * @param data The {@link ObservationData} with the value.
 	 */
 	public void addObservation(ObservationData data) {
@@ -82,7 +80,7 @@ public abstract class GeoPolygon {
 	}
 	
 	/**
-	 * Returns a cloned object of this {@link GeoPolygon}s {@link ObservationData} data.
+	 * Returns a cloned version of this {@link GeoPolygon}s {@link ObservationData} data.
 	 * @return observationData {@link ObservationData}
 	 */
 	public ObservationData cloneObservation() {
@@ -135,12 +133,12 @@ public abstract class GeoPolygon {
 	}
 	
 	/**
-	 * Returns the current {@link GeoPolygon} as JSON-String
-	 * @param property The {@link String} representing an observation-type.
-	 * @return json {@link String}
+	 * Returns the current {@link GeoPolygon} as GeoJson-String
+	 * @param observationType {@link String}.
+	 * @return geoJson {@link String}
 	 */
-	public String getJson(String property) {
-		return GeoJsonConverter.convert(this, property);
+	public String getGeoJson(String observationType) {
+		return GeoJsonConverter.convert(this, observationType);
 	}
 	
 	/**
@@ -235,6 +233,10 @@ public abstract class GeoPolygon {
 		}
 	}
 	
+	/**
+	 * Returns the current sensor-{@link ObservationData} of sub-{@link GeoPolygon}s.
+	 * @return subObservations {@link Collection} of {@link ObservationData}
+	 */
 	public Collection<ObservationData> getSubSensorObservations() {
 		Collection<ObservationData> observations = new ArrayList<>();
 		for (GeoPolygon polygon : subPolygons) {
@@ -244,6 +246,10 @@ public abstract class GeoPolygon {
 		return observations;
 	}
 	
+	/**
+	 * Returns the current cluster-{@link ObservationData} of sub-{@link GeoPolygon}s.
+	 * @return subObservations {@link Collection} of {@link ObservationData}
+	 */
 	public Collection<ObservationData> getSubObservations() {
 		Collection<ObservationData> observations = new ArrayList<>();
 		for (GeoPolygon polygon : subPolygons) {
@@ -270,16 +276,20 @@ public abstract class GeoPolygon {
 	
 	/**
 	 * Returns a {@link Collection} of all {@link GeoPolygon}s inside this {@link GeoPolygon}.
-	 * @return subPolygons {@code Set<Entry<String, GeoPolygon>>}
+	 * @return subPolygons {@link List} of {@link GeoPolygon}s
 	 */
 	public List<GeoPolygon> getSubPolygons() {
 		return subPolygons;
 	}
 	
-	public Collection<ObservationData> transferSensorDataDirectly() {
+	/**
+	 * Returns this {@link GeoPolygon}s and all sub-{@link GeoPolygon}s sensor-{@link ObservationData}.
+	 * @return observations {@link Collection} of {@link ObservationData}
+	 */
+	public Collection<ObservationData> getSensorObservations() {
 		Collection<ObservationData> observations = new HashSet<>();
 		for (GeoPolygon subPolygon : subPolygons) {
-			observations.addAll(subPolygon.transferSensorDataDirectly());
+			observations.addAll(subPolygon.getSensorObservations());
 		}
 		
 		if (!sensorValues.isEmpty()) {
@@ -288,7 +298,12 @@ public abstract class GeoPolygon {
 		return observations;
 	}
 	
-	public Collection<String> getAllProperties() {
+	/**
+	 * Returns all observation-types that this {@link GeoPolygon} and it's sub-{@link GeoPolygon}s have observed
+	 * since the last invocation of {@code resetObservations()}.
+	 * @return observationTypes {@link Collection} of {@link String}
+	 */
+	public Collection<String> getAllObservationTypes() {
 		Collection<String> properties = new HashSet<>();
 		for (GeoPolygon entry : this.subPolygons) {
 			for (String property : entry.observationData.observations.keySet()) {
@@ -363,6 +378,11 @@ public abstract class GeoPolygon {
 				totalSensors + tuple.getSecondValue().intValue());
 	}
 	
+	/**
+	 * Returns all observation-types that this {@link GeoPolygon} has observed
+	 * since the last invocation of {@code resetObservations()}.
+	 * @return observationTypes {@link Collection} of {@link String}
+	 */
 	public Collection<String> getProperties() {
 		Collection<String> properties = new HashSet<>();
 		for (GeoPolygon polygon : this.subPolygons) {
@@ -399,11 +419,6 @@ public abstract class GeoPolygon {
 		return result;
 	}
 	
-	/**
-	 * Returns multiple weightings for each property.
-	 * @return weightings A {@link Set} of {@link Tuple3D} with the settings:
-	 * {@link String} property, {@link Integer} number of sensors and {@link Double} value.
-	 */
 	private Collection<Tuple3D<String, Integer, Double>> getPropertyWeight() {
 		Collection<Tuple3D<String, Integer, Double>> values = new HashSet<>();
 		for (GeoPolygon polygon : this.subPolygons) {
@@ -423,6 +438,9 @@ public abstract class GeoPolygon {
 		return values;
 	}
 	
+	/**
+	 * Resets all sensor-{@link ObservationData} of this {@link GeoPolygon} and its sub-{@link GeoPolygon}s.
+	 */
 	public void resetObservations() {
 		for (GeoPolygon subPolygon : subPolygons) {
 			subPolygon.resetObservations();

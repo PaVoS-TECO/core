@@ -1,5 +1,8 @@
 package server.core.grid.config;
 
+/**
+ * A utility class that provides seperators for different purposes.
+ */
 public final class Seperators {
 	
 	public static final String GRID_CLUSTER_SEPERATOR = ":";

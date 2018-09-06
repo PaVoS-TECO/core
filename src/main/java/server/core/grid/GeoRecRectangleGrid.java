@@ -6,15 +6,26 @@ import server.core.grid.config.Seperators;
 import server.core.grid.polygon.GeoPolygon;
 import server.core.grid.polygon.GeoRectangle;
 
+/**
+ * A geographically oriented approach to a polygon-tiled map.<br>
+ * Uses {@link GeoRectangle}s to tile the map.
+ */
 public class GeoRecRectangleGrid extends GeoGrid {
 	
 	public static final String NAME = "recursiveRectangleGrid";
 	
+	/**
+	 * Creates a new {@link GeoRecRectangleGrid} and supplies the {@link GeoGridManager} with this grid.
+	 * @param mapBounds {@link Rectangle2D.Double}
+	 * @param rows {@link Integer}
+	 * @param columns {@link Integer}
+	 * @param maxLevel {@link Integer}
+	 */
 	public GeoRecRectangleGrid(Rectangle2D.Double mapBounds, int rows, int columns, int maxLevel) {
 		super(mapBounds, rows, columns, maxLevel, getGridID(rows, columns, maxLevel));
 		generateGeoPolygons();
 	}
-
+	
 	private static String getGridID(int rows, int columns, int maxLevel) {
 		return NAME + Seperators.GRIDID_GRIDPROPERTIES_SEPERATOR + rows + Seperators.GRIDPROPERTIES_SEPERATOR 
 				+ columns + Seperators.GRIDPROPERTIES_SEPERATOR + maxLevel;

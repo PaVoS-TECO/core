@@ -8,32 +8,67 @@ import server.core.grid.GeoGrid;
 import server.core.grid.polygon.GeoPolygon;
 import server.transfer.data.ObservationData;
 
+/**
+ * The {@link GeoJsonConverter} provides simple methods to create
+ * GeoJson {@link String}s with the {@link GeoJsonBuilder}.
+ */
 public final class GeoJsonConverter {
 	
 	private GeoJsonConverter() {
 		
 	}
 	
-	public static String convert(GeoPolygon geoPolygon, String keyProperty) {
+	/**
+	 * Converts a {@link GeoPolygon} to a GeoJson {@link String}.
+	 * Only stores the specified observation-type.
+	 * @param geoPolygon {@link GeoPolygon}
+	 * @param observationType {@link String}
+	 * @return geoJson {@link String}
+	 */
+	public static String convert(GeoPolygon geoPolygon, String observationType) {
 		Collection<GeoPolygon> col = new ArrayList<>();
 		col.add(geoPolygon);
-		return convertPolygons(col, keyProperty);
+		return convertPolygons(col, observationType);
 	}
 	
-	public static String convertPolygonObservations(Collection<ObservationData> observations, String keyProperty, GeoGrid geoGrid) {
-		GeoJsonBuilder builder = new GeoJsonBuilder(keyProperty, "polygon");
-		builder.addDBClusterObservations(observations, geoGrid);
+	/**
+	 * Converts a {@link Collection} of {@link ObservationData} that resemble multiple {@link GeoPolygon}s
+	 * to a GeoJson {@link String}.
+	 * Only stores the specified observation-type.
+	 * @param observations {@link Collection} of {@link ObservationData}
+	 * @param observationType {@link String}
+	 * @param grid {@link GeoGrid}
+	 * @return geoJson {@link String}
+	 */
+	public static String convertPolygonObservations(Collection<ObservationData> observations, String observationType, GeoGrid grid) {
+		GeoJsonBuilder builder = new GeoJsonBuilder(observationType, "polygon");
+		builder.addDBClusterObservations(observations, grid);
 		return builder.toString();
 	}
 	
-	public static String convertSensorObservations(ObservationData observation, String keyProperty, Point2D.Double point) {
-		GeoJsonBuilder builder = new GeoJsonBuilder(keyProperty, "sensor");
-		builder.addDBSensorObservation(observation, point);
+	/**
+	 * Converts a single {@link ObservationData} that resembles a sensor to a GeoJson {@link String}.
+	 * Only stores the specified observation-type.
+	 * @param observation {@link ObservationData}
+	 * @param observationType {@link String}
+	 * @param location {@link Point2D.Double}
+	 * @return geoJson {@link String}
+	 */
+	public static String convertSensorObservations(ObservationData observation, String observationType, Point2D.Double location) {
+		GeoJsonBuilder builder = new GeoJsonBuilder(observationType, "sensor");
+		builder.addDBSensorObservation(observation, location);
 		return builder.toString();
 	}
-
-	public static String convertPolygons(Collection<GeoPolygon> geoPolygons, String keyProperty) {
-		GeoJsonBuilder builder = new GeoJsonBuilder(keyProperty, "polygon");
+	
+	/**
+	 * Converts multiple {@link GeoPolygon}s to a GeoJson {@link String}.
+	 * Only stores the specified observation-type.
+	 * @param geoPolygons {@link Collection} of {@link GeoPolygon}s
+	 * @param observationType {@link String}
+	 * @return geoJson {@link String}
+	 */
+	public static String convertPolygons(Collection<GeoPolygon> geoPolygons, String observationType) {
+		GeoJsonBuilder builder = new GeoJsonBuilder(observationType, "polygon");
 		builder.addGeoPolygons(geoPolygons);
 		return builder.toString();
 	}

@@ -34,7 +34,7 @@ public class GeoRectangleTest {
 		
 		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(start.getX(), start.getY(), dim.getX(), dim.getY()), 1, 1, 0, "test");
 		assertEquals(points, rect.getPoints());
-		assertTrue(rect.getJson("pM10").matches("\\{ \"type\": \"FeatureCollection\", \"timestamp\": \".{4}-.{2}-.{2}T.{2}:.{2}:.{2}Z\","
+		assertTrue(rect.getGeoJson("pM10").matches("\\{ \"type\": \"FeatureCollection\", \"timestamp\": \".{4}-.{2}-.{2}T.{2}:.{2}:.{2}Z\","
 				+ " \"observationType\": \"pM10\", \"features\": \\[ \\{ \"type\": \"Feature\", \"properties\": \\{ \"value\": null, "
 				+ "\"clusterID\": \"test\", \"content\": \\[ \\] \\}, \"geometry\": \\{ \"type\": \"Polygon\", \"coordinates\": \\[ \\[ \\[ 2.3, 1.7\\],"
 				+ " \\[ 12.3, 1.7\\], \\[ 12.3, 6.7\\], \\[ 2.3, 6.7\\], \\[ 2.3, 1.7\\]\\] \\] \\} \\}] \\}"));
@@ -120,7 +120,7 @@ public class GeoRectangleTest {
 		Collection<String> properties = new HashSet<>();
 		properties.add(property);
 		properties.add(property2);
-		assertEquals(properties, rect.getAllProperties());
+		assertEquals(properties, rect.getAllObservationTypes());
 	}
 	
 	@Test
