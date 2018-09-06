@@ -15,10 +15,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.rubyeye.xmemcached.MemcachedClient;
@@ -27,15 +24,17 @@ import net.rubyeye.xmemcached.exception.MemcachedException;
 import server.transfer.data.ObservationData;
 
 /**
+ * Tests the {@link ObservationDataToStorageProcessor} class.
  * @author Oliver
  *
  */
 public class ObservationDataToStorageProcessorTest {
 
-	public static ObservationDataToStorageProcessor odtsp;
-	public static MemcachedClient cli;
+	private static ObservationDataToStorageProcessor odtsp;
+	private static MemcachedClient cli;
 	
 	/**
+	 * Set up a direct client to the database and an {@link ObservationDataToStorageProcessor} object.
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
@@ -45,19 +44,29 @@ public class ObservationDataToStorageProcessorTest {
 		odtsp = new ObservationDataToStorageProcessor("192.168.56.101", 11211);
 		assumeTrue(odtsp.isConnected());
 	}
-
+	
 	/**
-	 * @throws java.lang.Exception
+	 * Test the establishment of a connection to an unreachable server.
+	 * All methods called on this instance (except {@code reconnect()} and {@code addServer()})
+	 * should return immediately in order to not cause delays.
 	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-	
 	@Test
-	public void testUnreachableClient() {
-		new ObservationDataToStorageProcessor("0.0.0.0", 11211).get("key", "", "");
+	public void testUnreachableServer() {
+		ObservationDataToStorageProcessor unreachable = new ObservationDataToStorageProcessor("0.0.0.0", 11211);
+		assertFalse(unreachable.reconnect());
+		assertFalse(unreachable.isConnected());
+		unreachable.add(null);
+		unreachable.get("P", "V", "S");
+		unreachable.addServer("0.0.0.0", 11211);
+		unreachable.getObservedProperties("PaVoS");
 	}
 	
+	/**
+	 * Test adding an ObservationData object with an invalid ClusterID to the database.
+	 * @throws TimeoutException
+	 * @throws InterruptedException
+	 * @throws MemcachedException
+	 */
 	@Test
 	public void testInvalidClusterId() throws TimeoutException, InterruptedException, MemcachedException {
 		ObservationData od = new ObservationData();
@@ -74,6 +83,14 @@ public class ObservationDataToStorageProcessorTest {
 		cli.delete("a|b|0");
 	}
 	
+	/**
+	 * Test the Time parsing method.
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
 	@Test
 	public void testGetTime() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// set up private method for testing
@@ -127,7 +144,7 @@ public class ObservationDataToStorageProcessorTest {
 	}
 
 	/**
-	 * Test method for {@link server.database.ObservationDataToStorageProcessor#add(server.transfer.data.ObservationData)}.
+	 * Test adding an ObservationData object twice. This should add both objects to the database, with two different counters.
 	 * @throws MemcachedException 
 	 * @throws InterruptedException 
 	 * @throws TimeoutException 
@@ -160,6 +177,12 @@ public class ObservationDataToStorageProcessorTest {
 		cli.delete(od.clusterID.split(":")[0]);
 	}
 	
+	/**
+	 * Test the get method with various invalid parameters.
+	 * @throws TimeoutException
+	 * @throws InterruptedException
+	 * @throws MemcachedException
+	 */
 	@Test
 	public void testGetInvalidParameters() throws TimeoutException, InterruptedException, MemcachedException {
 		odtsp.get(null, null, null);
@@ -171,11 +194,19 @@ public class ObservationDataToStorageProcessorTest {
 	}
 
 	/**
-	 * Test method for {@link server.database.ObservationDataToStorageProcessor#get(java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test the reconnect method.
 	 */
 	@Test
-	public void testGet() {
-		
+	public void testReconnect() {
+		odtsp.reconnect();
+	}
+	
+	/**
+	 * Test the addServer method.
+	 */
+	@Test
+	public void testAddServer() {
+		odtsp.addServer("192.168.56.101", 11211);
 	}
 
 }

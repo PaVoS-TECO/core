@@ -28,8 +28,20 @@ public class Facade {
     	storageProcessor = new ObservationDataToStorageProcessor(host, port);
     }
     
+    /**
+     * Check if the storage processor is connected to the storage solution.
+     * @return {@code true} if connected, {@code false} if not.
+     */
     public boolean isConnected() {
     	return storageProcessor.isConnected();
+    }
+    
+    /**
+     * Try to reconnect the storage processor to the storage solution.
+     * @return {@code true} if successful, {@code false} if not.
+     */
+    public boolean reconnect() {
+    	return storageProcessor.reconnect();
     }
     
     /**
@@ -85,6 +97,10 @@ public class Facade {
     	return storageProcessor.getObservedProperties(gridID);
     }
     
+    /**
+     * Get the singleton instance of the Facade.
+     * @return The Facade instance
+     */
     public synchronized static Facade getInstance() {
     	if (storageProcessor == null || !storageProcessor.isConnected()) {
     		instance = new Facade();
