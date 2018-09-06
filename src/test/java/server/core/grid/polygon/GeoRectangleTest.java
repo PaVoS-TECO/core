@@ -1,6 +1,7 @@
 package server.core.grid.polygon;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -125,10 +126,32 @@ public class GeoRectangleTest {
 	
 	@Test
 	public void getClusterObservations() {
-		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 2, 2, 1, "test");
+		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 1, 1, 0, "test");
+		
+		ObservationData data = new ObservationData();
+		data.observationDate = TimeUtil.getUTCDateTimeNowString();
+		String sensorID = "testSensorID";
+		data.sensorID = sensorID;
+		String property = "temperature_celsius";
+		data.observations.put(property, "28.0");
+		
+		rect.addObservation(data);
+		
+		ObservationData data2 = new ObservationData();
+		data2.observationDate = TimeUtil.getUTCDateTimeNowString();
+		String sensorID2 = "testSensorID2";
+		data2.sensorID = sensorID2;
+		data2.observations.put(property, "20.0");
+		
+		rect.addObservation(data2);
+		
+		rect.updateObservations();
+		
 		Collection<ObservationData> check = rect.getClusterObservations();
-		check.forEach((data) -> {
-			assertTrue(data.observations.isEmpty());
+		check.forEach((d) -> {
+			assertFalse(d.observations.isEmpty());
+			assertTrue(d.observations.containsKey(property));
+			assertTrue(d.observations.get(property).equals("24.0"));
 		});
 	}
 	
