@@ -151,12 +151,6 @@
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-streams</artifactId>
       <version>1.0.1</version>
-      <exclusions>
-      	<exclusion>
-      		<groupId>org.rocksdb</groupId>
-      		<artifactId>rocksdbjni</artifactId>
-      	</exclusion>
-      </exclusions>
 	</dependency>
 	
 	<!-- https://mvnrepository.com/artifact/org.python/jython -->
