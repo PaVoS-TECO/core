@@ -7,7 +7,8 @@ import server.transfer.data.ObservationData;
 import server.transfer.data.ObservationDataDeserializer;
 
 /**
- * A facade to simplify access to a StorageSolution, such as a database. Through the methods, data can be inserted into the StorageSolution and certain information about its content requested.
+ * A facade to simplify access to a StorageSolution, such as a database. Through the methods,
+ * data can be inserted into the StorageSolution and certain information about its content requested.
  */
 public class Facade {
 
@@ -101,7 +102,7 @@ public class Facade {
      * Get the singleton instance of the Facade.
      * @return The Facade instance
      */
-    public synchronized static Facade getInstance() {
+    public static synchronized Facade getInstance() {
     	if (storageProcessor == null || !storageProcessor.isConnected()) {
     		instance = new Facade();
     	}

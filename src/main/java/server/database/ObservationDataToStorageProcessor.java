@@ -80,7 +80,7 @@ public class ObservationDataToStorageProcessor {
 
     /**
      * Saves the ObservationData object into the database for 24 hours.
-     * @param observationData
+     * @param observationData The ObservationData object
      */
 	public void add(ObservationData observationData) {
 		
@@ -95,7 +95,8 @@ public class ObservationDataToStorageProcessor {
 		
 		// A singular pipe character is used as delimiter, so it is an illegal character for clusterID.
 		if (observationData.clusterID.contains("|")) {
-			logger.warn("ClusterID of ObservationData object contains illegal character '|': {}", observationData.clusterID);
+			logger.warn("ClusterID of ObservationData object contains illegal character '|': {}", 
+					observationData.clusterID);
 			return;
 		}
 		
@@ -143,7 +144,8 @@ public class ObservationDataToStorageProcessor {
 			}
 			cli.set(gridID, dataExp, properties);
 			logger.debug("Successfully added item with key {}", dataKey);
-			logger.debug("\tTimestamp {} and properties {}", observationData.observationDate, String.join(", ", observationData.observations.keySet()));
+			logger.debug("\tTimestamp {} and properties {}", 
+					observationData.observationDate, String.join(", ", observationData.observations.keySet()));
 		} catch (TimeoutException e) {
 			logger.warn("Timeout when saving ObservationData to memcached!", e);
 		} catch (InterruptedException | MemcachedException e) {
