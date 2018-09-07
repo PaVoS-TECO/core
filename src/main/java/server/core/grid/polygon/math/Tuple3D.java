@@ -15,9 +15,9 @@ public class Tuple3D<A, B, C> {
 	
 	/**
 	 * Creates a simple tuple.
-	 * @param valueA
-	 * @param valueB
-	 * @param valueC
+	 * @param valueA the first value
+	 * @param valueB the second value
+	 * @param valueC the third value
 	 */
 	public Tuple3D(A valueA, B valueB, C valueC) {
 		this.valueA = valueA;

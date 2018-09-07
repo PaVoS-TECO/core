@@ -6,8 +6,15 @@ package server.core.grid.config;
  */
 public final class WorldMapData {
 	
-	public static final double lngRange = 180.0;
-	public static final double latRange = 85.0;
+	/**
+	 * The map range (longitude)
+	 */
+	public static final double LNG_RANGE = 180.0;
+	
+	/**
+	 * The map range (latitude)
+	 */
+	public static final double LAT_RANGE = 85.0;
 	
 	private WorldMapData() {
 		

@@ -9,9 +9,9 @@ import server.core.visualization.gradients.SimpleGradient;
  */
 public class GradientRange {
 	
-	public final String ID;
-	public final double VALUE_START;
-	public final double VALUE_END;
+	private final String id;
+	private final double valueStart;
+	private final double valueEnd;
 	
 	/**
 	 * Creates a new {@link GradientRange}.
@@ -20,26 +20,48 @@ public class GradientRange {
 	 * @param valueEnd {@link Double}
 	 */
 	public GradientRange(String id, double valueStart, double valueEnd) {
-		this.ID = id;
-		this.VALUE_START = valueStart;
-		this.VALUE_END = valueEnd;
+		if (id == null) throw new IllegalArgumentException();
+		this.id = id;
+		this.valueStart = valueStart;
+		this.valueEnd = valueEnd;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("\"_%s\": [%s, %s]", ID, VALUE_START, VALUE_END);
+		return String.format("\"_%s\": [%s, %s]", id, valueStart, valueEnd);
 	}
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o ==null || !o.getClass().equals(this.getClass())) return false;
+		if (o == null || !o.getClass().equals(this.getClass())) return false;
 		GradientRange oRange = (GradientRange) o;
 		return oRange.hashCode() == this.hashCode();
 	}
 	
 	@Override
 	public int hashCode() {
-		return this.ID.hashCode();
+		return this.id.hashCode();
+	}
+	
+	/**
+	 * @return the identifier of this object
+	 */
+	public String getID() {
+		return id;
+	}
+	
+	/**
+	 * @return the first value of this range
+	 */
+	public double getValueStart() {
+		return valueStart;
+	}
+	
+	/**
+	 * @return the second value of this range
+	 */
+	public double getValueEnd() {
+		return valueEnd;
 	}
 	
 }

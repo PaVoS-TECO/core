@@ -11,8 +11,8 @@ import server.core.visualization.GradientRange;
  */
 public class SimpleGradient {
 	
-	public final Color cStart;
-	public final Color cEnd;
+	private final Color cStart;
+	private final Color cEnd;
 	
 	/**
 	 * Creates a new {@link SimpleGradient}
@@ -20,6 +20,7 @@ public class SimpleGradient {
 	 * @param cEnd {@link Color} of position 1.0
 	 */
 	public SimpleGradient(Color cStart, Color cEnd) {
+		if (cStart == null || cEnd == null) throw new IllegalArgumentException();
 		this.cStart = cStart;
 		this.cEnd = cEnd;
 	}
@@ -30,12 +31,13 @@ public class SimpleGradient {
 	 * @return color {@link Color}
 	 */
 	public Color getColorAt(double position) {
-		if (position < 0.0) position = 0.0;
-		if (position > 1.0) position = 1.0;
-		float r = getValueInBetween(cStart.getRed(), cEnd.getRed(), position);
-		float g = getValueInBetween(cStart.getGreen(), cEnd.getGreen(), position);
-		float b = getValueInBetween(cStart.getBlue(), cEnd.getBlue(), position);
-		float a = getValueInBetween(cStart.getAlpha(), cEnd.getAlpha(), position);
+		double newPosition = position;
+		if (position < 0.0) newPosition = 0.0;
+		else if (position > 1.0) newPosition = 1.0;
+		float r = getValueInBetween(cStart.getRed(), cEnd.getRed(), newPosition);
+		float g = getValueInBetween(cStart.getGreen(), cEnd.getGreen(), newPosition);
+		float b = getValueInBetween(cStart.getBlue(), cEnd.getBlue(), newPosition);
+		float a = getValueInBetween(cStart.getAlpha(), cEnd.getAlpha(), newPosition);
 		return new Color(r, g, b, a);
 	}
 	
@@ -43,6 +45,20 @@ public class SimpleGradient {
 		double relVal1 = val1 / 255.0;
 		double relVal2 = val2 / 255.0;
 		return (float) ((relVal1 * (1.0 - position)) + (relVal2 * position));
+	}
+	
+	/**
+	 * @return the color at the beginning
+	 */
+	public Color getcStart() {
+		return cStart;
+	}
+
+	/**
+	 * @return the color at the end
+	 */
+	public Color getcEnd() {
+		return cEnd;
 	}
 	
 }

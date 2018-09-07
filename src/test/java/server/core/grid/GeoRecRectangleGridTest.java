@@ -22,18 +22,24 @@ import server.core.grid.polygon.GeoPolygon;
 import server.transfer.data.ObservationData;
 import server.transfer.sender.util.TimeUtil;
 
+/**
+ * Tests {@link GeoRecRectangleGrid}
+ */
 public class GeoRecRectangleGridTest {
 	
+	/**
+	 * Tests the {@link GeoGrid} for observationTypes.
+	 */
 	@Test
-	public void checkProperties() {
-		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
-				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+	public void checkObservationTypes() {
+		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
+				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),  2, 2, 3);
 		
 		ObservationData startData = new ObservationData();
 		startData.observationDate = TimeUtil.getUTCDateTimeNowString();
 		startData.sensorID = "testSensorID";
-		String property = "temperature_celsius";
-		startData.observations.put(property, "14.0");
+		String observationType = "temperature_celsius";
+		startData.observations.put(observationType, "14.0");
 		
 		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
 		grid.addObservation(location1, startData);
@@ -63,22 +69,28 @@ public class GeoRecRectangleGridTest {
 		assertTrue(grid.getGridObservationTypes().contains("temperature_celsius"));
 	}
 	
+	/**
+	 * Tests sending data to Graphite.
+	 */
 	@Test
 	public void sendToGraphite() {
-		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
-				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
+				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),  2, 2, 3);
 		
 		grid.updateObservations();
 		grid.transferSensorDataDirectly();
 	}
 	
+	/**
+	 * Tests if two objects are equal.
+	 */
 	@Test
 	public void testEquals() {
-		GeoGrid grid1 = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
-				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+		GeoGrid grid1 = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
+				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),  2, 2, 3);
 		
-		GeoGrid grid2 = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
-				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+		GeoGrid grid2 = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
+				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),  2, 2, 3);
 		
 		ObservationData startData = new ObservationData();
 		startData.observationDate = TimeUtil.getUTCDateTimeNowString();
@@ -92,10 +104,13 @@ public class GeoRecRectangleGridTest {
 		assertTrue(grid1.equals(grid2));
 	}
 	
+	/**
+	 * Tests if sensors can be added to the {@link GeoGrid}.
+	 */
 	@Test
 	public void testSensorAddedToGrid() {
-		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(- WorldMapData.lngRange, 
-				- WorldMapData.latRange,WorldMapData.lngRange * 2, WorldMapData.latRange * 2),  2, 2, 3);
+		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
+				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),  2, 2, 3);
 		
 		ObservationData data = new ObservationData();
 		data.observationDate = TimeUtil.getUTCDateTimeNowString();
@@ -137,14 +152,15 @@ public class GeoRecRectangleGridTest {
 		assertTrue(GeoJsonConverter.convertSensorObservations(data, property, new  Point2D.Double(260.0, 80.0)).matches(
 				"\\{ \"type\": \"FeatureCollection\", \"timestamp\": \"" + TimeUtil.getDateTimeRegex() 
 				+ "\", \"observationType\": \"temperature_celsius\", \"features\": "
-				+ "\\[ \\{ \"type\": \"Feature\", \"properties\": \\{ \"value\": 28\\.0, \"sensorID\": \"testSensorID2\"\\}, "
+				+ "\\[ \\{ \"type\": \"Feature\", \"properties\": "
+				+ "\\{ \"value\": 28\\.0, \"sensorID\": \"testSensorID2\"\\}, "
 				+ "\"geometry\": \\{ \"type\": \"Point\", \"coordinates\": \\[ 260\\.0, 80\\.0\\]\\} \\}\\] \\}"));
 		
 		String clusterID = null;
 		GeoPolygon poly = null;
 		try {
-			poly = grid.getPolygonContaining(location1, grid.maxLevel);
-			clusterID = poly.id;
+			poly = grid.getPolygonContaining(location1, grid.getMaxLevel());
+			clusterID = poly.getID();
 		} catch (PointNotOnMapException e) {
 			fail("Location out of map bounds.");
 		}
@@ -183,7 +199,7 @@ public class GeoRecRectangleGridTest {
 		
 		GeoPolygon jsonPoly = null;
 		try {
-			jsonPoly = grid.getPolygon(grid.id + Seperators.GRID_CLUSTER_SEPERATOR + "0_1");
+			jsonPoly = grid.getPolygon(grid.getID() + Seperators.GRID_CLUSTER_SEPERATOR + "0_1");
 		} catch (ClusterNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -207,7 +223,8 @@ public class GeoRecRectangleGridTest {
 	}
 	
 	private String observationToString(ObservationData data) {
-		return "ObservationData: " + data.observationDate + ", " + data.sensorID + ", " + data.clusterID + ", " + data.observations;
+		return "ObservationData: " + data.observationDate + ", " 
+				+ data.sensorID + ", " + data.clusterID + ", " + data.observations;
 	}
 	
 	private String observationsToString(Collection<ObservationData> collection) {

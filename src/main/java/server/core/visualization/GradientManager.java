@@ -22,7 +22,8 @@ public final class GradientManager {
 		String colorsHex = manager.getProperty("temperature");
 		String rangeCelsius = manager.getProperty("temperature.range.celsius");
 		String rangeFahrenheit = manager.getProperty("temperature.range.fahrenheit");
-		addGradient(getGradient("temperature", colorsHex), getRange("celsius", rangeCelsius), getRange("Fahrenheit", rangeFahrenheit));
+		addGradient(getGradient("temperature", colorsHex), 
+				getRange("celsius", rangeCelsius), getRange("Fahrenheit", rangeFahrenheit));
 	}
 	
 	/**

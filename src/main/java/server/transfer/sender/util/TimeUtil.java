@@ -19,7 +19,8 @@ public final class TimeUtil {
 	 * @return resultLocalDateTime {@link String}
 	 */
 	public static String removeMillis(String localDateTime) {
-		return getUTCDateTimeString(LocalDateTime.parse(localDateTime, DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")));
+		return getUTCDateTimeString(LocalDateTime.parse(
+				localDateTime, DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")));
 	}
 	
 	/**

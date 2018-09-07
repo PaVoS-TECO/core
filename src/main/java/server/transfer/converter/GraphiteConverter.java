@@ -12,7 +12,7 @@ import server.transfer.data.ObservationData;
  */
 public final class GraphiteConverter {
 	
-	private static final Logger logger = LoggerFactory.getLogger(GraphiteConverter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraphiteConverter.class);
 	
 	private GraphiteConverter() {
 		
@@ -22,8 +22,6 @@ public final class GraphiteConverter {
      * Adds the sensor-observed properties to the collection of properties that will be sent
      * @param observation The record of data that will be sent
      * @param list The list of metrics that were created from our data with python
-	 * @param graphTopic The Graphite / Grafana topic name, where all data will be sent to
-     * @param logger Documents the metrics created by the {@link PythonMetricUtil}
      */
     public static void addObservations(ObservationData observation, PyList list) {
     	if (!isDataReadable(observation, list)) return;
@@ -32,7 +30,7 @@ public final class GraphiteConverter {
     
     private static boolean isDataReadable(Object...objects) {
     	if (isAnyNull(objects)) {
-    		logger.error("parameters must not be null" + new NullPointerException());
+    		LOGGER.error("parameters must not be null" + new NullPointerException());
     		return false;
     	}
     	return true;

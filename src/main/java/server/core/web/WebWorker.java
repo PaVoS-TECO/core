@@ -56,7 +56,7 @@ public class WebWorker implements Runnable {
 		try (
 				PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
 				BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			){
+			) {
 			
 	        String request = in.readLine();
 	        if (request.startsWith("GET /") && request.endsWith(" HTTP/1.1")) {
@@ -110,6 +110,8 @@ public class WebWorker implements Runnable {
 			case "getGridBounds":
 				getGridBounds(out);
 				break;
+			default:
+				break;
 			}
 		} catch (IllegalArgumentException | ArrayIndexOutOfBoundsException | NullPointerException e) {
 			logger.info("Bad-Request");
@@ -121,7 +123,7 @@ public class WebWorker implements Runnable {
 	private void getGridBounds(PrintWriter out) {
 		GeoGridManager manager = GeoGridManager.getInstance();
 		GeoGrid grid = manager.getNewestGrid();
-		printOut(rectangleToString(grid.mapBounds), out);
+		printOut(rectangleToString(grid.getMapBounds()), out);
 	}
 	
 	private String rectangleToString(Rectangle2D.Double rect) {
@@ -142,7 +144,7 @@ public class WebWorker implements Runnable {
 	private void getGridID(PrintWriter out) {
 		GeoGridManager manager = GeoGridManager.getInstance();
 		GeoGrid grid = manager.getNewestGrid();
-		printOut(grid.id, out);
+		printOut(grid.getID(), out);
 	}
 
 	private void getAllGradients(PrintWriter out) {
@@ -233,7 +235,7 @@ public class WebWorker implements Runnable {
 			String stepsString = getParameter("steps");
 			
 			result = getDatabaseDataCluster(gridID, keyProperty, clusterIDs, time, stepsString);
-		} catch(IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			if (e.getMessage().equals("time")) {
 				result = getLiveDataCluster(gridID, keyProperty, clusterIDs);
 			} else {
@@ -254,7 +256,8 @@ public class WebWorker implements Runnable {
 		Point2D.Double point = null;
 		try {
 			point = grid.getSensorLocation(sensorID);
-			return GeoJsonConverter.convertSensorObservations(grid.getSensorObservation(sensorID, point), keyProperty, point);
+			return GeoJsonConverter.convertSensorObservations(
+					grid.getSensorObservation(sensorID, point), keyProperty, point);
 		} catch (PointNotOnMapException | SensorNotFoundException | NullPointerException e) {
 			statusCode = HttpStatus.SC_BAD_REQUEST;
 		}
@@ -278,7 +281,8 @@ public class WebWorker implements Runnable {
 		return GeoJsonConverter.convertPolygons(polygons, keyProperty);
 	}
 	
-	private String getDatabaseDataCluster(String gridID, String keyProperty, String[] clusterIDs, String[] time, String stepsString) {
+	private String getDatabaseDataCluster(String gridID, String keyProperty, 
+			String[] clusterIDs, String[] time, String stepsString) {
 		if (time.length == 1) {
 			Facade database = Facade.getInstance();
 			Collection<ObservationData> observations = new HashSet<>();
@@ -329,7 +333,9 @@ public class WebWorker implements Runnable {
 	
 	private GeoGrid getGrid(String gridID) {
 		GeoGridManager gridManager = GeoGridManager.getInstance();
-		if (!gridManager.isGridActive(gridID)) throw new IllegalArgumentException("Grid is not active and therefore can not be fetched.");
+		if (!gridManager.isGridActive(gridID)) {
+			throw new IllegalArgumentException("Grid is not active and therefore can not be fetched.");
+		}
 		return gridManager.getGrid(gridID);
 	}
 	

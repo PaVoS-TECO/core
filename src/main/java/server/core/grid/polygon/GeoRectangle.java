@@ -25,17 +25,17 @@ public class GeoRectangle extends GeoPolygon {
 	public GeoRectangle(Rectangle2D.Double bounds, int rows, int columns, int levelsAfterThis, String id) {
 		super(bounds, rows, columns, levelsAfterThis, id);
 		generatePath();
-		if (this.levelsAfterThis > 0) {
-			generateSubPolygons(this.rows, this.columns);
+		if (this.getLevelsAfterThis() > 0) {
+			generateSubPolygons(this.getRows(), this.getColumns());
 		}
 	}
 
 	@Override
 	protected void generatePath() {
-		path.moveTo(bounds.getX(), bounds.getY());
-		path.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY());
-		path.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight());
-		path.lineTo(bounds.getX(), bounds.getY() + bounds.getHeight());
+		path.moveTo(getBounds().getX(), getBounds().getY());
+		path.lineTo(getBounds().getX() + getBounds().getWidth(), getBounds().getY());
+		path.lineTo(getBounds().getX() + getBounds().getWidth(), getBounds().getY() + getBounds().getHeight());
+		path.lineTo(getBounds().getX(), getBounds().getY() + getBounds().getHeight());
 		path.closePath();
 	}
 	
@@ -46,18 +46,19 @@ public class GeoRectangle extends GeoPolygon {
 
 	@Override
 	protected void generateSubPolygons(int xSubdivisions, int ySubdivisions) {
-		double subWidth = bounds.getWidth() / (double) ySubdivisions;
-		double subHeight = bounds.getHeight() / (double) xSubdivisions;
+		double subWidth = getBounds().getWidth() / (double) ySubdivisions;
+		double subHeight = getBounds().getHeight() / (double) xSubdivisions;
 		
 		for (int row = 0; row < xSubdivisions; row++) {
 			for (int col = 0; col < ySubdivisions; col++) {
-				double subXOffset = bounds.getX() + (double) col * subWidth;
-				double subYOffset = bounds.getY() + (double) row * subHeight;
+				double subXOffset = getBounds().getX() + (double) col * subWidth;
+				double subYOffset = getBounds().getY() + (double) row * subHeight;
 				Rectangle2D.Double subBounds = new Rectangle2D.Double(subXOffset, subYOffset, subWidth, subHeight);
 				String subID = String.valueOf(row) + Seperators.ROW_COLUMN_SEPERATOR + String.valueOf(col);
 				
-				GeoRectangle subPolygon = new GeoRectangle(subBounds, this.rows, this.columns, (levelsAfterThis - 1)
-						, id + Seperators.CLUSTER_SEPERATOR + subID);
+				GeoRectangle subPolygon = new GeoRectangle(subBounds, this.getRows(),
+						this.getColumns(), (getLevelsAfterThis() - 1),
+						getID() + Seperators.CLUSTER_SEPERATOR + subID);
 				subPolygons.add(subPolygon);
 			}
 		}

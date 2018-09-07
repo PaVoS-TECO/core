@@ -9,15 +9,24 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests {@link WebServer}
+ */
 public class WebServerTest {
 	
 	private static volatile WebServer server;
 	
+	/**
+	 * Sets everything up before every method.
+	 */
 	@Before
 	public void beforeTest() {
 		server = new WebServer();
 	}
 	
+	/**
+	 * Tests the servers reaction to a forced shutdown outside of its {@link Thread}.
+	 */
 	@Test
 	public void testForcedShutdown() {
 		ExecutorService service = Executors.newSingleThreadExecutor();

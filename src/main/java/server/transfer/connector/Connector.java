@@ -43,7 +43,7 @@ public abstract class Connector {
     /**
      * Starts the transferring-process
      * @param sender The {@link Sender} to use in this process.
-     * @return 
+     * @return operationSuccessful {@link Boolean}
      */
     public abstract boolean run(Sender sender);
 

@@ -80,7 +80,8 @@ public final class KafkaTopicAdmin {
 		return containsAllTopicListings(allListings, listingsToCheck);
 	}
 	
-	private boolean containsAllTopicListings(Collection<TopicListing> allListings, Collection<TopicListing> listingsToCheck) {
+	private boolean containsAllTopicListings(Collection<TopicListing> allListings, 
+			Collection<TopicListing> listingsToCheck) {
 		int num = 0;
 		for (TopicListing a : allListings) {
 			for (TopicListing b: listingsToCheck) {

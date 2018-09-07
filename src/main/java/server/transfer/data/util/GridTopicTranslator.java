@@ -6,9 +6,9 @@ import server.core.grid.config.Seperators;
  * A utility class to generate foldernames for graphite.
  * Each folder is seperated by a dot.
  */
-public class GridTopicTranslator {
+public final class GridTopicTranslator {
 	
-	public static final String p = ".";
+	private static final String POINT = ".";
 	
 	private GridTopicTranslator() {
 		
@@ -26,10 +26,10 @@ public class GridTopicTranslator {
 		String gridID = args[0];
 		String[] clusters = args[1].split(Seperators.CLUSTER_SEPERATOR);
 		
-		topicBuilder.append(gridID + p);
+		topicBuilder.append(gridID + POINT);
 		for (int i = 0; i < clusters.length; i++) {
 			topicBuilder.append(clusters[i]);
-			topicBuilder.append(p);
+			topicBuilder.append(POINT);
 		}
 		String base = topicBuilder.toString();
 		return base + sensorID;

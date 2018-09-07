@@ -11,8 +11,14 @@ import org.junit.Test;
 
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 
+/**
+ * Tests {@link KafkaPropertiesFileManager}
+ */
 public class KafkaPropertiesFileManagerTest {
 	
+	/**
+	 * Tests if the GraphiteConnector {@link Properties} are complete.
+	 */
 	@Test
 	public void testGetGraphiteConnectorProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();
@@ -25,6 +31,9 @@ public class KafkaPropertiesFileManagerTest {
 		assertTrue(props.containsKey(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG));
 	}
 	
+	/**
+	 * Tests if the GraphiteProducer {@link Properties} are complete.
+	 */
 	@Test
 	public void testGetGraphiteProducerProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();
@@ -36,6 +45,9 @@ public class KafkaPropertiesFileManagerTest {
 		assertTrue(props.containsKey(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG));
 	}
 	
+	/**
+	 * Tests if the MergeStream {@link Properties} are complete.
+	 */
 	@Test
 	public void testGetMergeStreamProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();
@@ -44,6 +56,10 @@ public class KafkaPropertiesFileManagerTest {
 		assertTrue(props.containsKey(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG));
 	}
 	
+
+	/**
+	 * Tests if the ExportStream {@link Properties} are complete.
+	 */
 	@Test
 	public void testGetExportStreamProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();
@@ -52,6 +68,10 @@ public class KafkaPropertiesFileManagerTest {
 		assertTrue(props.containsKey(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG));
 	}
 	
+
+	/**
+	 * Tests if the DummyStream {@link Properties} are complete.
+	 */
 	@Test
 	public void testGetDummyStreamProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();
@@ -59,6 +79,10 @@ public class KafkaPropertiesFileManagerTest {
 		assertBACDDA(props);
 	}
 	
+
+	/**
+	 * Tests if the GraphiteStream {@link Properties} are complete.
+	 */
 	@Test
 	public void testGetGraphiteStreamProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();
@@ -66,6 +90,10 @@ public class KafkaPropertiesFileManagerTest {
 		assertBACDDA(props);
 	}
 	
+
+	/**
+	 * Tests if the GridStream {@link Properties} are complete.
+	 */
 	@Test
 	public void testGetGridStreamProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();
@@ -81,7 +109,10 @@ public class KafkaPropertiesFileManagerTest {
 		assertTrue(props.containsKey(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG));
 		assertTrue(props.containsKey("schema.registry.url"));
 	}
-	
+
+	/**
+	 * Tests if the ProducerGrid {@link Properties} are complete.
+	 */
 	@Test
 	public void testGetProducerGridProperties() {
 		KafkaPropertiesFileManager manager = KafkaPropertiesFileManager.getInstance();

@@ -13,9 +13,8 @@ public class Tuple2D<A, B> {
 	
 	/**
 	 * Creates a simple tuple.
-	 * @param valueA
-	 * @param valueB
-	 * @param valueC
+	 * @param valueA the first value
+	 * @param valueB the second value
 	 */
 	public Tuple2D(A valueA, B valueB) {
 		this.valueA = valueA;

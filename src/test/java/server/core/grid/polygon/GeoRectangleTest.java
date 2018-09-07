@@ -16,15 +16,19 @@ import java.util.List;
 import org.junit.Test;
 
 import server.core.grid.exceptions.ClusterNotFoundException;
-import server.core.grid.polygon.GeoPolygon;
-import server.core.grid.polygon.GeoRectangle;
 import server.transfer.data.ObservationData;
 import server.transfer.sender.util.TimeUtil;
 
+/**
+ * Tests {@link GeoRectangle}
+ */
 public class GeoRectangleTest {
-
+	
+	/**
+	 * Tests generation of geoJson {@link String}s.
+	 */
 	@Test
-	public void testGenerateJson() {
+	public void testGenerateGeoJson() {
 		Point2D.Double start = new Point2D.Double(2.3, 1.7);
 		Point2D.Double dim = new Point2D.Double(10.0, 5.0);
 		List<Point2D.Double> points = new ArrayList<>();
@@ -33,14 +37,20 @@ public class GeoRectangleTest {
 		points.add(new Point2D.Double(start.getX() + dim.getX(), start.getY() + dim.getY()));
 		points.add(new Point2D.Double(start.getX(), start.getY() + dim.getY()));
 		
-		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(start.getX(), start.getY(), dim.getX(), dim.getY()), 1, 1, 0, "test");
+		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(
+				start.getX(), start.getY(), dim.getX(), dim.getY()), 1, 1, 0, "test");
 		assertEquals(points, rect.getPoints());
-		assertTrue(rect.getGeoJson("pM10").matches("\\{ \"type\": \"FeatureCollection\", \"timestamp\": \".{4}-.{2}-.{2}T.{2}:.{2}:.{2}Z\","
-				+ " \"observationType\": \"pM10\", \"features\": \\[ \\{ \"type\": \"Feature\", \"properties\": \\{ \"value\": null, "
-				+ "\"clusterID\": \"test\", \"content\": \\[ \\] \\}, \"geometry\": \\{ \"type\": \"Polygon\", \"coordinates\": \\[ \\[ \\[ 2.3, 1.7\\],"
-				+ " \\[ 12.3, 1.7\\], \\[ 12.3, 6.7\\], \\[ 2.3, 6.7\\], \\[ 2.3, 1.7\\]\\] \\] \\} \\}] \\}"));
+		assertTrue(rect.getGeoJson("pM10").matches("\\{ \"type\": \"FeatureCollection\", \"timestamp\":"
+				+ " \".{4}-.{2}-.{2}T.{2}:.{2}:.{2}Z\", \"observationType\": \"pM10\", \"features\": \\["
+				+ " \\{ \"type\": \"Feature\", \"properties\": \\{ \"value\": null, \"clusterID\": "
+				+ "\"test\", \"content\": \\[ \\] \\}, \"geometry\": \\{ \"type\": \"Polygon\", \"coordinates\": "
+				+ "\\[ \\[ \\[ 2.3, 1.7\\], \\[ 12.3, 1.7\\], \\[ 12.3, 6.7\\], "
+				+ "\\[ 2.3, 6.7\\], \\[ 2.3, 1.7\\]\\] \\] \\} \\}] \\}"));
 	}
 	
+	/**
+	 * Tests information management about sensors. (Number of Sensors)
+	 */
 	@Test
 	public void testAddValueAndGetNumberOfSensors() {
 		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 1, 1, 0, "test");
@@ -66,18 +76,25 @@ public class GeoRectangleTest {
 		assertEquals(0, numTotal);
 	}
 	
+	/**
+	 * Tests the generation of sub-{@link GeoPolygon}s.
+	 */
 	@Test
 	public void generateSubPolygons() {
 		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 2, 2, 1, "test");
 		Collection<GeoPolygon> subPolygons = rect.getSubPolygons();
 		Iterator<GeoPolygon> it = subPolygons.iterator();
-		assertEquals("[Point2D.Double[0.0, 0.0], Point2D.Double[5.0, 0.0], Point2D.Double[5.0, 2.5], Point2D.Double[0.0, 2.5]]",
+		assertEquals("[Point2D.Double[0.0, 0.0], Point2D.Double[5.0, 0.0], "
+				+ "Point2D.Double[5.0, 2.5], Point2D.Double[0.0, 2.5]]",
 				it.next().getPoints().toString());
-		assertEquals("[Point2D.Double[5.0, 0.0], Point2D.Double[10.0, 0.0], Point2D.Double[10.0, 2.5], Point2D.Double[5.0, 2.5]]",
+		assertEquals("[Point2D.Double[5.0, 0.0], Point2D.Double[10.0, 0.0], "
+				+ "Point2D.Double[10.0, 2.5], Point2D.Double[5.0, 2.5]]",
 				it.next().getPoints().toString());
-		assertEquals("[Point2D.Double[0.0, 2.5], Point2D.Double[5.0, 2.5], Point2D.Double[5.0, 5.0], Point2D.Double[0.0, 5.0]]",
+		assertEquals("[Point2D.Double[0.0, 2.5], Point2D.Double[5.0, 2.5], "
+				+ "Point2D.Double[5.0, 5.0], Point2D.Double[0.0, 5.0]]",
 				it.next().getPoints().toString());
-		assertEquals("[Point2D.Double[5.0, 2.5], Point2D.Double[10.0, 2.5], Point2D.Double[10.0, 5.0], Point2D.Double[5.0, 5.0]]",
+		assertEquals("[Point2D.Double[5.0, 2.5], Point2D.Double[10.0, 2.5], "
+				+ "Point2D.Double[10.0, 5.0], Point2D.Double[5.0, 5.0]]",
 				it.next().getPoints().toString());
 		try {
 			rect.getSubPolygon("test-0_0");
@@ -86,6 +103,9 @@ public class GeoRectangleTest {
 		}
 	}
 	
+	/**
+	 * Tests the localization of a {@link Point2D.Double}
+	 */
 	@Test
 	public void searchForPoint() {
 		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 2, 2, 1, "test");
@@ -95,6 +115,9 @@ public class GeoRectangleTest {
 		if (!contains) fail("Incorrect Shape created.");
 	}
 	
+	/**
+	 * Tests information management about sensors. (SensorIDs)
+	 */
 	@Test
 	public void getAllSensorIDs() {
 		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 2, 2, 1, "test");
@@ -124,6 +147,9 @@ public class GeoRectangleTest {
 		assertEquals(properties, rect.getAllObservationTypes());
 	}
 	
+	/**
+	 * Tests the generation of median values from sensor data input.
+	 */
 	@Test
 	public void getClusterObservations() {
 		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 1, 1, 0, "test");

@@ -29,12 +29,13 @@ import server.transfer.sender.util.TimeUtil;
  */
 public abstract class GeoPolygon {
 	
-	public final Rectangle2D.Double bounds;
-	public final int rows;
-	public final int columns;
-	public final double scale;
-	public final String id;
-	public final int levelsAfterThis;
+	private final Rectangle2D.Double bounds;
+	private final int rows;
+	private final int columns;
+	private final double scale;
+	private final String id;
+	private final int levelsAfterThis;
+	
 	protected volatile Path2D.Double path;
 	protected volatile List<GeoPolygon> subPolygons;
 	protected volatile Map<String, ObservationData> sensorValues;
@@ -96,7 +97,8 @@ public abstract class GeoPolygon {
 	
 	/**
 	 * Returns true if the current {@link GeoPolygon} contains the specified {@link Point2D.Double}.
-	 * If {@code checkBoundsFirst} is set to {@code true}, the method will check if the object is inside the boundaries first,
+	 * If {@code checkBoundsFirst} is set to {@code true},
+	 * the method will check if the object is inside the boundaries first,
 	 * in order to reduce overhead on {@link GeoPolygon}s with a high amount of vertices.
 	 * @param point {@link Point2D.Double}
 	 * @param checkBoundsFirst {@link boolean}
@@ -110,7 +112,8 @@ public abstract class GeoPolygon {
 	}
 	
 	/**
-	 * Returns the current {@link String} sensorIDs that are inside this cluster as a {@link Collection} over all sensors.
+	 * Returns the current {@link String} sensorIDs that are
+	 * inside this cluster as a {@link Collection} over all sensors.
 	 * This includes sensors from all sub-{@link GeoPolygon}s until the last level.
 	 * @return sensorDataSet {@code Collection<String>}
 	 */
@@ -124,7 +127,8 @@ public abstract class GeoPolygon {
 	}
 	
 	/**
-	 * Returns the current {@link String} sensorIDs that are inside this cluster as a {@link Collection} over all sensors.
+	 * Returns the current {@link String} sensorIDs that are
+	 * inside this cluster as a {@link Collection} over all sensors.
 	 * This does not include sensors from sub-{@link GeoPolygon}s.
 	 * @return sensorDataSet {@code Collection<String>}
 	 */
@@ -157,7 +161,8 @@ public abstract class GeoPolygon {
 	}
 	
 	/**
-	 * Returns the number of sensors in this {@link GeoPolygon} that send data about a specific {@link Collection} of properties.
+	 * Returns the number of sensors in this {@link GeoPolygon}
+	 * that send data about a specific {@link Collection} of properties.
 	 * @param properties The {@link Collection} of {@link String}s representing different observation-types.
 	 * @return numberOfSensors {@link int}
 	 */
@@ -214,9 +219,7 @@ public abstract class GeoPolygon {
 		    if (type == PathIterator.SEG_LINETO || type == PathIterator.SEG_MOVETO) {
 		    	points.add(new Point2D.Double(values[0], values[1]));
 		    }
-		    else {
-		        // SEG_MOVETO, SEG_QUADTO, SEG_CUBICTO
-		    }
+		    // SEG_MOVETO, SEG_QUADTO, SEG_CUBICTO
 		    pi.next();
 		}
 		return points;
@@ -337,7 +340,8 @@ public abstract class GeoPolygon {
 		setWeightedObservationForCluster(values, properties);
 	}
 	
-	private void setWeightedObservationForCluster(Collection<Tuple3D<String, Integer, Double>> values, Collection<String> properties) {
+	private void setWeightedObservationForCluster(Collection<Tuple3D<String, Integer, Double>> values,
+			Collection<String> properties) {
 		boolean anyEntry = false;
 		ObservationData obs = new ObservationData();
 		DateTime dt = selectDateTimeFromAllSources();
@@ -352,7 +356,8 @@ public abstract class GeoPolygon {
 		}
 	}
 	
-	private boolean weightProperty(String property, Collection<Tuple3D<String, Integer, Double>> values, ObservationData output) {
+	private boolean weightProperty(String property, Collection<Tuple3D<String, Integer, Double>> values,
+			ObservationData output) {
 		double value = 0;
 		int totalSensors = 0;
 		boolean anyEntry = false;
@@ -372,8 +377,10 @@ public abstract class GeoPolygon {
 		return anyEntry;
 	}
 	
-	private Tuple2D<Double, Integer> addWeightedData(Tuple3D<String, Integer, Double> tuple, double value, int totalSensors) {
-		if (tuple.getFirstValue() == null || tuple.getSecondValue() == null || tuple.getThirdValue() == null) return null; 
+	private Tuple2D<Double, Integer> addWeightedData(Tuple3D<String, Integer, Double> tuple,
+			double value, int totalSensors) {
+		if (tuple.getFirstValue() == null || tuple.getSecondValue() == null 
+				|| tuple.getThirdValue() == null) return null; 
 		return new Tuple2D<>(value + tuple.getThirdValue().doubleValue() * tuple.getSecondValue().doubleValue(), 
 				totalSensors + tuple.getSecondValue().intValue());
 	}
@@ -423,15 +430,15 @@ public abstract class GeoPolygon {
 		Collection<Tuple3D<String, Integer, Double>> values = new HashSet<>();
 		for (GeoPolygon polygon : this.subPolygons) {
 			for (Entry<String, String> entry : polygon.observationData.observations.entrySet()) {
-				values.add(new Tuple3D<String, Integer, Double>(entry.getKey()
-						, Integer.valueOf(polygon.getNumberOfSensors(entry.getKey())), 
+				values.add(new Tuple3D<String, Integer, Double>(entry.getKey(),
+						Integer.valueOf(polygon.getNumberOfSensors(entry.getKey())), 
 						Double.valueOf(polygon.observationData.observations.get(entry.getKey()))));
 			}
 		}
 		for (ObservationData observation : this.sensorValues.values()) {
 			for (Entry<String, String> entry : observation.observations.entrySet()) {
-				values.add(new Tuple3D<String, Integer, Double>(entry.getKey()
-						, Integer.valueOf(1), 
+				values.add(new Tuple3D<String, Integer, Double>(entry.getKey(),
+						Integer.valueOf(1), 
 						Double.valueOf(observation.observations.get(entry.getKey()))));
 			}
 		}
@@ -477,8 +484,7 @@ public abstract class GeoPolygon {
 	 * Produces messages for the output kafka-topic.
 	 * This method Produces recursively and starts with the smallest clusters.
 	 * Returns a {@link Collection} of {@link ObservationData}.
-	 * @param topic {@link String}
-	 * @param recursive {@link boolean}
+	 * @return clusterObservations {@link Collection} of {@link ObservationData}
 	 */
 	protected Collection<ObservationData> getClusterObservations() {
 		Collection<ObservationData> result = new HashSet<>();
@@ -487,6 +493,48 @@ public abstract class GeoPolygon {
 		}
 		result.add(cloneObservation());
 		return result;
+	}
+
+	/**
+	 * @return the bounds
+	 */
+	public Rectangle2D.Double getBounds() {
+		return new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+	}
+
+	/**
+	 * @return the rows
+	 */
+	public int getRows() {
+		return rows;
+	}
+
+	/**
+	 * @return the columns
+	 */
+	public int getColumns() {
+		return columns;
+	}
+
+	/**
+	 * @return the scale
+	 */
+	public double getScale() {
+		return scale;
+	}
+	
+	/**
+	 * @return the identifier
+	 */
+	public String getID() {
+		return id;
+	}
+
+	/**
+	 * @return the levelsAfterThis
+	 */
+	public int getLevelsAfterThis() {
+		return levelsAfterThis;
 	}
 	
 }

@@ -11,8 +11,16 @@ import server.transfer.data.ObservationType;
 import server.transfer.sender.ConsoleSender;
 import server.transfer.sender.util.TimeUtil;
 
+/**
+ * Tests {@link GraphiteConnector}
+ */
 public class GraphiteConnectorTest {
 	
+	/**
+	 * Tests setting up needed prerequisites and sending
+	 * data to the console.
+	 * @throws InterruptedException The {@link Thread} was interrupted while trying to sleep or join.
+	 */
 	@Test
 	public void sendConvertedResultToConsole() throws InterruptedException {
 		ObservationData data = new ObservationData();
@@ -35,12 +43,12 @@ public class GraphiteConnectorTest {
 	}
 	
 	private ObservationData setupCorrectData(ObservationData data) {
-		return setupData(data, "8848", "Mt.Everest_27-59-16_86-55-29", "Mt.Everest"
-				, TimeUtil.getUTCDateTimeNowString(), "0", "0");
+		return setupData(data, "8848", "Mt.Everest_27-59-16_86-55-29", "Mt.Everest",
+				TimeUtil.getUTCDateTimeNowString(), "0", "0");
 	}
 	
-	private ObservationData setupData(ObservationData data, String locationElevation
-			, String locationID, String locationName, String date, String pM10, String pM2p5) {
+	private ObservationData setupData(ObservationData data, String locationElevation,
+			String locationID, String locationName, String date, String pM10, String pM2p5) {
 		data.observationDate = date;
 		data.observations.put(ObservationType.PARTICULATE_MATTER_PM10.toString(), pM10);
 		data.observations.put(ObservationType.PARTICULATE_MATTER_PM2P5.toString(), pM2p5);

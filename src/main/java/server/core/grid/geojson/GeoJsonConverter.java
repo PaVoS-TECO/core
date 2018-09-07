@@ -40,7 +40,8 @@ public final class GeoJsonConverter {
 	 * @param grid {@link GeoGrid}
 	 * @return geoJson {@link String}
 	 */
-	public static String convertPolygonObservations(Collection<ObservationData> observations, String observationType, GeoGrid grid) {
+	public static String convertPolygonObservations(Collection<ObservationData> observations,
+			String observationType, GeoGrid grid) {
 		GeoJsonBuilder builder = new GeoJsonBuilder(observationType, "polygon");
 		builder.addDBClusterObservations(observations, grid);
 		return builder.toString();
@@ -54,7 +55,8 @@ public final class GeoJsonConverter {
 	 * @param location {@link Point2D.Double}
 	 * @return geoJson {@link String}
 	 */
-	public static String convertSensorObservations(ObservationData observation, String observationType, Point2D.Double location) {
+	public static String convertSensorObservations(ObservationData observation,
+			String observationType, Point2D.Double location) {
 		GeoJsonBuilder builder = new GeoJsonBuilder(observationType, "sensor");
 		builder.addDBSensorObservation(observation, location);
 		return builder.toString();

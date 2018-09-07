@@ -1,5 +1,6 @@
 package server.core.web;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.ServerSocket;
 
@@ -31,11 +32,12 @@ public class WebServer implements Runnable {
 	public void run() {
 		shutdown = false;
 		try (ServerSocket serverSocket = new ServerSocket(PORT, BACKLOG)) {
-			logger.info(String.format("WebServer for GeoGrid-informations has started. IP=%s PORT=%s", serverSocket.getInetAddress(), PORT));
+			logger.info(String.format("WebServer for GeoGrid-informations has started. IP=%s PORT=%s", 
+					serverSocket.getInetAddress(), PORT));
 			while (!shutdown) {
 				processClients(serverSocket);
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			logger.error("Server-socket closed with an exception.", e);
 		}
 	}
@@ -44,7 +46,7 @@ public class WebServer implements Runnable {
 		try {
 			Thread t = new Thread(new WebWorker(serverSocket.accept()));
 			t.start();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			logger.error("Client-socket closed with an exception.", e);
 		}
 	}

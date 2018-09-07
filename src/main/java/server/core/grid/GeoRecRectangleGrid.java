@@ -12,6 +12,9 @@ import server.core.grid.polygon.GeoRectangle;
  */
 public class GeoRecRectangleGrid extends GeoGrid {
 	
+	/**
+	 * The name used to identify this class.
+	 */
 	public static final String NAME = "recursiveRectangleGrid";
 	
 	/**
@@ -33,20 +36,20 @@ public class GeoRecRectangleGrid extends GeoGrid {
 	
 	@Override
 	protected void generateGeoPolygons() {
-		double width = mapBounds.getWidth() / (double) columns;
-		double height = mapBounds.getHeight() / (double) rows;
-		double baseXOffset = mapBounds.getX();
-		double baseYOffset = mapBounds.getY();
+		double width = getMapBounds().getWidth() / (double) getColumns();
+		double height = getMapBounds().getHeight() / (double) getRows();
+		double baseXOffset = getMapBounds().getX();
+		double baseYOffset = getMapBounds().getY();
 		
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < columns; col++) {
+		for (int row = 0; row < getRows(); row++) {
+			for (int col = 0; col < getColumns(); col++) {
 				double xOffset = baseXOffset + (double) col * width;
 				double yOffset = baseYOffset + (double) row * height;
 				Rectangle2D.Double bounds = new Rectangle2D.Double(xOffset, yOffset, width, height);
 				String newId = String.valueOf(row) + Seperators.ROW_COLUMN_SEPERATOR + String.valueOf(col);
 				
-				GeoPolygon polygon = new GeoRectangle(bounds, rows, columns, (maxLevel - 1), 
-						this.id + Seperators.GRID_CLUSTER_SEPERATOR + newId);
+				GeoPolygon polygon = new GeoRectangle(bounds, getRows(), getColumns(), (getMaxLevel() - 1), 
+						getID() + Seperators.GRID_CLUSTER_SEPERATOR + newId);
 				polygons.add(polygon);
 			}
 		}

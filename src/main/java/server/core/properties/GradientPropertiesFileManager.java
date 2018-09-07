@@ -13,7 +13,10 @@ import server.core.visualization.gradients.MultiGradient;
  */
 public final class GradientPropertiesFileManager extends PropertiesFileManager {
 	
-	public final String gradientPropertyFilePath = "src/main/resources/defaultGradients.properties";
+	/**
+	 * The path to the {@link Properties} file.
+	 */
+	private final String gradientPropertyFilePath = "src/main/resources/defaultGradients.properties";
 	private static GradientPropertiesFileManager instance;
 	
 	private GradientPropertiesFileManager() {

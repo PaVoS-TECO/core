@@ -1,5 +1,6 @@
 package server.transfer.serialization;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -15,12 +16,18 @@ import server.transfer.data.ObservationDataDeserializer;
 import server.transfer.data.ObservationType;
 import server.transfer.sender.util.TimeUtil;
 
+/**
+ * Tests {@link ObservationDataDeserializer}
+ */
 public class ObservationDataDeserializerTest {
 
 	private static boolean print = true;
 	
+	/**
+	 * Tests deserializing an {@link ObservationData} object in serialized form.
+	 */
 	@Test
-	public void deserialize_serializedObjectCheck_returnKafkaObservationData() {
+	public void deserializeSerializedObjectCheckReturnKafkaObservationData() {
 		if (print) System.out.println("Running test: 'deserialization of a serializable KafkaObservationData object'");
 		ObservationData data = new ObservationData();
 		setupCorrectData(data);
@@ -28,7 +35,7 @@ public class ObservationDataDeserializerTest {
 		ObjectMapper mapper = new ObjectMapper();
 		boolean canSerialize = mapper.canSerialize(ObservationData.class);
 		if (print) System.out.println("Mapper can serialize object: " + canSerialize);
-		assert(canSerialize == true);
+		assertTrue(canSerialize);
 		
 		String sData = null;
 		byte[] bData = null;
@@ -56,16 +63,18 @@ public class ObservationDataDeserializerTest {
 				ObservationType.PARTICULATE_MATTER_PM10.toString()));
 		}
 		
-		assert(result.observationDate.equals(data.observationDate)
+		assert (result.observationDate.equals(data.observationDate)
 				&& result.observations.get(ObservationType.PARTICULATE_MATTER_PM10.toString())
 				.equals(data.observations.get(ObservationType.PARTICULATE_MATTER_PM10.toString())));
 	}
 	
 	private ObservationData setupCorrectData(ObservationData data) {
-		return setupData(data, "8848", "Mt.Everest_27-59-16_86-55-29", "Mt.Everest", TimeUtil.getUTCDateTimeNowString(), "0");
+		return setupData(data, "8848", "Mt.Everest_27-59-16_86-55-29",
+				"Mt.Everest", TimeUtil.getUTCDateTimeNowString(), "0");
 	}
 	
-	private ObservationData setupData(ObservationData data, String locationElevation, String locationID, String locationName, String date, String pM10) {
+	private ObservationData setupData(ObservationData data, String locationElevation,
+			String locationID, String locationName, String date, String pM10) {
 		data.observationDate = date;
 		data.observations.put(ObservationType.PARTICULATE_MATTER_PM10.toString(), pM10);
 		return data;

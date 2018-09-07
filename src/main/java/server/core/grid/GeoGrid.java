@@ -30,11 +30,11 @@ import server.transfer.data.ObservationData;
  */
 public abstract class GeoGrid {
 	
-	public final Rectangle2D.Double mapBounds;
-	public final int rows;
-	public final int columns;
-	public final int maxLevel;
-	public final String id;
+	private final Rectangle2D.Double mapBounds;
+	private final int rows;
+	private final int columns;
+	private final int maxLevel;
+	private final String id;
 	protected volatile List<GeoPolygon> polygons = new ArrayList<>();
 	protected volatile Map<String, Point2D.Double> sensorsAndLocations = new HashMap<>();
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -51,6 +51,7 @@ public abstract class GeoGrid {
 	 * @param gridID {@link String}
 	 */
 	public GeoGrid(Rectangle2D.Double mapBounds, int rows, int columns, int maxLevel, String gridID) {
+		if (mapBounds == null || gridID == null) throw new NullPointerException("mapBounds and gridID cannot be null");
 		this.mapBounds = mapBounds;
 		this.rows = rows;
 		this.columns = columns;
@@ -110,7 +111,7 @@ public abstract class GeoGrid {
 	 * @throws PointNotOnMapException Thrown when the Point was not located in the map-boundaries.
 	 */
 	public String getClusterID(Point2D.Double location, int level) throws PointNotOnMapException {
-		return getPolygonContaining(location, level).id;
+		return getPolygonContaining(location, level).getID();
 	}
 	
 	/**
@@ -118,10 +119,11 @@ public abstract class GeoGrid {
 	 * @param sensorID {@link String}
 	 * @param location {@link Point2D.Double}
 	 * @return observation {@link ObservationData}
-	 * @throws PointNotOnMapException
-	 * @throws SensorNotFoundException
+	 * @throws PointNotOnMapException The location is outside the map boundaries.
+	 * @throws SensorNotFoundException The sensorID is not recognized.
 	 */
-	public ObservationData getSensorObservation(String sensorID, Point2D.Double location) throws PointNotOnMapException, SensorNotFoundException {
+	public ObservationData getSensorObservation(String sensorID, Point2D.Double location) 
+			throws PointNotOnMapException, SensorNotFoundException {
 		GeoPolygon polygon = getPolygonContaining(location, maxLevel);
 		for (ObservationData observation : polygon.getSensorDataList()) {
 			if (observation.sensorID.equals(sensorID)) {
@@ -167,7 +169,7 @@ public abstract class GeoGrid {
 		synchronized (polygons) {
 			Collection<ObservationData> observations = new ArrayList<>();
 			for (GeoPolygon polygon : polygons) {
-				synchronized(polygon) {
+				synchronized (polygon) {
 					observations.addAll(polygon.getSubSensorObservations());
 					observations.addAll(polygon.getSensorDataList());
 				}
@@ -188,7 +190,7 @@ public abstract class GeoGrid {
 	 * Returns the location of a given {@link String} sensorID.
 	 * @param sensorID {@link String}
 	 * @return location {@link Point2D.Double}
-	 * @throws SensorNotFoundException
+	 * @throws SensorNotFoundException The sensorID is not recognized.
 	 */
 	public Point2D.Double getSensorLocation(String sensorID) throws SensorNotFoundException {
 		Point2D.Double result = this.sensorsAndLocations.get(sensorID);
@@ -200,7 +202,7 @@ public abstract class GeoGrid {
 	 * Returns the {@link GeoPolygon} that is associated with the specified {@link String} clusterID.
 	 * @param clusterID {@link String}
 	 * @return polygon {@link GeoPolygon}
-	 * @throws ClusterNotFoundException
+	 * @throws ClusterNotFoundException The clusterID is not recognized.
 	 */
 	public GeoPolygon getPolygon(String clusterID) throws ClusterNotFoundException {
 		GeoPolygon result = null;
@@ -231,7 +233,7 @@ public abstract class GeoGrid {
 	private GeoPolygon updatePolygonIfClusterMatches(String currentID, GeoPolygon input, List<GeoPolygon> polygons) {
 		GeoPolygon result = input;
 		for (GeoPolygon polygon : polygons) {
-			if (polygon.id.equals(currentID)) {
+			if (polygon.getID().equals(currentID)) {
 				result = polygon;
 				break;
 			}
@@ -240,10 +242,12 @@ public abstract class GeoGrid {
 	}
 	
 	/**
-	 * Returns the ID for the Cluster which contains the {@link Point2D.Double} point. If the point is not on the mapped area, returns {@link null}!<p>
+	 * Returns the ID for the Cluster which contains the {@link Point2D.Double} point.
+	 * If the point is not on the mapped area, returns {@link null}!<p>
 	 * The ID is also specified by the {@link int} level of grid-scaling.
 	 * The level ranges from 0 to {@code MAX_LEVEL}.
-	 * A higher level means more {@link GeoPolygon}s to check but gives a better representation for the selected {@link Point2D.Double}.
+	 * A higher level means more {@link GeoPolygon}s to check but gives
+	 * a better representation for the selected {@link Point2D.Double}.
 	 * @param location The {@link Point2D.Double} that is contained by the cluster
 	 * @param level The {@link int} level controls how deep we search
 	 * @return clusterID {@link String}
@@ -341,19 +345,56 @@ public abstract class GeoGrid {
 	protected abstract void generateGeoPolygons();
 
 	/**
-	 * Returns the first {@link GeoPolygon} from the {@link Collection} of {@link GeoPolygon}s that contains the specified {@link Point2D.Double}.
+	 * Returns the first {@link GeoPolygon} from the {@link Collection} of {@link GeoPolygon}s
+	 * that contains the specified {@link Point2D.Double}.
 	 * @param point {@link Point2D.Double}
 	 * @param collection {@link Collection} of {@link GeoPolygon}s
 	 * @return polygonContainingPoint {@link GeoPolygon}
-	 * @throws PointNotOnMapException Thrown when the Point was not located in the map-boundaries.
+	 * @throws PointNotOnMapException The location is not inside the map-boundaries.
 	 */
-	protected GeoPolygon getPolygonContainingPointFromCollection(Double point, Collection<GeoPolygon> collection) throws PointNotOnMapException {
+	protected GeoPolygon getPolygonContainingPointFromCollection(Double point, Collection<GeoPolygon> collection)
+			throws PointNotOnMapException {
 		for (GeoPolygon entry : collection) {
 			if (entry.contains(point, false)) {
 				return entry;
 			}
 		}
 		throw new PointNotOnMapException(point);
+	}
+
+	/**
+	 * @return the bounds of the {@link GeoGrid} / map
+	 */
+	public Rectangle2D.Double getMapBounds() {
+		return new Rectangle2D.Double(mapBounds.getX(), mapBounds.getY(), mapBounds.getWidth(), mapBounds.getHeight());
+	}
+
+	/**
+	 * @return the rows
+	 */
+	public int getRows() {
+		return rows;
+	}
+
+	/**
+	 * @return the columns
+	 */
+	public int getColumns() {
+		return columns;
+	}
+	
+	/**
+	 * @return the max level
+	 */
+	public int getMaxLevel() {
+		return maxLevel;
+	}
+	
+	/**
+	 * @return the max level
+	 */
+	public String getID() {
+		return id;
 	}
 	
 }

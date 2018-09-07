@@ -15,9 +15,13 @@ import server.core.grid.exceptions.PointNotOnMapException;
 import server.core.grid.exceptions.SensorNotFoundException;
 import server.transfer.data.ObservationData;
 
+/**
+ * The {@link GeoGridManager} manages every living instance of {@link GeoGrid}
+ * and schedules updates to connected components.
+ */
 public final class GeoGridManager {
 	
-	private static final Object lock = new Object();
+	private static final Object LOCK = new Object();
 	private static volatile GeoGridManager instance;
 	private static volatile List<GeoGrid> grids = Collections.synchronizedList(new ArrayList<>());
 	private ScheduledExecutorService execUpdate = Executors.newSingleThreadScheduledExecutor();
@@ -39,10 +43,14 @@ public final class GeoGridManager {
 		}).start();
 	}
 	
+	/**
+	 * Returns the instance of this {@link GeoGridManager} or generates a new one if it does not exists.
+	 * @return {@link GeoGridManager}
+	 */
 	public static GeoGridManager getInstance() {
 		GeoGridManager result = instance;
 		if (result == null) {
-			synchronized (lock) {
+			synchronized (LOCK) {
 				result = instance;
 				if (result == null) {
 					result = new GeoGridManager();
@@ -53,22 +61,35 @@ public final class GeoGridManager {
 		return result;
 	}
 	
+	/**
+	 * Returns the most recently added {@link GeoGrid}.
+	 * @return grid {@link GeoGrid}
+	 */
 	public GeoGrid getNewestGrid() {
 		synchronized (grids) {
 			return grids.get(0);
 		}
 	}
 	
+	/**
+	 * Adds the specified {@link GeoGrid} to this {@link GeoGridManager}.
+	 * @param grid {@link GeoGrid}
+	 */
 	public void addGeoGrid(GeoGrid grid) {
 		synchronized (grids) {
 			grids.add(0, grid);
 		}
 	}
 	
+	/**
+	 * Returns the {@link GeoGrid} specified by ID.
+	 * @param gridID {@link String}
+	 * @return grid {@link GeoGrid}
+	 */
 	public GeoGrid getGrid(String gridID) {
 		synchronized (grids) {
 			for (GeoGrid entry : grids) {
-				if (entry.id.equals(gridID)) {
+				if (entry.getID().equals(gridID)) {
 					return entry;
 				}
 			}
@@ -76,16 +97,26 @@ public final class GeoGridManager {
 		}
 	}
 	
+	/**
+	 * Returns true if this {@link GeoGridManager} has knowledge about the specified {@link GeoGrid}.
+	 * @param grid {@link GeoGrid}
+	 * @return isActive {@link Boolean}
+	 */
 	public boolean isGridActive(GeoGrid grid) {
 		synchronized (grids) {
 			return grids.contains(grid);
 		}
 	}
 	
+	/**
+	 * Returns true if this {@link GeoGridManager} has knowledge about the specified {@link GeoGrid}.
+	 * @param gridID {@link String}
+	 * @return isActive {@link Boolean}
+	 */
 	public boolean isGridActive(String gridID) {
 		synchronized (grids) {
 			for (GeoGrid entry : grids) {
-				if (entry.id.equals(gridID)) {
+				if (entry.getID().equals(gridID)) {
 					return true;
 				}
 			}
@@ -93,13 +124,23 @@ public final class GeoGridManager {
 		}
 	}
 	
+	/**
+	 * Removes the specified {@link GeoGrid} from this {@link GeoGridManager}.
+	 * @param grid {@link GeoGrid}
+	 * @return operationSuccessful {@link Boolean}
+	 */
 	public boolean removeGeoGrid(GeoGrid grid) {
 		synchronized (grids) {
 			return grids.remove(grid);
 		}
 	}
 	
-	public Collection<String> getAllProperties() {
+	/**
+	 * Returns a {@link Collection} of all observationTypes currently managed by grids
+	 * that this {@link GeoGridManager} knows about.
+	 * @return allObservationTypes {@link Collection} of {@link String}
+	 */
+	public Collection<String> getAllObservationTypes() {
 		synchronized (grids) {
 			Collection<String> properties = new HashSet<>();
 			for (GeoGrid grid : grids) {
@@ -111,6 +152,11 @@ public final class GeoGridManager {
 		}
 	}
 	
+	/**
+	 * Returns a {@link Collection} of all {@link ObservationData} from sensors currently managed
+	 * by grids that this {@link GeoGridManager} knows about.
+	 * @return allSensorObservations {@link Collection} of {@link ObservationData}
+	 */
 	public Collection<ObservationData> getAllSensorObservations() {
 		synchronized (grids) {
 			Collection<ObservationData> observations = new HashSet<>();
@@ -123,12 +169,22 @@ public final class GeoGridManager {
 		}
 	}
 	
+	/**
+	 * Returns the {@link ObservationData} of a sensor currently managed by a grid
+	 * that this {@link GeoGridManager} knows about.
+	 * @param sensorID {@link String}
+	 * @param gridID {@link String}
+	 * @return observation {@link ObservationData}
+	 * @throws GridNotFoundException The grid is not recognized.
+	 * @throws SensorNotFoundException The sensorID is not recognized.
+	 * @throws PointNotOnMapException The location is not inside the map-boundaries.
+	 */
 	public ObservationData getSensorObservation(String sensorID, String gridID) 
 			throws GridNotFoundException, SensorNotFoundException, PointNotOnMapException {
 		synchronized (grids) {
 			for (GeoGrid grid : grids) {
 				synchronized (grid) {
-					if (grid.id.equals(gridID)) {
+					if (grid.getID().equals(gridID)) {
 						Point2D.Double point = grid.getSensorLocation(sensorID);
 						return grid.getSensorObservation(sensorID, point);
 					}

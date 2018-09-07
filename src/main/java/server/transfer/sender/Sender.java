@@ -15,10 +15,9 @@ public abstract class Sender {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
     
     /**
-     * Sends the recorded data
-     * @param records Multiple records of data from Kafka
-     * @param graphTopic The Graphite / Grafana topic name, where all data will be sent to
-     * @return 
+     * Sends the recorded data.
+     * @param records {@link Collection} of {@link ObservationData}
+     * @return operationSuccessful {@link Boolean}
      */
     public abstract boolean send(Collection<ObservationData> records);
     

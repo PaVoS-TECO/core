@@ -23,7 +23,7 @@ import server.transfer.data.util.GridTopicTranslator;
  */
 public final class PythonMetricUtil {
 	
-	private static final Logger logger = LoggerFactory.getLogger(GraphiteConverter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraphiteConverter.class);
 	
 	private PythonMetricUtil() {
 		
@@ -34,16 +34,16 @@ public final class PythonMetricUtil {
      * @param record The record of data that will be sent
      * @param list The list of metrics that were created from our data with python
      * @param observations Maps each set observed property to a value
-     * @param graphTopic 
-     * @param logger The logger documents 
      */
     public static void addFloatMetric(ObservationData record, 
     		PyList list, Map<String, String> observations) {
 		for (Map.Entry<String, String> entry : observations.entrySet()) {
 			String value = entry.getValue();
 			if (value != null) {
-				LocalDateTime ldc = LocalDateTime.parse(record.observationDate, DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
-				PyString metricName = new PyString(GridTopicTranslator.getTopic(record.sensorID, record.clusterID) + "." + entry.getKey());
+				LocalDateTime ldc = LocalDateTime.parse(
+						record.observationDate, DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+				PyString metricName = new PyString(
+						GridTopicTranslator.getTopic(record.sensorID, record.clusterID) + "." + entry.getKey());
 				PyInteger timestamp = new PyInteger((int) (ldc.toDateTime(DateTimeZone.UTC).getMillis() / 1000));
 				PyFloat metricValue = new PyFloat(Double.parseDouble(value));
 				PyTuple metric = new PyTuple(metricName, new PyTuple(timestamp, metricValue));
@@ -54,8 +54,8 @@ public final class PythonMetricUtil {
     }
 
     private static void logMetric(PyTuple metric) {
-    	if (logger != null) {
-    		logger.debug("Added metric: " + metric.toString());
+    	if (LOGGER != null) {
+    		LOGGER.debug("Added metric: " + metric.toString());
     	}
     }
 	

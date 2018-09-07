@@ -17,7 +17,7 @@ public class MultiGradient {
 	
 	private List<SimpleGradient> gradients = new ArrayList<>();
 	private List<GradientRange> ranges = new ArrayList<>();
-	public final String ID;
+	private final String id;
 	
 	/**
 	 * Creates a new {@link MultiGradient}
@@ -26,9 +26,9 @@ public class MultiGradient {
 	 */
 	public MultiGradient(String id, Color... colors) {
 		if (id != null) {
-			this.ID = id;
+			this.id = id;
 		} else {
-			this.ID = String.valueOf(new Random().nextInt());
+			this.id = String.valueOf(new Random().nextInt());
 		}
 	    if (colors == null || colors.length < 1) {
 	    	gradients.add(new SimpleGradient(new Color(0, 0, 0), new Color(0, 0, 0)));
@@ -71,7 +71,7 @@ public class MultiGradient {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("\"%s\": { ", this.ID));
+		builder.append(String.format("\"%s\": { ", this.id));
 		builder.append(gradientToString());
 		ranges.forEach((range) -> builder.append(String.format(", %s", range.toString())));
 		builder.append(" }");
@@ -133,7 +133,7 @@ public class MultiGradient {
 	
 	@Override
 	public int hashCode() {
-		return this.ID.hashCode();
+		return this.id.hashCode();
 	}
 	
 	/**
@@ -142,8 +142,9 @@ public class MultiGradient {
 	 * @return color {@link Color}
 	 */
 	public Color getColorAt(double position) {
-		if (position < 0.0) position = 0.0;
-		if (position > 1.0) position = 1.0;
+		double newPosition = position;
+		if (position < 0.0) newPosition = 0.0;
+		else if (position > 1.0) newPosition = 1.0;
 		int amount = gradients.size();
 		double gradLength = 1.0 / (double) amount;
 		double ratio = (double) amount;
@@ -151,14 +152,14 @@ public class MultiGradient {
 		int gradIndex = 0;
 		if (amount > 1) {
 			for (int i = 1; i < amount; i++) {
-				if (position <= ((double) i) * gradLength) {
+				if (newPosition <= ((double) i) * gradLength) {
 					gradIndex = i - 1;
 					double subMin = gradLength * (double) gradIndex;
-					subPosition = position - subMin;
+					subPosition = newPosition - subMin;
 				}
 			}
 		} else {
-			subPosition = position;
+			subPosition = newPosition;
 		}
 		subPosition = subPosition * ratio;
 		return gradients.get(gradIndex).getColorAt(subPosition);
@@ -185,8 +186,8 @@ public class MultiGradient {
 		int beforeIndex = index - 1;
 		SimpleGradient sg1 = this.gradients.remove(beforeIndex);
 		SimpleGradient sg2 = this.gradients.remove(beforeIndex);
-		sg1 = new SimpleGradient(sg1.cStart, grad.cStart);
-		sg2 = new SimpleGradient(grad.cEnd, sg2.cEnd);
+		sg1 = new SimpleGradient(sg1.getcStart(), grad.getcStart());
+		sg2 = new SimpleGradient(grad.getcEnd(), sg2.getcEnd());
 		this.gradients.add(beforeIndex, sg2);
 		this.gradients.add(beforeIndex, sg1);
 		this.gradients.add(index, grad);
@@ -202,9 +203,16 @@ public class MultiGradient {
 		int afterIndex = index + 1;
 		SimpleGradient sg2 = this.gradients.get(afterIndex);
 		SimpleGradient sg1 = this.gradients.remove(beforeIndex);
-		sg1 = new SimpleGradient(sg1.cStart, sg2.cStart);
+		sg1 = new SimpleGradient(sg1.getcStart(), sg2.getcStart());
 		this.gradients.add(beforeIndex, sg1);
 		return this.gradients.remove(index);
+	}
+	
+	/**
+	 * @return the identifier of this object
+	 */
+	public String getID() {
+		return id;
 	}
 	
 }

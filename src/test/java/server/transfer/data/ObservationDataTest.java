@@ -1,13 +1,19 @@
 package server.transfer.data;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import server.transfer.sender.util.TimeUtil;
 
+/**
+ * Tests {@link ObservationData}
+ */
 public class ObservationDataTest {
 
+	/**
+	 * Tests the conversion to a Json {@link String} with toString().
+	 */
 	@Test
 	public void toStringTest() {
 		ObservationData data = new ObservationData();

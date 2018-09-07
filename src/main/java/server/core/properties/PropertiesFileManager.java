@@ -14,10 +14,6 @@ public abstract class PropertiesFileManager {
 	protected Properties properties = new Properties();
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	protected PropertiesFileManager() {
-		
-	}
-	
 	/**
 	 * Returns the value of the given property from this 
 	 * {@link PropertiesFileManager}s {@link Properties}.

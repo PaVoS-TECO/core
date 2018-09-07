@@ -47,6 +47,9 @@ public class ObservationDataDeserializer implements Deserializer<ObservationData
 		return observationData;
 	}
 
+	/**
+	 * Closes this {@link Deserializer}
+	 */
 	public void close() {
 		// unused because resource leak is impossible
 	}

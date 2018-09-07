@@ -116,8 +116,8 @@ public class ExportMergeProcess implements ProcessInterface, Runnable {
 			GeoGrid grid = GeoGridManager.getInstance().getNewestGrid();
 			try {
 				System.out.println("---------");
-				System.out.println(grid.getClusterID(location2, grid.maxLevel));
-				location.put("description", grid.getClusterID(location2, grid.maxLevel));
+				System.out.println(grid.getClusterID(location2, grid.getMaxLevel()));
+				location.put("description", grid.getClusterID(location2, grid.getMaxLevel()));
 			} catch (PointNotOnMapException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

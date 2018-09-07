@@ -27,6 +27,7 @@ public final class ColorUtil {
 	 * @return color {@link Color}
 	 */
 	public static Color getColorFromHex(String hexColor) {
+		if (hexColor == null) throw new IllegalArgumentException();
 		return Color.decode(hexColor);
 	}
 	
@@ -36,6 +37,7 @@ public final class ColorUtil {
 	 * @return rbgaColor {@link String}
 	 */
 	public static String getRGBAFromColor(Color color) {
+		if (color == null) throw new IllegalArgumentException();
 		return "rgba(" + color.getRed() + "," + color.getGreen() + "," + color.getBlue() + "," + color.getAlpha();
 	}
 	

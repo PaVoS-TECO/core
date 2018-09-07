@@ -107,13 +107,17 @@ public final class GeoJsonBuilder {
 		return polyBuilder.toString();
 	}
 
-	public void addGeoPolygons(Collection<GeoPolygon> geoPolygons) {
+	/**
+	 * Adds multiple {@link GeoPolygon}s to this GeoJson {@link String}.
+	 * @param polygons {@link Collection} of {@link GeoPolygon}s
+	 */
+	public void addGeoPolygons(Collection<GeoPolygon> polygons) {
 		StringBuilder polyBuilder = new StringBuilder();
 		
 		int countFeature = 1;
-		for (GeoPolygon geoPolygon : geoPolygons) {
+		for (GeoPolygon geoPolygon : polygons) {
 			polyBuilder.append(geoPolygonToString(geoPolygon));
-			if (countFeature < geoPolygons.size()) {
+			if (countFeature < polygons.size()) {
 				polyBuilder.append(COMMA);
 			}
 			countFeature++;
@@ -152,10 +156,12 @@ public final class GeoJsonBuilder {
 		}
 	
 	private String geoPolygonToString(GeoPolygon geoPolygon) {
-		return geoPolygonToStringQuick(geoPolygon.cloneObservation(), geoPolygon.getSubPolygons(), geoPolygon.getPoints());
+		return geoPolygonToStringQuick(geoPolygon.cloneObservation(), geoPolygon.getSubPolygons(),
+				geoPolygon.getPoints());
 	}
 	
-	private String geoPolygonToStringQuick(ObservationData data, List<GeoPolygon> subPolygons, List<Point2D.Double> points) {
+	private String geoPolygonToStringQuick(ObservationData data, List<GeoPolygon> subPolygons,
+			List<Point2D.Double> points) {
 		LocalDateTime ldt = TimeUtil.getUTCDateTime(data.observationDate);
 		if (ldtString == null || ldt.isAfter(TimeUtil.getUTCDateTime(ldtString))) {
 			ldtString = data.observationDate;
@@ -169,7 +175,7 @@ public final class GeoJsonBuilder {
 		polyBuilder.append(toEntry("content") + ": [ ");
 		int count = 1;
 		for (GeoPolygon sub2Polygon : subPolygons) {
-			polyBuilder.append(toEntry(sub2Polygon.id));
+			polyBuilder.append(toEntry(sub2Polygon.getID()));
 			if (count < subPolygons.size()) {
 				polyBuilder.append(COMMA);
 			}
