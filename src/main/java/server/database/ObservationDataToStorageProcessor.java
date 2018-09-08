@@ -193,6 +193,9 @@ public class ObservationDataToStorageProcessor {
      */
 	public String get(String clusterID, String timestamp, String observedProperty) {
 		
+		logger.info("Entered get() with {} at {} and {}", clusterID, timestamp, observedProperty);
+		long start = System.currentTimeMillis();
+		
 		if (!isConnected()) {
 			logger.warn("Memcached is not connected! ObservationData could not be fetched from database!");
 			return null;
@@ -225,6 +228,7 @@ public class ObservationDataToStorageProcessor {
 			return null;
 		}
 		
+		logger.info("get() took {} and started at {}", (System.currentTimeMillis() - start), start);
 		return getObservationValue(counter, clusterID, givenTime, observedProperty);
 	}
 	
