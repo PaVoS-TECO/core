@@ -298,7 +298,10 @@ public class WebWorker implements Runnable {
 			}
 			
 			GeoGridManager manager = GeoGridManager.getInstance();
-			return GeoJsonConverter.convertPolygonObservations(observations, keyProperty, manager.getGrid(gridID));
+			long start = System.currentTimeMillis();
+			String result = GeoJsonConverter.convertPolygonObservations(observations, keyProperty, manager.getGrid(gridID));
+			logger.info("convertPolygonObservations took {} and started at {}", (System.currentTimeMillis() - start), start);
+			return result;
 		} else if (time.length == 2) {
 			
 			DateTime dt1 = TimeUtil.getUTCDateTime(time[0]).toDateTime(DateTimeZone.UTC);
