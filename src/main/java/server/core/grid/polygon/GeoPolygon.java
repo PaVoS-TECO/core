@@ -84,7 +84,7 @@ public abstract class GeoPolygon {
 		String value = this.observationData.observations.get(observationType);
 		synchronized (clusterGeoJsonLock) {
 			if (clusterGeoJson == null) {
-				this.clusterGeoJson = new ClusterGeoJson(value, this.id, subPolygons.toString(), getPoints());
+				this.clusterGeoJson = new ClusterGeoJson(value, this.id, subPolygons, getPoints());
 			}
 			clusterGeoJson.setValue(value);
 		}
@@ -104,7 +104,7 @@ public abstract class GeoPolygon {
 		synchronized (clusterGeoJsonLock) {
 			if (clusterGeoJson == null) {
 				this.clusterGeoJson = new ClusterGeoJson(this.observationData.observations.get(observationType),
-						this.id, subPolygons.toString(), getPoints());
+						this.id, subPolygons, getPoints());
 			}
 		}
 		return clusterGeoJson.getArchivedGeoJson(value);

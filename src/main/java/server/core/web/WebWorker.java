@@ -320,7 +320,7 @@ public class WebWorker implements Runnable {
 			for (int i = 0; i < steps; i++) {
 				Collection<String> features = new ArrayList<>();
 				
-				long currentMillis = minMillis + (long) steps * diff;
+				long currentMillis = minMillis + (long) i * diff;
 				DateTime dtCurrent = new DateTime(currentMillis, DateTimeZone.UTC);
 				String currentTimestamp = TimeUtil.getUTCDateTimeString(dtCurrent.toLocalDateTime());
 				

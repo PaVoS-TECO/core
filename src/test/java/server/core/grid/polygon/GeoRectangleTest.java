@@ -41,9 +41,10 @@ public class GeoRectangleTest {
 				start.getX(), start.getY(), dim.getX(), dim.getY()), 1, 1, 0, "test");
 		assertEquals(points, rect.getPoints());
 		System.out.println(rect.getLiveClusterGeoJson("pM10"));
-		assertTrue(rect.getLiveClusterGeoJson("pM10").matches("\\{\"type\":\"Feature\",\"properties\":"
-				+ "\\{\"value\":null,\"clusterID\":\"test\",\"content\":\\[\\]\\},\"geometry\":"
-				+ "\\{\"type\":\"Polygon\",\"coordinates\":\\[\\[\\[2.3,1.7\\]\\[12.3,1.7\\]\\[12.3,6.7\\]\\[2.3,6.7\\]\\]\\]\\}\\}"));
+		assertTrue(rect.getLiveClusterGeoJson("pM10").equals("{\"type\":\"Feature\",\"properties\":"
+				+ "{\"value\":null,\"clusterID\":\"test\",\"content\":[]},\"geometry\":"
+				+ "{\"type\":\"Polygon\",\"coordinates\":[[[2.3,1.7], [12.3,1.7], [12.3,6.7],"
+				+ " [2.3,6.7], [2.3,1.7]]]}}"));
 	}
 	
 	/**

@@ -1,7 +1,9 @@
 package server.core.grid.geojson.data;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import server.core.grid.geojson.GeoJsonBuilder;
 import server.core.grid.polygon.GeoPolygon;
@@ -24,14 +26,14 @@ public class ClusterGeoJson {
 	 * Creates a new {@link ClusterGeoJson}.
 	 * @param value The value of the cluster at the current point of time
 	 * @param clusterID The identifier of the cluster
-	 * @param content The sub-{@link GeoPolygon}s of the cluster
+	 * @param subPolygons The sub-{@link GeoPolygon}s of the cluster
 	 * @param points The points defining the form of the cluster
 	 */
-	public ClusterGeoJson(String value, String clusterID, String content,
+	public ClusterGeoJson(String value, String clusterID, List<GeoPolygon> subPolygons,
 			Collection<Point2D.Double> points) {
 		this.value = value;
 		this.clusterID = clusterID;
-		this.content = content;
+		this.content = buildContent(subPolygons);
 		this.geometry = buildGeometry(points);
 	}
 	
@@ -61,6 +63,12 @@ public class ClusterGeoJson {
 		return builder.toString();
 	}
 	
+	private String buildContent(List<GeoPolygon> subPolygons) {
+		Collection<String> dqColl = new ArrayList<>();
+		subPolygons.forEach((subPolygon) -> dqColl.add(GeoJsonBuilder.toEntry(subPolygon.getID())));
+		return dqColl.toString();
+	}
+	
 	private String buildGeometry(Collection<Point2D.Double> points) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");
@@ -73,16 +81,23 @@ public class ClusterGeoJson {
 
 	private String buildCoordinates(Collection<Point2D.Double> points) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("[[");
-		points.forEach((point) -> {
-			builder.append("[");
-			builder.append(String.join(COMMA, String.valueOf(point.getX()), String.valueOf(point.getY())));
-			builder.append("]");
-		});
-		builder.append("]]");
+		builder.append("[");
+		Collection<String> coordinates = new ArrayList<>();
+		points.forEach((point) -> coordinates.add(buildCoordinate(point)));
+		coordinates.add(buildCoordinate(points.iterator().next()));
+		builder.append(coordinates.toString());
+		builder.append("]");
 		return builder.toString();
 	}
-
+	
+	private String buildCoordinate(Point2D.Double point) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("[");
+		builder.append(String.join(COMMA, String.valueOf(point.getX()), String.valueOf(point.getY())));
+		builder.append("]");
+		return builder.toString();
+	}
+	
 	private String buildProperties(String value) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");
