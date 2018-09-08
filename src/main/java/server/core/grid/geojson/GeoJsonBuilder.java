@@ -200,16 +200,33 @@ public final class GeoJsonBuilder {
 		return polyBuilder.toString();
 	}
 	
-	private String toEntry(String name) {
-		return "\"" + name + "\"";
+	/**
+	 * name -> "name"
+	 * @param name {@link String}
+	 * @return entry {@link String}
+	 */
+	public static String toEntry(String name) {
+		return String.join(name, "\"", "\"");
 	}
 	
-	private String toNProperty(String key, String value) {
-		return toEntry(key) + ": " + value;
+	/**
+	 * (key, value) -> "key":value
+	 * @param key {@link String}
+	 * @param value {@link String}
+	 * @return nProperty {@link String}
+	 */
+	public static String toNProperty(String key, String value) {
+		return String.join(":", toEntry(key), value);
 	}
-
-	private String toSProperty(String key, String value) {
-		return toEntry(key) + ": " + toEntry(value);
+	
+	/**
+	 * (key, value) -> "key":"value"
+	 * @param key {@link String}
+	 * @param value {@link String}
+	 * @return sProperty {@link String}
+	 */
+	public static String toSProperty(String key, String value) {
+		return String.join(":", toEntry(key), toEntry(value));
 	}
 	
 }

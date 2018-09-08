@@ -16,6 +16,8 @@ import org.joda.time.DateTime;
 
 import server.core.grid.exceptions.ClusterNotFoundException;
 import server.core.grid.geojson.GeoJsonConverter;
+import server.core.grid.geojson.data.ClusterGeoJson;
+import server.core.grid.geojson.data.ObservationGeoJson;
 import server.core.grid.polygon.math.Tuple2D;
 import server.core.grid.polygon.math.Tuple3D;
 import server.transfer.data.ObservationData;
@@ -40,6 +42,8 @@ public abstract class GeoPolygon {
 	protected volatile List<GeoPolygon> subPolygons;
 	protected volatile Map<String, ObservationData> sensorValues;
 	protected volatile ObservationData observationData;
+	protected volatile ClusterGeoJson clusterGeoJson;
+	private final Object clusterGeoJsonLock = new Object();
 	
 	/**
 	 * Creates a {@link GeoPolygon} with the given bounds, rows, columns, levels and id.<p>
@@ -66,6 +70,49 @@ public abstract class GeoPolygon {
 		this.sensorValues = new HashMap<>();
 		this.observationData = new ObservationData();
 		setupObservationData();
+	}
+	
+	/**
+	 * Returns this {@link GeoPolygon} in GeoJson format.
+	 * Uses the specified value as data.
+	 * The GeoJson recieved from this must be part of an {@link ObservationGeoJson},
+	 * since it is only a single feature and no feature-collection.
+	 * @param observationType {@link String}
+	 * @return geoJson {@link String}
+	 */
+	public String getLiveClusterGeoJson(String observationType) {
+		String value = this.observationData.observations.get(observationType);
+		synchronized (clusterGeoJsonLock) {
+			if (clusterGeoJson == null) {
+				this.clusterGeoJson = new ClusterGeoJson(value, this.id, subPolygons.toString(), getPoints());
+			}
+			clusterGeoJson.setValue(value);
+		}
+		return clusterGeoJson.getGeoJson();
+	}
+	
+	/**
+	 * Returns this {@link GeoPolygon} in GeoJson format.
+	 * Uses the specified value as data.
+	 * The GeoJson recieved from this must be part of an {@link ObservationGeoJson},
+	 * since it is only a single feature and no feature-collection.
+	 * @param observationType {@link String}
+	 * @param value {@link String}
+	 * @return geoJson {@link String}
+	 */
+	public String getArchivedClusterGeoJson(String observationType, String value) {
+		synchronized (clusterGeoJsonLock) {
+			if (clusterGeoJson == null) {
+				this.clusterGeoJson = new ClusterGeoJson(this.observationData.observations.get(observationType),
+						this.id, subPolygons.toString(), getPoints());
+			}
+		}
+		return clusterGeoJson.getArchivedGeoJson(value);
+	}
+	
+	@Override
+	public String toString() {
+		return this.id;
 	}
 	
 	/**

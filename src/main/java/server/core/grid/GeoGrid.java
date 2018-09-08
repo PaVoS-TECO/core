@@ -18,6 +18,7 @@ import server.core.grid.config.Seperators;
 import server.core.grid.exceptions.ClusterNotFoundException;
 import server.core.grid.exceptions.PointNotOnMapException;
 import server.core.grid.exceptions.SensorNotFoundException;
+import server.core.grid.geojson.data.ObservationGeoJson;
 import server.core.grid.polygon.GeoPolygon;
 import server.database.Facade;
 import server.transfer.Destination;
@@ -77,6 +78,51 @@ public abstract class GeoGrid {
 			logger.warn("Could not add Observation to map. Point '" + location 
 					+ "' not in map boundaries! SensorID: " + observation.sensorID + " ", e);
 		}
+	}
+	
+	/**
+	 * Returns the specified {@link GeoPolygon} in GeoJson format.
+	 * Uses live data to do so.
+	 * The GeoJson recieved from this must be part of an {@link ObservationGeoJson},
+	 * since it is only a single feature and no feature-collection.
+	 * @param clusterID {@link String}
+	 * @param observationDate {@link String}
+	 * @param observationType {@link String}
+	 * @return geoJson {@link String}
+	 */
+	public String getLiveClusterGeoJson(String clusterID, String observationDate,
+			String observationType) {
+		
+			GeoPolygon geoPolygon = null;
+			try {
+				geoPolygon = getPolygon(clusterID);
+			} catch (ClusterNotFoundException e) {
+				logger.warn("Could not find cluster: " + e.getCluster() 
+				+ ". Decided to skip the cluster and continue the json-building process.", e);
+			}
+			return geoPolygon.getLiveClusterGeoJson(observationType);
+	}
+	
+	/**
+	 * Returns the specified {@link GeoPolygon} in GeoJson format.
+	 * Uses the specified value as data.
+	 * The GeoJson recieved from this must be part of an {@link ObservationGeoJson},
+	 * since it is only a single feature and no feature-collection.
+	 * @param clusterID {@link String}
+	 * @param observationType {@link String}
+	 * @param value {@link String}
+	 * @return geoJson {@link String}
+	 */
+	public String getArchivedClusterGeoJson(String clusterID, String observationType, String value) {
+		
+			GeoPolygon geoPolygon = null;
+			try {
+				geoPolygon = getPolygon(clusterID);
+			} catch (ClusterNotFoundException e) {
+				logger.warn("Could not find cluster: " + e.getCluster() 
+				+ ". Decided to skip the cluster and continue the json-building process.", e);
+			}
+			return geoPolygon.getArchivedClusterGeoJson(observationType, value);
 	}
 	
 	/**

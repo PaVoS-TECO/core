@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,11 +27,11 @@ import server.core.grid.exceptions.ClusterNotFoundException;
 import server.core.grid.exceptions.PointNotOnMapException;
 import server.core.grid.exceptions.SensorNotFoundException;
 import server.core.grid.geojson.GeoJsonConverter;
+import server.core.grid.geojson.data.ObservationGeoJson;
 import server.core.grid.polygon.GeoPolygon;
 import server.core.visualization.GradientManager;
 import server.core.visualization.gradients.MultiGradient;
 import server.database.Facade;
-import server.transfer.data.ObservationData;
 import server.transfer.sender.util.TimeUtil;
 
 /**
@@ -69,8 +70,18 @@ public class WebWorker implements Runnable {
 	        
 	        req = request.split("\\?", 2);
 	        String type = req[0];
-	        
-	        handleRequest(type, in, out);
+	        if (req.length == 2) {
+	        	handleRequest(type, in, out);
+	        } else if (req.length == 1) {
+	        	if (req[0].equals("favicon.ico")) {
+	        		statusCode = HttpStatus.SC_BAD_REQUEST;
+					printOut(null, out);
+	        	}
+	        } else {
+	        	logger.info("Bad-Request");
+				statusCode = HttpStatus.SC_BAD_REQUEST;
+				printOut(null, out);
+	        }
         } catch (IOException | NullPointerException e) {
             logger.error("Processing socket request was interrupted. Attempting to close socket now.", e);
         } finally {
@@ -211,6 +222,7 @@ public class WebWorker implements Runnable {
 	}
 
 	private void getGeoJsonCluster(PrintWriter out) {
+		
 		String fusedClusterIDs = getParameter("clusterID");
 		String keyProperty = getParameter("property");
 		String[] clusterIDs = fusedClusterIDs.split(",");
@@ -232,17 +244,25 @@ public class WebWorker implements Runnable {
 			
 			String[] time = fusedTime.split(",");
 			
-			String stepsString = getParameter("steps");
+			int steps = 1;
+			try {
+				String stepsString = getParameter("steps");
+				steps = Integer.valueOf(stepsString);
+			} catch (IllegalArgumentException e) {
+				if (time.length != 1) throw new IllegalArgumentException();
+			}
 			
-			result = getDatabaseDataCluster(gridID, keyProperty, clusterIDs, time, stepsString);
+			result = getDatabaseDataCluster(gridID, keyProperty, clusterIDs, time, steps);
 		} catch (IllegalArgumentException e) {
 			if (e.getMessage().equals("time")) {
 				result = getLiveDataCluster(gridID, keyProperty, clusterIDs);
 			} else {
 				statusCode = HttpStatus.SC_BAD_REQUEST;
+				
 			}
 		}
 		if (result == null) {
+			
 			statusCode = HttpStatus.SC_BAD_REQUEST;
 			throw new IllegalArgumentException();
 		} else {
@@ -264,8 +284,8 @@ public class WebWorker implements Runnable {
 		return null;
 	}
 	
-	private String getLiveDataCluster(String gridID, String keyProperty, String[] clusterIDs) {
-		Collection<GeoPolygon> polygons = new HashSet<>();
+	private String getLiveDataCluster(String gridID, String observationType, String[] clusterIDs) {
+		Collection<String> features = new HashSet<>();
 		final GeoGrid grid = getGrid(gridID);
 		for (int i = 0; i < clusterIDs.length; i++) {
 			GeoPolygon polygon = null;
@@ -273,65 +293,65 @@ public class WebWorker implements Runnable {
 				polygon = grid.getPolygon(clusterIDs[i]);
 			} catch (ClusterNotFoundException e) {
 				statusCode = HttpStatus.SC_BAD_REQUEST;
+				throw new IllegalArgumentException();
 			}
 			if (polygon != null) {
-				polygons.add(polygon);
+				features.add(polygon.getLiveClusterGeoJson(observationType));
 			}
 		}
-		return GeoJsonConverter.convertPolygons(polygons, keyProperty);
+		return new ObservationGeoJson(TimeUtil.getUTCDateTimeNowString(), observationType, features).getGeoJson();
 	}
 	
-	private String getDatabaseDataCluster(String gridID, String keyProperty, 
-			String[] clusterIDs, String[] time, String stepsString) {
+	private String getDatabaseDataCluster(String gridID, String observationType, 
+			String[] clusterIDs, String[] time, int steps) {
+		
 		if (time.length == 1) {
-			Facade database = Facade.getInstance();
-			Collection<ObservationData> observations = new HashSet<>();
+			Collection<String> features = new ArrayList<>();
+			features.addAll(getDBFeaturesSingleDateTime(gridID, clusterIDs, time[0], observationType));
 			
-			for (String clusterID : clusterIDs) {
-				
-				String val = database.getObservationData(clusterID, time[0], keyProperty);
-				ObservationData data = new ObservationData();
-				data.clusterID = clusterID;
-				data.observationDate = time[0];
-				data.observations.put(keyProperty, val);
-				observations.add(data);
-			}
+			return new ObservationGeoJson(time[0], observationType, features).getGeoJson();
 			
-			GeoGridManager manager = GeoGridManager.getInstance();
-			long start = System.currentTimeMillis();
-			String result = GeoJsonConverter.convertPolygonObservations(observations, keyProperty, manager.getGrid(gridID));
-			logger.info("convertPolygonObservations took {} and started at {}", (System.currentTimeMillis() - start), start);
-			return result;
 		} else if (time.length == 2) {
-			
 			DateTime dt1 = TimeUtil.getUTCDateTime(time[0]).toDateTime(DateTimeZone.UTC);
 			DateTime dt2 = TimeUtil.getUTCDateTime(time[1]).toDateTime(DateTimeZone.UTC);
 			long dt1Millis = dt1.getMillis();
 			long dt2Millis = dt2.getMillis();
 			long minMillis = Math.min(dt1Millis, dt2Millis);
-			
-			int steps = Integer.parseInt(stepsString);
 			long diff = Math.abs(dt1Millis - dt2Millis) / steps;
 			
-			StringBuilder builder = new StringBuilder();
+			Collection<String> featuresCollections = new ArrayList<>();
 			
 			for (int i = 0; i < steps; i++) {
+				Collection<String> features = new ArrayList<>();
 				
 				long currentMillis = minMillis + (long) steps * diff;
 				DateTime dtCurrent = new DateTime(currentMillis, DateTimeZone.UTC);
-				String[] currentTimestamp = new String[1];
-				currentTimestamp[0] = TimeUtil.getUTCDateTimeString(dtCurrent.toLocalDateTime());
-				builder.append(getDatabaseDataCluster(
-						gridID, keyProperty, clusterIDs, currentTimestamp, String.valueOf(1)));
-				if (i < steps - 1) {
-					builder.append(", ");
-				}
+				String currentTimestamp = TimeUtil.getUTCDateTimeString(dtCurrent.toLocalDateTime());
+				
+				features.addAll(getDBFeaturesSingleDateTime(gridID, clusterIDs, currentTimestamp, observationType));
+				featuresCollections.add(new ObservationGeoJson(
+						currentTimestamp, observationType, features).getGeoJson());
 			}
-			
-			return builder.toString();
+			return featuresCollections.toString();
+		} else {
+			throw new IllegalArgumentException("Time format unacceptable.");
 		}
+	}
+	
+	private Collection<String> getDBFeaturesSingleDateTime(String gridID, String[] clusterIDs,
+			String currentTimestamp, String observationType) {
+		Facade database = Facade.getInstance();
 		
-		throw new IllegalArgumentException("Time format unacceptable.");
+		Collection<String> features = new ArrayList<>();
+		GeoGridManager manager = GeoGridManager.getInstance();
+		GeoGrid grid = manager.getGrid(gridID);
+		logger.debug("getDBFeaturesSingleDateTime");
+		
+		for (String clusterID : clusterIDs) {
+			String value = database.getObservationData(clusterID, currentTimestamp, observationType);
+			features.add(grid.getArchivedClusterGeoJson(clusterID, observationType, value));
+		}
+		return features;
 	}
 	
 	private GeoGrid getGrid(String gridID) {

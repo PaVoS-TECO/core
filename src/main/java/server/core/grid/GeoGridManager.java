@@ -29,14 +29,14 @@ public final class GeoGridManager {
 	private GeoGridManager() {
 		new Thread(() -> {
 			execUpdate.scheduleAtFixedRate(() -> {
-				synchronized (grids) {
-					for (GeoGrid grid : grids) {
-						synchronized (grid) {
-							grid.updateObservations();
-							grid.transferSensorDataDirectly();
-							grid.updateDatabase();
-							grid.resetObservations();
-						}
+				for (GeoGrid grid : grids) {
+					synchronized (grid) {
+						grid.updateObservations();
+					}
+					grid.transferSensorDataDirectly();
+					grid.updateDatabase();
+					synchronized (grid) {
+						grid.resetObservations();
 					}
 				}
 			}, 10, 10, TimeUnit.SECONDS);
@@ -87,14 +87,12 @@ public final class GeoGridManager {
 	 * @return grid {@link GeoGrid}
 	 */
 	public GeoGrid getGrid(String gridID) {
-		synchronized (grids) {
-			for (GeoGrid entry : grids) {
-				if (entry.getID().equals(gridID)) {
-					return entry;
-				}
+		for (GeoGrid entry : grids) {
+			if (entry.getID().equals(gridID)) {
+				return entry;
 			}
-			return null;
 		}
+		return null;
 	}
 	
 	/**
