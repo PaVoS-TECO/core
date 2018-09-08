@@ -72,15 +72,11 @@ public class WebWorker implements Runnable {
 	        String type = req[0];
 	        if (req.length == 2) {
 	        	handleRequest(type, in, out);
-	        } else if (req.length == 1) {
-	        	if (req[0].equals("favicon.ico")) {
-	        		statusCode = HttpStatus.SC_BAD_REQUEST;
-					printOut(null, out);
-	        	}
 	        } else {
-	        	logger.info("Bad-Request");
+	        	logger.info("Bad-Request: " + type);
 				statusCode = HttpStatus.SC_BAD_REQUEST;
 				printOut(null, out);
+				return;
 	        }
         } catch (IOException | NullPointerException e) {
             logger.error("Processing socket request was interrupted. Attempting to close socket now.", e);

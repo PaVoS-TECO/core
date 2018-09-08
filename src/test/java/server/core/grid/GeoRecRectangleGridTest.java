@@ -149,12 +149,12 @@ public class GeoRecRectangleGridTest {
 			fail(e.getMessage());
 		}
 		assertTrue(data.observationDate.matches(TimeUtil.getDateTimeRegex()));
+		System.out.println(GeoJsonConverter.convertSensorObservations(data, property, new  Point2D.Double(260.0, 80.0)));
 		assertTrue(GeoJsonConverter.convertSensorObservations(data, property, new  Point2D.Double(260.0, 80.0)).matches(
-				"\\{ \"type\": \"FeatureCollection\", \"timestamp\": \"" + TimeUtil.getDateTimeRegex() 
-				+ "\", \"observationType\": \"temperature_celsius\", \"features\": "
-				+ "\\[ \\{ \"type\": \"Feature\", \"properties\": "
-				+ "\\{ \"value\": 28\\.0, \"sensorID\": \"testSensorID2\"\\}, "
-				+ "\"geometry\": \\{ \"type\": \"Point\", \"coordinates\": \\[ 260\\.0, 80\\.0\\]\\} \\}\\] \\}"));
+				"\\{ \"type\":\"FeatureCollection\", \"timestamp\":\"" + TimeUtil.getDateTimeRegex() + "\", "
+				+ "\"observationType\":\"temperature_celsius\", \"features\": \\[ \\{ \"type\":\"Feature\", "
+				+ "\"properties\": \\{ \"value\":28.0, \"sensorID\":\"testSensorID2\"\\}, \"geometry\": "
+				+ "\\{ \"type\":\"Point\", \"coordinates\": \\[ 260.0, 80.0\\]\\} \\}\\] \\}"));
 		
 		String clusterID = null;
 		GeoPolygon poly = null;

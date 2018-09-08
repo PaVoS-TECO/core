@@ -40,12 +40,10 @@ public class GeoRectangleTest {
 		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(
 				start.getX(), start.getY(), dim.getX(), dim.getY()), 1, 1, 0, "test");
 		assertEquals(points, rect.getPoints());
-		assertTrue(rect.getGeoJson("pM10").matches("\\{ \"type\": \"FeatureCollection\", \"timestamp\":"
-				+ " \".{4}-.{2}-.{2}T.{2}:.{2}:.{2}Z\", \"observationType\": \"pM10\", \"features\": \\["
-				+ " \\{ \"type\": \"Feature\", \"properties\": \\{ \"value\": null, \"clusterID\": "
-				+ "\"test\", \"content\": \\[ \\] \\}, \"geometry\": \\{ \"type\": \"Polygon\", \"coordinates\": "
-				+ "\\[ \\[ \\[ 2.3, 1.7\\], \\[ 12.3, 1.7\\], \\[ 12.3, 6.7\\], "
-				+ "\\[ 2.3, 6.7\\], \\[ 2.3, 1.7\\]\\] \\] \\} \\}] \\}"));
+		System.out.println(rect.getLiveClusterGeoJson("pM10"));
+		assertTrue(rect.getLiveClusterGeoJson("pM10").matches("\\{\"type\":\"Feature\",\"properties\":"
+				+ "\\{\"value\":null,\"clusterID\":\"test\",\"content\":\\[\\]\\},\"geometry\":"
+				+ "\\{\"type\":\"Polygon\",\"coordinates\":\\[\\[\\[2.3,1.7\\]\\[12.3,1.7\\]\\[12.3,6.7\\]\\[2.3,6.7\\]\\]\\]\\}\\}"));
 	}
 	
 	/**
