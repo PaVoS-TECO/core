@@ -308,16 +308,18 @@ public class WebWorker implements Runnable {
 			return new ObservationGeoJson(time[0], observationType, features).getGeoJson();
 			
 		} else if (time.length == 2) {
+			int newSteps = steps;
+			if (steps < 2) newSteps = 2;
 			DateTime dt1 = TimeUtil.getUTCDateTime(time[0]).toDateTime(DateTimeZone.UTC);
 			DateTime dt2 = TimeUtil.getUTCDateTime(time[1]).toDateTime(DateTimeZone.UTC);
 			long dt1Millis = dt1.getMillis();
 			long dt2Millis = dt2.getMillis();
 			long minMillis = Math.min(dt1Millis, dt2Millis);
-			long diff = Math.abs(dt1Millis - dt2Millis) / steps;
+			long diff = Math.abs(dt1Millis - dt2Millis) / newSteps;
 			
 			Collection<String> featuresCollections = new ArrayList<>();
 			
-			for (int i = 0; i < steps; i++) {
+			for (int i = 0; i < newSteps + 1; i++) {
 				Collection<String> features = new ArrayList<>();
 				
 				long currentMillis = minMillis + (long) i * diff;
