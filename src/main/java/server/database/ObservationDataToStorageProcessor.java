@@ -249,7 +249,8 @@ public class ObservationDataToStorageProcessor {
 		return getObservationValue(counter, clusterID, givenTime, observedProperty);
 	}
 	
-	private String getObservationValue(long counter, String clusterID, LocalDateTime givenTime, Object observedProperty) {
+	private String getObservationValue(
+			long counter, String clusterID, LocalDateTime givenTime, Object observedProperty) {
 		
 		ObservationData od = null;
 		

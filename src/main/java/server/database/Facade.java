@@ -10,7 +10,7 @@ import server.transfer.data.ObservationDataDeserializer;
  * A facade to simplify access to a StorageSolution, such as a database. Through the methods,
  * data can be inserted into the StorageSolution and certain information about its content requested.
  */
-public class Facade {
+public final class Facade {
 
 	private static volatile ObservationDataToStorageProcessor storageProcessor;
 	private static volatile Facade instance;
