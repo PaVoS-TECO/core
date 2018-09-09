@@ -59,6 +59,7 @@ public class ObservationDataToStorageProcessorTest {
 		unreachable.get("P", "V", "S");
 		unreachable.addServer("0.0.0.0", 11211);
 		unreachable.getObservedProperties("PaVoS");
+		unreachable.shutdown();
 	}
 	
 	/**

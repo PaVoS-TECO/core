@@ -12,13 +12,9 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.code.yanf4j.config.Configuration;
-
 import net.rubyeye.xmemcached.MemcachedClient;
-import net.rubyeye.xmemcached.XMemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClientBuilder;
 import net.rubyeye.xmemcached.exception.MemcachedException;
-import net.rubyeye.xmemcached.utils.AddrUtil;
 import server.transfer.data.ObservationData;
 
 /**
@@ -45,11 +41,13 @@ public class ObservationDataToStorageProcessor {
     
     private boolean connect() {
     	try {
-    		XMemcachedClientBuilder builder = new XMemcachedClientBuilder(AddrUtil.getAddresses(
-    				String.join(":", String.valueOf(host), String.valueOf(port))));
+    		XMemcachedClientBuilder builder = new XMemcachedClientBuilder(
+    				String.join(":", String.valueOf(host), String.valueOf(port)));
     		builder.setEnableHealSession(false);
-    		
+    		builder.setConnectTimeout(1000);
+    		builder.setOpTimeout(1000);
             cli = builder.build();
+            
             cli.set("testConnection", 1000, "TEST");
             if (cli.get("testConnection") == null) {
             	return false;
@@ -84,6 +82,17 @@ public class ObservationDataToStorageProcessor {
     		setIsConnected(connect());
     	}
     	return isConnected();
+    }
+    
+    /**
+     * Shutdown this processor and disconnect from Memcached.
+     */
+    public void shutdown() {
+    	try {
+			cli.shutdown();
+		} catch (IOException e) {
+			logger.warn("Shutdown failed", e);
+		}
     }
 
     /**
