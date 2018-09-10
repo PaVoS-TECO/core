@@ -36,28 +36,35 @@ Each module requires some services to be running. These services **must** be sta
 ## Starting the services
 ### Docker
 All services require docker to be installed. Some services require docker-compose to be installed as well.
-To install both docker and docker-compose, you can either follow the instructions on the subpages of the docker documentation (https://docs.docker.com/install/ and https://docs.docker.com/compose/install/) or use this script: https://github.com/BowenWang29/smartaqnet-dev/blob/master/sbin/setupDocker.sh.
+To install both docker and docker-compose, you can either follow the instructions on the subpages of the docker documentation ([docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/install/)) or use this script: [setupDocker.sh](https://github.com/BowenWang29/smartaqnet-dev/blob/master/sbin/setupDocker.sh).
 
 ### Environment variables
-The variable `smartaqnethome` must be set to the IP or the FQDN of the machine(s) that run(s) FROST and Kafka, either temporarily via executing `export smartaqnethome=vm.example.com` in the shell or appending that line to your shell-specific rc file (e.g. `~/.bashrc` with bash or `~/.zshrc` with zsh)
+The variable `smartaqnethome` **must be set** to the IP or the FQDN of the machine(s) that run(s) **FROST** and **Kafka**, either temporarily via executing `export smartaqnethome=vm.example.com` in the shell or appending that line to your shell-specific rc file (e.g. `~/.bashrc` with bash or `~/.zshrc` with zsh)
 
 ### FROST
-See https://github.com/image357/docker-SensorThingsServer/
+
+See [image357/docker-SensorThingsServer](https://github.com/image357/docker-SensorThingsServer/).
+
+Clone that repository, change the `serviceRootUrl` parameter in the `docker-compose.yml` file to `http://machine_address:8080/FROST-Server`, execute `sudo docker-compose up --build -d`, wait a while (around 3 minutes), execute `sudo ./docker-setup.sh`, then go to `http://machine_address:8080/FROST-Server/DatabaseStatus` and press on "Do Update".
 
 ### Kafka
-See https://github.com/BowenWang29/smartaqnet-dev/blob/master/sbin/startLandoop.sh
+From [BowenWang29/smartaqnet-dev](https://github.com/BowenWang29/smartaqnet-dev/blob/master/sbin/startLandoop.sh):
+
+`sudo docker run --rm --net=host --name="kafka_landoop" -d -e CONNECT_HEAP=3G -e ADV_HOST=$smartaqnethome -e RUNTESTS=0 landoop/fast-data-dev`
 
 ### Memcached
-See https://github.com/PaVoS-TECO/pavos-source/wiki/Memcached-Server
+From [Wiki: Memcached Server](https://github.com/PaVoS-TECO/pavos-source/wiki/Memcached-Server):
+
+`sudo docker run --name memcached-server -d -p 11211:11211 memcached`
 
 ### Graphite & Grafana
-See https://github.com/PaVoS-TECO/pavos-source/wiki/Data-transfer
+See [Wiki: Data transfer](https://github.com/PaVoS-TECO/pavos-source/wiki/Data-transfer)
 
 ## Starting the modules
 ### Import
 
 ### Bridge
-See https://github.com/PaVoS-TECO/java-mqtt-kafka-bridge/blob/master/README.md
+See README at [PaVoS-TECO/java-mqtt-kafka-bridge](https://github.com/PaVoS-TECO/java-mqtt-kafka-bridge/)
 
 ### Core
 1. `git clone https://github.com/PaVoS-TECO/pavos-source.git`
