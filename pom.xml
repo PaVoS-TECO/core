@@ -1,22 +1,28 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>edu.teco.pavos</groupId>
-  <artifactId>pavos</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  
-  <repositories>
-  
-  	<repository>
-      <id>Eclipse Paho Repo</id>
-      <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
-    </repository>
-    
-    <repository>
-      <id>Confluent Repo</id>
-      <url>http://packages.confluent.io/maven/</url>
-    </repository>
-    
-  </repositories>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>edu.teco.pavos</groupId>
+	<artifactId>pavos</artifactId>
+	<version>1.1.0</version>
+
+	<repositories>
+
+		<repository>
+			<id>Eclipse Paho Repo</id>
+			<url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
+		</repository>
+
+		<repository>
+			<id>Confluent Repo</id>
+			<url>http://packages.confluent.io/maven/</url>
+		</repository>
+
+	</repositories>
+
+	<properties>
+		<argLine>-Xmx1G</argLine>
+	</properties>
 
 	<build>
 		<plugins>
@@ -46,12 +52,45 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-        	<plugin>
-       		 	<groupId>org.apache.maven.plugins</groupId>
-        		<artifactId>maven-surefire-plugin</artifactId>
-        		<version>2.22.0</version>
-      		</plugin>
-      		<plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.0</version>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skip>${maven.test.skip}</skip>
+							<argLine>${argLine}</argLine>
+							<excludes>
+								<exclude>**/*IntegrationTest.java</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>integration-test</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skip>${skipITs}</skip>
+							<argLine>${argLine}</argLine>
+							<includes>
+								<include>**/*IntegrationTest.java</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.1.0</version>
@@ -65,149 +104,197 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.4.201502262128</version>
+				<executions>
+					<!-- Prepares the property pointing to the JaCoCo runtime agent which 
+						is passed as VM argument when Maven the Surefire plugin is executed. -->
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<!-- Sets the path to the file which contains the execution data. -->
+							<destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+							<!-- Sets the name of the property containing the settings for JaCoCo 
+								runtime agent. -->
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
+					</execution>
+					<!-- Ensures that the code coverage report for unit tests is created 
+						after unit tests have been run. -->
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<!-- Sets the path to the file which contains the execution data. -->
+							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+							<!-- Sets the output directory for the code coverage report. -->
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.5.0.1254</version>
+			</plugin>
 		</plugins>
 	</build>
 
-  <dependencies>
-	
-	<dependency>
-		<groupId>org.slf4j</groupId>
-		<artifactId>slf4j-api</artifactId>
-		<version>1.7.25</version>
-	</dependency>
+	<dependencies>
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>0.7.4.201502262128</version>
+			<type>maven-plugin</type>
+		</dependency>
 
-	<dependency>
-		<groupId>org.slf4j</groupId>
-		<artifactId>slf4j-log4j12</artifactId>
-		<version>1.7.25</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>log4j</groupId>
-		<artifactId>log4j</artifactId>
-		<version>1.2.17</version>
-	</dependency>
-	
-  	<dependency>
-      <groupId>org.apache.kafka</groupId>
-   	   <artifactId>kafka-streams-test-utils</artifactId>
-       <version>1.1.0</version>
-       <scope>test</scope>
-	</dependency>
-  
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.2</version>
-      <scope>test</scope>
-    </dependency>
-    
-	<dependency>
-      <groupId>org.eclipse.paho</groupId>
-      <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-      <version>1.0.2</version>
-    </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.apache.avro</groupId>
-      <artifactId>avro</artifactId>
-  	  <version>1.8.2</version>
-	</dependency>
-	
-	<dependency>
-      <groupId>com.googlecode.json-simple</groupId>
-      <artifactId>json-simple</artifactId>
-      <version>1.1.1</version>
-    </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.25</version>
+		</dependency>
 
-    <dependency>
-      <groupId>io.confluent</groupId>
-      <artifactId>kafka-avro-serializer</artifactId>
-      <version>5.0.0</version>
-  	</dependency>
-  	
-  	<dependency>
-      <groupId>io.confluent</groupId>
-      <artifactId>kafka-streams-avro-serde</artifactId>
-      <version>5.0.0</version>
-  	</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
 
-	<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
-	<dependency>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpcore</artifactId>
-	  <version>4.4.10</version>
-	</dependency>
-  	
-    <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
-	<dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka_2.12</artifactId>
-      <version>1.0.1</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams -->
-	<dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-streams</artifactId>
-      <version>1.0.1</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/org.python/jython -->
-	<dependency>
-      <groupId>org.python</groupId>
-      <artifactId>jython</artifactId>
-      <version>2.7.1b3</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
-	<dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>4.0.1</version>
-      <scope>provided</scope>
-	</dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-streams-test-utils</artifactId>
+			<version>1.1.0</version>
+			<scope>test</scope>
+		</dependency>
 
-	<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
-	<dependency>
-		<groupId>com.fasterxml.jackson.core</groupId>
-		<artifactId>jackson-core</artifactId>
-		<version>2.9.6</version>
-	</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
 
-	<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
-	<dependency>
-		<groupId>com.fasterxml.jackson.core</groupId>
-		<artifactId>jackson-annotations</artifactId>
-		<version>2.9.6</version>
-	</dependency>
+		<dependency>
+			<groupId>org.eclipse.paho</groupId>
+			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+			<version>1.0.2</version>
+		</dependency>
 
-	<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-	<dependency>
-		<groupId>com.google.code.gson</groupId>
-		<artifactId>gson</artifactId>
-		<version>2.8.5</version>
-	</dependency>
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+			<version>1.8.2</version>
+		</dependency>
 
-	<!-- https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka -->
-	<dependency>
-		<groupId>org.springframework.kafka</groupId>
-		<artifactId>spring-kafka</artifactId>
-		<version>2.1.8.RELEASE</version>
-	</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
 
-	<!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
-	<dependency>
-		<groupId>joda-time</groupId>
-		<artifactId>joda-time</artifactId>
-		<version>2.10</version>
-	</dependency>
+		<dependency>
+			<groupId>io.confluent</groupId>
+			<artifactId>kafka-avro-serializer</artifactId>
+			<version>5.0.0</version>
+		</dependency>
 
-	<dependency>
-       <groupId>com.googlecode.xmemcached</groupId>
-       <artifactId>xmemcached</artifactId>
-       <version>2.4.5</version>
-    </dependency>
-	
-  </dependencies>
+		<dependency>
+			<groupId>io.confluent</groupId>
+			<artifactId>kafka-streams-avro-serde</artifactId>
+			<version>5.0.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.4.10</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.12</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-streams</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.python/jython -->
+		<dependency>
+			<groupId>org.python</groupId>
+			<artifactId>jython</artifactId>
+			<version>2.7.1b3</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.9.6</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.9.6</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka -->
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			<version>2.1.8.RELEASE</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.xmemcached</groupId>
+			<artifactId>xmemcached</artifactId>
+			<version>2.4.5</version>
+		</dependency>
+
+	</dependencies>
 </project>
