@@ -42,6 +42,7 @@ public class ObservationDataToStorageProcessor {
             	isConnected = true;
             }
         } catch (IOException | TimeoutException | InterruptedException | MemcachedException e) {
+        	isConnected = false;
             logger.error("Could not connect to memcached client!", e);
         }
     }
