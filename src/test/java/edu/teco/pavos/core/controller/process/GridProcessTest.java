@@ -22,13 +22,13 @@ public class GridProcessTest {
 	@Test
 	public void test() {
 		GridProcess process = new GridProcess(TOPIC);
-		process.kafkaStreamStart();
+		process.start();
 		try {
 			TimeUnit.SECONDS.sleep(5);
 		} catch (InterruptedException e) {
 			fail(e.getMessage());
 		}
-		process.kafkaStreamClose();
+		process.stop();
 	}
 
 }

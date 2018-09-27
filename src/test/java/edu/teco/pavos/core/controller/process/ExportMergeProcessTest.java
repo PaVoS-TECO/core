@@ -22,13 +22,13 @@ public class ExportMergeProcessTest {
 		ExportMergeProcess process = new ExportMergeProcess(
 				"ObservationsTest", "FeatureOfInterestTest", "ThingsTest", "DatastreamsTest",
 				"SensorsTest", "ObservedPropertiesTest", "OutputTest");
-		process.kafkaStreamStart();
+		process.start();
 		try {
 			TimeUnit.SECONDS.sleep(5);
 		} catch (InterruptedException e) {
 			fail(e.getMessage());
 		}
-		process.kafkaStreamClose();
+		process.stop();
 	}
 
 }

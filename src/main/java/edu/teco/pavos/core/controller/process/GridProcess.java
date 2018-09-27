@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.avro.generic.GenericRecord;
@@ -35,7 +34,6 @@ public class GridProcess extends BasicProcess {
 	private static final String KEY = "FeatureOfInterest";
 	private final String inputTopic;
 	private boolean doProcessing = true;
-	private Properties props;
 	private volatile GeoGrid grid;
 	
 	/**
@@ -84,8 +82,9 @@ public class GridProcess extends BasicProcess {
 	}
 	
 	@Override
-	public boolean kafkaStreamClose() {
-		boolean result = super.kafkaStreamClose();
+	public boolean stop() {
+		this.doProcessing = false;
+		boolean result = super.stop();
 		if (grid != null) grid.close();
 		return result;
 	}
@@ -149,21 +148,12 @@ public class GridProcess extends BasicProcess {
 
 	@Override
 	public void run() {
-		logger.info("Starting thread: {}", threadName);
-		Thread t = new Thread(() -> {
-			try {
-				execute();
-			} catch (InterruptedException e) {
-				logger.warn("Interruption of thread while execution: {}", threadName);
-				Thread.currentThread().interrupt();
-			}
-		});
-		t.start();
+		logger.info("Running thread: {}", threadName);
 		try {
-			t.join();
+			execute();
 		} catch (InterruptedException e) {
-			thread.interrupt();
-			logger.warn("Interruption of thread while joining threads: {}", threadName);
+			logger.warn("Interruption of thread while execution: {}", threadName);
+			Thread.currentThread().interrupt();
 		}
 	}
 

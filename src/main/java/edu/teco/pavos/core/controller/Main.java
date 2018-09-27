@@ -36,19 +36,19 @@ public final class Main {
 	
 	private static void mergeObsFoi() throws InterruptedException {
 		MergeObsToFoiProcess foiProcess = new MergeObsToFoiProcess();
-		foiProcess.kafkaStreamStart();
+		foiProcess.start();
 		Thread.sleep(5000);
 	}
 	
 	private static void gridCreationAndInput() throws InterruptedException {
 		GridProcess gridProcess = new GridProcess();
-		gridProcess.kafkaStreamStart();
+		gridProcess.start();
 		Thread.sleep(5000);
 	}
 	
 	private static void exportSetUp() throws InterruptedException {
 		ExportMergeProcess exportMergeProcess = new ExportMergeProcess();
-		exportMergeProcess.kafkaStreamStart();
+		exportMergeProcess.start();
 		Thread.sleep(5000);
 	}
 	

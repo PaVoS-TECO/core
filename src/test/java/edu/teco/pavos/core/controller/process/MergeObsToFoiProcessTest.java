@@ -21,13 +21,13 @@ public class MergeObsToFoiProcessTest {
 	public void test() {
 		MergeObsToFoiProcess process = new MergeObsToFoiProcess(
 				"ObservationsTest", "FeaturesOfInterestTest", "ObservationsMergeGenericTest", "FeatureOfInterest");
-		process.kafkaStreamStart();
+		process.start();
 		try {
 			TimeUnit.SECONDS.sleep(5);
 		} catch (InterruptedException e) {
 			fail(e.getMessage());
 		}
-		process.kafkaStreamClose();
+		process.stop();
 	}
 
 }

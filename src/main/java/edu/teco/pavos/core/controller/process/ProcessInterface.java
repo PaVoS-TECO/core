@@ -15,13 +15,13 @@ public interface ProcessInterface {
 	 * Starts the Kafka stream thread.
 	 * @return true if the Kafka Stream Started false otherwise
 	 */
-	boolean kafkaStreamStart();
+	boolean start();
 
 	/**
 	 * Closes the Kafka Stream thread.
 	 * @return true if the Kafka Stream closed, false otherwise
 	 */
-	boolean kafkaStreamClose();
+	boolean stop();
 
 	
 	/**

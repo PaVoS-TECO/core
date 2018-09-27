@@ -1,5 +1,6 @@
 package edu.teco.pavos.core.controller.process;
 
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
@@ -14,9 +15,10 @@ public abstract class BasicProcess implements ProcessInterface, Runnable {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	protected CountDownLatch countdownLatch = null;
 	protected Thread thread;
+	protected Properties props;
 	
 	@Override
-	public boolean kafkaStreamStart() {
+	public boolean start() {
 		logger.info("Starting thread: {}", threadName);
 		if (thread == null) {
 			thread = new Thread(this, threadName);
@@ -30,7 +32,7 @@ public abstract class BasicProcess implements ProcessInterface, Runnable {
 	}
 
 	@Override
-	public boolean kafkaStreamClose() {
+	public boolean stop() {
 		logger.info("Closing thread: {}", threadName);
 		if (countdownLatch != null) countdownLatch.countDown();
 		if (thread != null) {
@@ -40,7 +42,6 @@ public abstract class BasicProcess implements ProcessInterface, Runnable {
 				logger.warn("Interruption of thread: {}", threadName);
 				thread.interrupt();
 			}
-
 			logger.info("Stopped thread successfully: {}", threadName);
 			return true;
 		}

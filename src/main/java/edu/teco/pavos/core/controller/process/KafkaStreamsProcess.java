@@ -1,6 +1,5 @@
 package edu.teco.pavos.core.controller.process;
 
-import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.kafka.streams.KafkaStreams;
@@ -14,11 +13,10 @@ import org.apache.kafka.streams.StreamsBuilder;
  */
 public abstract class KafkaStreamsProcess extends BasicProcess {
 	protected KafkaStreams kafkaStreams;
-	protected Properties props;
 	
 	@Override
 	public void run() {
-		logger.info("Starting thread: {}", threadName);
+		logger.info("Running thread: {}", threadName);
 		StreamsBuilder builder = new StreamsBuilder();
 
 		try {
@@ -33,12 +31,9 @@ public abstract class KafkaStreamsProcess extends BasicProcess {
 	}
 	
 	@Override
-	public boolean kafkaStreamClose() {
+	public boolean stop() {
 		logger.info("Closing thread: {}", threadName);
-		if (countdownLatch != null) {
-			countdownLatch.countDown();
-		}
-
+		if (countdownLatch != null) countdownLatch.countDown();
 		if (thread != null) {
 			try {
 				thread.join();

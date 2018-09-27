@@ -70,7 +70,6 @@ public abstract class GeoGrid {
 	 * @param observation {@link ObservationData}
 	 */
 	public void addObservation(Point2D.Double location, ObservationData observation) {
-		logger.info("Adding ObservationData to Grid..");
 		GeoPolygon targetPolygon = null;
 		try {
 			targetPolygon = getPolygonContaining(location, maxLevel);
@@ -82,7 +81,6 @@ public abstract class GeoGrid {
 			logger.warn("Could not add Observation to map. Point '" + location 
 					+ "' not in map boundaries! SensorID: " + observation.getSensorID() + " ", e);
 		}
-		logger.info(targetPolygon.getID());
 	}
 	
 	/**
