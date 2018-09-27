@@ -95,7 +95,7 @@ public final class GeoJsonBuilder {
 		StringBuilder polyBuilder = new StringBuilder();
 		polyBuilder.append("{ " + toSProperty("type", "Feature") + COMMA);
 		polyBuilder.append(toEntry("properties") + ": { ");
-		polyBuilder.append(toNProperty("value", data.getDoubleObservations().get(observationType)) + COMMA);
+		polyBuilder.append(toNProperty("value", data.getSingleObservations().get(observationType).toString()) + COMMA);
 		// TODO - Add Vector support
 		polyBuilder.append(toSProperty("sensorID", data.getSensorID()));
 		
@@ -171,7 +171,7 @@ public final class GeoJsonBuilder {
 		StringBuilder polyBuilder = new StringBuilder();
 		polyBuilder.append("{ " + toSProperty("type", "Feature") + COMMA);
 		polyBuilder.append(toEntry("properties") + ": { ");
-		polyBuilder.append(toNProperty("value", data.getDoubleObservations().get(observationType)) + COMMA);
+		polyBuilder.append(toNProperty("value", data.getSingleObservations().get(observationType).toString()) + COMMA);
 		// TODO - Add Vector support
 		polyBuilder.append(toSProperty("clusterID", data.getClusterID()) + COMMA);
 		polyBuilder.append(toEntry("content") + ": [ ");

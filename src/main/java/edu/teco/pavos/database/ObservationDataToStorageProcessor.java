@@ -158,13 +158,14 @@ public class ObservationDataToStorageProcessor {
 			if (properties == null) {
 				properties = new HashSet<>();
 			}
-			for (String key : observationData.getDoubleObservations().keySet()) {
+			// TODO - Add Vector support
+			for (String key : observationData.getSingleObservations().keySet()) {
 				properties.add(key);
 			}
 			// TODO - Add Vector support
 			cli.set(gridID, dataExp, properties);
 			logger.debug("Successfully added item with key {}", dataKey);
-			String keySet = String.join(", ", observationData.getDoubleObservations().keySet());
+			String keySet = String.join(", ", observationData.getSingleObservations().keySet());
 			// TODO - Add Vector support
 			logger.debug("\tTimestamp {} and properties {}", 
 					observationData.getObservationDate(), keySet);
@@ -290,10 +291,10 @@ public class ObservationDataToStorageProcessor {
 		
 		// get value to given observedProperty
 		if (od != null) {
-			Map<String, String> obs = od.getDoubleObservations();
+			Map<String, Double> obs = od.getSingleObservations();
 			// TODO - Add Vector support
 			if (obs.containsKey(observedProperty)) {
-				return obs.get(observedProperty);
+				return obs.get(observedProperty).toString();
 			}
 		}
 		return null;

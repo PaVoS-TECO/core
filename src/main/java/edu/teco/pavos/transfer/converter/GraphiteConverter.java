@@ -25,7 +25,7 @@ public final class GraphiteConverter {
      */
     public static void addObservations(ObservationData observation, PyList list) {
     	if (!isDataReadable(observation, list)) return;
-    	PythonMetricUtil.addFloatMetric(observation, list, observation.getDoubleObservations());
+    	PythonMetricUtil.addFloatMetric(observation, list, observation.getSingleObservations());
     }
     
     private static boolean isDataReadable(Object...objects) {

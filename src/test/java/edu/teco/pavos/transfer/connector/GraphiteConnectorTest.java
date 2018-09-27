@@ -50,8 +50,8 @@ public class GraphiteConnectorTest {
 	private ObservationData setupData(ObservationData data, String locationElevation,
 			String locationID, String locationName, String date, Double pM10, Double pM2p5) {
 		data.setObservationDate(date);
-		data.addDoubleObservation(ObservationType.PARTICULATE_MATTER_PM10.toString(), pM10);
-		data.addDoubleObservation(ObservationType.PARTICULATE_MATTER_PM2P5.toString(), pM2p5);
+		data.addSingleObservation(ObservationType.PARTICULATE_MATTER_PM10.toString(), pM10);
+		data.addSingleObservation(ObservationType.PARTICULATE_MATTER_PM2P5.toString(), pM2p5);
 		return data;
 	}
 	

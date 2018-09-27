@@ -123,7 +123,7 @@ public class WebWorkerTest {
 		String sensorID = "sensor54321";
 		String property = "pM_10";
 		data.setSensorID(sensorID);
-		data.addDoubleObservation(property, 14.7);
+		data.addSingleObservation(property, 14.7);
 		grid.addObservation(new Point2D.Double(148.0, 59.2), data);
 		
 		List<String> answer = askServer("getGeoJsonSensor?gridID=" + grid.getID()
@@ -154,7 +154,7 @@ public class WebWorkerTest {
 		String sensorID = "sensor54321";
 		String property = "pM_10";
 		data.setSensorID(sensorID);
-		data.addDoubleObservation(property, 14.7);
+		data.addSingleObservation(property, 14.7);
 		grid.addObservation(new Point2D.Double(148.0, 59.2), data);
 		
 		List<String> answer = askServer("getObservationTypes?gridID=" + grid.getID());

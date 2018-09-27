@@ -1,5 +1,6 @@
 package edu.teco.pavos.transfer.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,11 +9,9 @@ import java.util.Map.Entry;
 import java.util.Vector;
 
 /**
- * A serializable object that contains the observed data
+ * A serializable object that contains the observed data.
  */
-public class ObservationData implements java.io.Serializable {
-	private static final String TYPE_DOUBLE = "single-double";
-	private static final String TYPE_VECTOR_DOUBLE = "vector-double";
+public class ObservationData implements Serializable {
 	
 	/**
 	 * The unique identifier of this object
@@ -37,17 +36,23 @@ public class ObservationData implements java.io.Serializable {
     // Attributes listed below here are observed properties //
     
     /**
-     *  The different observed properties (keys) and their corresponding values
+     *  The different observed properties (keys) and their corresponding values.
+     *  Single values.
      */
-    private Map<String, Map<String, String>> observations = new HashMap<>();
+    private Map<String, Double> singleObservations = new HashMap<>();
+    
+    /**
+     *  The different observed properties (keys) and their corresponding values.
+     *  Vector values.
+     */
+    private Map<String, ArrayList<Double>> vectorObservations = new HashMap<>();
     
     /**
      * Returns all observations of type {@link Double}.
      * @return observations The map of observations of type {@link Double}
      */
-    public Map<String, String> getDoubleObservations() {
-    	createType(TYPE_DOUBLE);
-    	return observations.get(TYPE_DOUBLE);
+    public Map<String, Double> getSingleObservations() {
+    	return singleObservations;
     }
     
     /**
@@ -56,19 +61,21 @@ public class ObservationData implements java.io.Serializable {
      * This method does not check wether the format is correct!
      * @param observationsToSet The {@link Map} contains all observationsTypes and observations
      */
-    public void setDoubleObservations(Map<String, String> observationsToSet) {
-    	createType(TYPE_DOUBLE);
-    	this.observations.get(TYPE_DOUBLE).clear();
-    	this.observations.get(TYPE_DOUBLE).putAll(observationsToSet);
+    public void setSingleObservations(Map<String, ? extends Number> observationsToSet) {
+    	this.singleObservations.clear();
+    	Map<String, Double> convertedMap = new HashMap<>();
+    	for (Map.Entry<String, ? extends Number> entry : observationsToSet.entrySet()) {
+    		convertedMap.put(entry.getKey(), entry.getValue().doubleValue());
+    	}
+    	this.singleObservations.putAll(convertedMap);
     }
     
     /**
      * Returns all observations of type {@link Vector} with entries of type {@link Double}.
      * @return observations The map of observations of type {@link Vector}
      */
-    public Map<String, String> getVectorDoubleObservations() {
-    	createType(TYPE_VECTOR_DOUBLE);
-    	return observations.get(TYPE_VECTOR_DOUBLE);
+    public Map<String, ArrayList<Double>> getVectorObservations() {
+    	return vectorObservations;
     }
     
     /**
@@ -77,10 +84,15 @@ public class ObservationData implements java.io.Serializable {
      * This method does not check wether the format is correct!
      * @param observationsToSet The {@link Map} contains all observationsTypes and observations
      */
-    public void setVectorDoubleObservations(Map<String, String> observationsToSet) {
-    	createType(TYPE_VECTOR_DOUBLE);
-    	this.observations.get(TYPE_VECTOR_DOUBLE).clear();
-    	this.observations.get(TYPE_VECTOR_DOUBLE).putAll(observationsToSet);
+    public void setVectorObservations(Map<String, ArrayList<? extends Number>> observationsToSet) {
+    	vectorObservations.clear();
+    	Map<String, ArrayList<Double>> convertedMap = new HashMap<>();
+    	for (Entry<String, ArrayList<? extends Number>> entry : observationsToSet.entrySet()) {
+    		ArrayList<Double> convertedList = new ArrayList<>();
+    		entry.getValue().forEach(number -> number.doubleValue());
+    		convertedMap.put(entry.getKey(), convertedList);
+    	}
+    	vectorObservations.putAll(convertedMap);
     }
     
     /**
@@ -88,10 +100,9 @@ public class ObservationData implements java.io.Serializable {
      * @param observationType The type of the observation to add
      * @param observationValue The observation to add
      */
-    public void addDoubleObservation(String observationType, double observationValue) {
+    public void addSingleObservation(String observationType, Number observationValue) {
     	if (observationType != null && (Object) observationValue != null) {
-    		createType(TYPE_DOUBLE);
-    		this.observations.get(TYPE_DOUBLE).put(observationType, String.valueOf(observationValue));
+    		singleObservations.put(observationType, observationValue.doubleValue());
     	}
     }
     
@@ -99,9 +110,9 @@ public class ObservationData implements java.io.Serializable {
      * Adds a {@link Collection} of Observations of type {@link Double} to the existing observations.
      * @param observationsToAdd Contains the type of the observation and the observation itself to add
      */
-    public void addDoubleObservations(Map<String, Double> observationsToAdd) {
-    	for (Entry<String, Double> entry : observationsToAdd.entrySet()) {
-    		addDoubleObservation(entry.getKey(), entry.getValue());
+    public void addSingleObservations(Map<String, ? extends Number> observationsToAdd) {
+    	for (Entry<String, ? extends Number> entry : observationsToAdd.entrySet()) {
+    		addSingleObservation(entry.getKey(), entry.getValue());
     	}
     }
     
@@ -111,10 +122,11 @@ public class ObservationData implements java.io.Serializable {
      * @param observationType The type of the observation to add
      * @param observationValue The observation to add
      */
-    public void addVectorDoubleObservation(String observationType, ArrayList<Double> observationValue) {
+    public void addVectorObservation(String observationType, ArrayList<? extends Number> observationValue) {
     	if (observationType != null && observationValue != null) {
-    		createType(TYPE_VECTOR_DOUBLE);
-    		this.observations.get(TYPE_VECTOR_DOUBLE).put(observationType, observationValue.toString());
+    		ArrayList<Double> convertedList = new ArrayList<>();
+    		observationValue.forEach(entry -> convertedList.add(entry.doubleValue()));
+    		vectorObservations.put(observationType, convertedList);
     	}
     }
     
@@ -123,15 +135,9 @@ public class ObservationData implements java.io.Serializable {
      * with entries of type {@link Double} to the existing observations.
      * @param observationsToAdd Contains the type of the observation and the observation itself to add
      */
-    public void addVectorDoubleObservations(Map<String, ArrayList<Double>> observationsToAdd) {
-    	for (Entry<String, ArrayList<Double>> entry : observationsToAdd.entrySet()) {
-    		addVectorDoubleObservation(entry.getKey(), entry.getValue());
-    	}
-    }
-    
-    private void createType(String type) {
-    	if (!this.observations.containsKey(type)) {
-    		this.observations.put(type, new HashMap<String, String>());
+    public void addVectorObservations(Map<String, ArrayList<? extends Number>> observationsToAdd) {
+    	for (Entry<String, ArrayList<? extends Number>> entry : observationsToAdd.entrySet()) {
+    		addVectorObservation(entry.getKey(), entry.getValue());
     	}
     }
     
@@ -184,7 +190,8 @@ public class ObservationData implements java.io.Serializable {
     	builder.append("clusterID=" + clusterID + ", ");
     	builder.append("sensorID=" + sensorID + ", ");
     	builder.append("observationDate=" + observationDate + ", ");
-    	builder.append("observations=" + observations.toString());
+    	builder.append("singleObservations=" + singleObservations.toString() + ", ");
+    	builder.append("vectorObservations=" + vectorObservations.toString());
     	builder.append("}");
     	return builder.toString();
     }

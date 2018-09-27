@@ -57,7 +57,7 @@ public class GeoRectangleTest {
 		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
 		data.setSensorID("testSensorID");
 		String property = "temperature_celsius";
-		data.addDoubleObservation(property, 28.0);
+		data.addSingleObservation(property, 28.0);
 		rect.addObservation(data);
 		Collection<String> properties = new HashSet<>();
 		int numTotal = rect.getNumberOfSensors();
@@ -125,7 +125,7 @@ public class GeoRectangleTest {
 		String sensorID = "testSensorID";
 		data.setSensorID(sensorID);
 		String property = "temperature_celsius";
-		data.addDoubleObservation(property, 28.0);
+		data.addSingleObservation(property, 28.0);
 		rect.addObservation(data);
 		
 		Collection<String> check = new HashSet<>();
@@ -137,7 +137,7 @@ public class GeoRectangleTest {
 		String sensorID2 = "testSensorID2";
 		data2.setSensorID(sensorID2);
 		String property2 = "temperature_fahrenheit";
-		data2.addDoubleObservation(property2, 61.0);
+		data2.addSingleObservation(property2, 61.0);
 		rect.addObservation(data2);
 		
 		Collection<String> properties = new HashSet<>();
@@ -158,7 +158,7 @@ public class GeoRectangleTest {
 		String sensorID = "testSensorID";
 		data.setSensorID(sensorID);
 		String property = "temperature_celsius";
-		data.addDoubleObservation(property, 28.0);
+		data.addSingleObservation(property, 28.0);
 		
 		rect.addObservation(data);
 		
@@ -166,7 +166,7 @@ public class GeoRectangleTest {
 		data2.setObservationDate(TimeUtil.getUTCDateTimeNowString());
 		String sensorID2 = "testSensorID2";
 		data2.setSensorID(sensorID2);
-		data2.addDoubleObservation(property, 20.0);
+		data2.addSingleObservation(property, 20.0);
 		
 		rect.addObservation(data2);
 		
@@ -174,9 +174,9 @@ public class GeoRectangleTest {
 		
 		Collection<ObservationData> check = rect.getClusterObservations();
 		check.forEach((d) -> {
-			assertFalse(d.getDoubleObservations().isEmpty());
-			assertTrue(d.getDoubleObservations().containsKey(property));
-			assertTrue(d.getDoubleObservations().get(property).equals("24.0"));
+			assertFalse(d.getSingleObservations().isEmpty());
+			assertTrue(d.getSingleObservations().containsKey(property));
+			assertTrue(d.getSingleObservations().get(property).equals("24.0"));
 		});
 	}
 	

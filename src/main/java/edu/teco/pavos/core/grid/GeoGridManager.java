@@ -21,7 +21,7 @@ import edu.teco.pavos.transfer.data.ObservationData;
  */
 public final class GeoGridManager {
 	
-	private static final Object LOCK = new Object();
+	private static final Object INSTANCE_LOCK = new Object();
 	private static volatile GeoGridManager instance;
 	private static volatile List<GeoGrid> grids = Collections.synchronizedList(new ArrayList<>());
 	private ScheduledExecutorService execUpdate = Executors.newSingleThreadScheduledExecutor();
@@ -30,14 +30,10 @@ public final class GeoGridManager {
 		new Thread(() -> 
 			execUpdate.scheduleAtFixedRate(() -> {
 				for (GeoGrid grid : grids) {
-					synchronized (grid) {
-						grid.updateObservations();
-					}
+					grid.updateObservations();
 					grid.transferSensorDataDirectly();
 					grid.updateDatabase();
-					synchronized (grid) {
-						grid.resetObservations();
-					}
+					grid.resetObservations();
 				}
 			}, 10, 10, TimeUnit.SECONDS)
 		).start();
@@ -50,7 +46,7 @@ public final class GeoGridManager {
 	public static GeoGridManager getInstance() {
 		GeoGridManager result = instance;
 		if (result == null) {
-			synchronized (LOCK) {
+			synchronized (INSTANCE_LOCK) {
 				result = instance;
 				if (result == null) {
 					result = new GeoGridManager();

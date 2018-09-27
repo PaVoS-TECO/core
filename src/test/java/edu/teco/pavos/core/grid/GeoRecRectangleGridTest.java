@@ -39,14 +39,14 @@ public class GeoRecRectangleGridTest {
 		startData.setObservationDate(TimeUtil.getUTCDateTimeNowString());
 		startData.setSensorID("testSensorID");
 		String observationType = "temperature_celsius";
-		startData.addDoubleObservation(observationType, 14.0);
+		startData.addSingleObservation(observationType, 14.0);
 		
 		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
 		grid.addObservation(location1, startData);
 		
 		Collection<ObservationData> observationCheck = grid.getGridObservations();
 		observationCheck.forEach((data) -> {
-			assertTrue(data.getDoubleObservations().isEmpty());
+			assertTrue(data.getSingleObservations().isEmpty());
 		});
 		
 		grid.updateObservations();
@@ -54,7 +54,7 @@ public class GeoRecRectangleGridTest {
 		boolean isPropSaved = false;
 		observationCheck = grid.getGridObservations();
 		for (ObservationData data : observationCheck) {
-			if (!data.getDoubleObservations().isEmpty()) isPropSaved = true;
+			if (!data.getSingleObservations().isEmpty()) isPropSaved = true;
 		}
 		assertTrue(isPropSaved);
 		
@@ -63,7 +63,7 @@ public class GeoRecRectangleGridTest {
 		observationCheck = grid.getGridSensorObservations();
 		System.out.println(observationCheck);
 		observationCheck.forEach((data) -> {
-			assertTrue(data.getDoubleObservations().isEmpty());
+			assertTrue(data.getSingleObservations().isEmpty());
 		});
 		
 		assertTrue(grid.getGridObservationTypes().contains("temperature_celsius"));
@@ -96,7 +96,7 @@ public class GeoRecRectangleGridTest {
 		startData.setObservationDate(TimeUtil.getUTCDateTimeNowString());
 		startData.setSensorID("testSensorID");
 		String property = "temperature_celsius";
-		startData.addDoubleObservation(property, 14.0);
+		startData.addSingleObservation(property, 14.0);
 		
 		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
 		grid1.addObservation(location1, startData);
@@ -116,7 +116,7 @@ public class GeoRecRectangleGridTest {
 		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
 		data.setSensorID("testSensorID1");
 		String property = "temperature_celsius";
-		data.addDoubleObservation(property, 14.0);
+		data.addSingleObservation(property, 14.0);
 		
 		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
 		grid.addObservation(location1, data);
@@ -130,7 +130,7 @@ public class GeoRecRectangleGridTest {
 		data = new ObservationData();
 		data.setSensorID("testSensorID2");
 		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
-		data.addDoubleObservation(property, 28.0);
+		data.addSingleObservation(property, 28.0);
 		
 		Point2D.Double location2 = new  Point2D.Double(130.0, 40.0);
 		grid.addObservation(location2, data);
@@ -138,7 +138,7 @@ public class GeoRecRectangleGridTest {
 		data = new ObservationData();
 		data.setSensorID("testSensorID3");
 		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
-		data.addDoubleObservation(property, 28.0);
+		data.addSingleObservation(property, 28.0);
 		
 		Point2D.Double location3 = new  Point2D.Double(130.0, 40.0);
 		grid.addObservation(location3, data);
@@ -207,7 +207,7 @@ public class GeoRecRectangleGridTest {
 		System.out.println(jsonPoly.getGeoJson(property));
 		
 		ObservationData dataClone = jsonPoly.cloneObservation();
-		dataClone.addDoubleObservation(property, 10.799999999999998);
+		dataClone.addSingleObservation(property, 10.799999999999998);
 		LocalDateTime ldt = TimeUtil.getUTCDateTime(dataClone.getObservationDate());
 		LocalDateTime subtracted = ldt.minusYears(20);
 		dataClone.setObservationDate(TimeUtil.getUTCDateTimeString(subtracted));
@@ -218,14 +218,14 @@ public class GeoRecRectangleGridTest {
 		Collection<ObservationData> observations2 = grid.getGridObservations();
 		for (ObservationData data2 : observations2) {
 			System.out.println(data2.getClusterID());
-			System.out.println(data2.getDoubleObservations().get(property));
+			System.out.println(data2.getSingleObservations().get(property));
 		}
 		
 	}
 	
 	private String observationToString(ObservationData data) {
 		return "ObservationData: " + data.getObservationDate() + ", " 
-				+ data.getSensorID() + ", " + data.getClusterID() + ", " + data.getDoubleObservations();
+				+ data.getSensorID() + ", " + data.getClusterID() + ", " + data.getSingleObservations();
 	}
 	
 	private String observationsToString(Collection<ObservationData> collection) {

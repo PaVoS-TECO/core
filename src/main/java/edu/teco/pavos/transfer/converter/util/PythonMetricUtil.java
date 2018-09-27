@@ -35,17 +35,17 @@ public final class PythonMetricUtil {
      * @param list The list of metrics that were created from our data with python
      * @param observations Maps each set observed property to a value
      */
-    public static void addFloatMetric(ObservationData record, 
-    		PyList list, Map<String, String> observations) {
-		for (Map.Entry<String, String> entry : observations.entrySet()) {
-			String value = entry.getValue();
+    public static void addFloatMetric(ObservationData record,
+    		PyList list, Map<String, ? extends Number> observations) {
+		for (Map.Entry<String, ? extends Number> entry : observations.entrySet()) {
+			Number value = entry.getValue();
 			if (value != null) {
 				LocalDateTime ldc = LocalDateTime.parse(
 						record.getObservationDate(), DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
 				PyString metricName = new PyString(GridTopicTranslator.getTopic(
 						record.getSensorID(), record.getClusterID()) + "." + entry.getKey());
 				PyInteger timestamp = new PyInteger((int) (ldc.toDateTime(DateTimeZone.UTC).getMillis() / 1000));
-				PyFloat metricValue = new PyFloat(Double.parseDouble(value));
+				PyFloat metricValue = new PyFloat(value.doubleValue());
 				PyTuple metric = new PyTuple(metricName, new PyTuple(timestamp, metricValue));
 				list.append(metric);
 				logMetric(metric);

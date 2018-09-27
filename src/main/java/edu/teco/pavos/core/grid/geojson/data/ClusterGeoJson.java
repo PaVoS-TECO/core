@@ -17,7 +17,7 @@ public class ClusterGeoJson {
 	private static final String COLON = ":";
 	private String geoJson;
 	
-	private String value;
+	private Double value;
 	private final String clusterID;
 	private final String content;
 	private final String geometry;
@@ -29,7 +29,7 @@ public class ClusterGeoJson {
 	 * @param subPolygons The sub-{@link GeoPolygon}s of the cluster
 	 * @param points The points defining the form of the cluster
 	 */
-	public ClusterGeoJson(String value, String clusterID, List<GeoPolygon> subPolygons,
+	public ClusterGeoJson(Double value, String clusterID, List<GeoPolygon> subPolygons,
 			Collection<Point2D.Double> points) {
 		this.value = value;
 		this.clusterID = clusterID;
@@ -44,7 +44,7 @@ public class ClusterGeoJson {
 	 * @param value The value of the observationType
 	 * @return geoJson {@link String}
 	 */
-	public String getArchivedGeoJson(String value) {
+	public String getArchivedGeoJson(Double value) {
 		return getGeoJsonDirectly(value);
 	}
 	
@@ -52,11 +52,11 @@ public class ClusterGeoJson {
 		this.geoJson = getGeoJsonDirectly(this.value);
 	}
 	
-	private String getGeoJsonDirectly(String value) {
+	private String getGeoJsonDirectly(Double value2) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");
 		builder.append(String.join(COMMA, GeoJsonBuilder.toSProperty("type", "Feature"),
-				String.join(COLON, GeoJsonBuilder.toEntry("properties"), buildProperties(value)),
+				String.join(COLON, GeoJsonBuilder.toEntry("properties"), buildProperties(value2)),
 				String.join(COLON, GeoJsonBuilder.toEntry("geometry"), geometry)
 				));
 		builder.append("}");
@@ -98,10 +98,10 @@ public class ClusterGeoJson {
 		return builder.toString();
 	}
 	
-	private String buildProperties(String value) {
+	private String buildProperties(Double value) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");
-		builder.append(String.join(COMMA, GeoJsonBuilder.toNProperty("value", value),
+		builder.append(String.join(COMMA, GeoJsonBuilder.toNProperty("value", value.toString()),
 				GeoJsonBuilder.toSProperty("clusterID", clusterID),
 				String.join(COLON, GeoJsonBuilder.toEntry("content"), content)
 				));
@@ -119,14 +119,14 @@ public class ClusterGeoJson {
 	/**
 	 * @return the value
 	 */
-	public String getValue() {
+	public Double getValue() {
 		return value;
 	}
 
 	/**
 	 * @param value the value to set
 	 */
-	public void setValue(String value) {
+	public void setValue(Double value) {
 		this.value = value;
 		update();
 	}

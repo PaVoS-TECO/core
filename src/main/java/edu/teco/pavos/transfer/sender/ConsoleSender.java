@@ -24,6 +24,7 @@ public class ConsoleSender extends Sender {
 	 * @param records {@link Collection} of {@link ObservationData}
 	 * @return sendingSuccessful {@link Boolean}
 	 */
+	@Override
 	public boolean send(Collection<ObservationData> records) {
 		
 		PyList list = new PyList();

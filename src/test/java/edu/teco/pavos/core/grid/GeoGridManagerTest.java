@@ -76,7 +76,7 @@ public class GeoGridManagerTest {
 		String property = "temperature_celsius";
 		data.setSensorID(sensorID);
 		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
-		data.addDoubleObservation(property, 28.6);
+		data.addSingleObservation(property, 28.6);
 		
 		grid.addObservation(new Point2D.Double(160.0, -47.0), data);
 		
@@ -88,7 +88,7 @@ public class GeoGridManagerTest {
 		boolean isPropertySet = false;
 		for (ObservationData d : sensorColl) {
 			if (isPropertySet) break;
-			isPropertySet = d.getDoubleObservations().containsKey(property);
+			isPropertySet = d.getSingleObservations().containsKey(property);
 		}
 		assertTrue(isPropertySet);
 		
@@ -97,7 +97,7 @@ public class GeoGridManagerTest {
 			System.out.println(gridData.getObservationDate());
 			assertTrue(gridData.getObservationDate().matches(TimeUtil.getDateTimeRegex()));
 			assertTrue(gridData.getSensorID().equals(sensorID));
-			assertTrue(gridData.getDoubleObservations().containsKey(property));
+			assertTrue(gridData.getSingleObservations().containsKey(property));
 		} catch (GridNotFoundException | SensorNotFoundException | PointNotOnMapException e) {
 			fail(e.getMessage());
 		}

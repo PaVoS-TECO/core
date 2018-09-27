@@ -119,7 +119,7 @@ public class GridProcess extends BasicProcess {
 
 						data.setObservationDate(time);
 						data.setSensorID(sensorID);
-						data.addDoubleObservations(setPropetiesSensoring(json));
+						data.addSingleObservations(setPropetiesSensoring(json));
 
 						double coord1 = Double.parseDouble(value.get(KEY).toString().split(",")[0]);
 						double coord2 = Double.parseDouble(value.get(KEY).toString().split(",")[1]);
@@ -134,7 +134,7 @@ public class GridProcess extends BasicProcess {
 
 						data.setObservationDate(time);
 						data.setSensorID(sensorID);
-						data.addDoubleObservation("Temperature", Double.parseDouble(resultValue));
+						data.addSingleObservation("Temperature", Double.parseDouble(resultValue));
 					
 						double coord1 = Double.parseDouble(value.get(KEY).toString().split(",")[0]);
 						double coord2 = Double.parseDouble(value.get(KEY).toString().split(",")[1]);

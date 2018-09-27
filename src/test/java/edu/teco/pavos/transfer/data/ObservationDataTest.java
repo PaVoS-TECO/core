@@ -20,8 +20,8 @@ public class ObservationDataTest {
 		data.setClusterID("clusterID");
 		data.setSensorID("sensorID");
 		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
-		data.addDoubleObservation("temperature_celsius", 28.6);
-		data.addDoubleObservation("pM_10", 14.2);
+		data.addSingleObservation("temperature_celsius", 28.6);
+		data.addSingleObservation("pM_10", 14.2);
 		System.out.println(data.toString());
 		assertTrue(data.toString().matches(
 				"\\{clusterID=clusterID, sensorID=sensorID, "

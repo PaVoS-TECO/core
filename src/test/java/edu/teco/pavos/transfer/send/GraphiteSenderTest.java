@@ -39,7 +39,7 @@ public class GraphiteSenderTest {
 		data.setObservationDate(date);
 		data.setClusterID("testGrid-1_1_1:1_0");
 		data.setSensorID("testSensor");
-		data.addDoubleObservation(ObservationType.PARTICULATE_MATTER_PM10.toString(), pM10);
+		data.addSingleObservation(ObservationType.PARTICULATE_MATTER_PM10.toString(), pM10);
 		return data;
 	}
 

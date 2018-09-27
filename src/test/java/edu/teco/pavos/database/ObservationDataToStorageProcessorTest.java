@@ -75,8 +75,8 @@ public class ObservationDataToStorageProcessorTest {
 		od.setClusterID("a|b");
 		od.setObservationDate("2012-03-04T05:06:07Z");
 		od.setSensorID(null);
-		od.addDoubleObservation("test", 1.0);
-		od.addDoubleObservation("marco", 2.0);
+		od.addSingleObservation("test", 1.0);
+		od.addSingleObservation("marco", 2.0);
 		odtsp.add(od);
 		assertNull(cli.get("a|b"));
 		assertNull(cli.get("a|b|0"));
@@ -162,8 +162,8 @@ public class ObservationDataToStorageProcessorTest {
 		od.setClusterID("testCluster:1_0-0_1");
 		od.setObservationDate("2012-03-04T05:06:07Z");
 		od.setSensorID(null);
-		od.addDoubleObservation("test", 1.0);
-		od.addDoubleObservation("marco", 2.0);
+		od.addSingleObservation("test", 1.0);
+		od.addSingleObservation("marco", 2.0);
 		odtsp.add(od);
 		String result1 = odtsp.get(od.getClusterID(), od.getObservationDate(), "test");
 		String result2 = odtsp.get(od.getClusterID(), od.getObservationDate(), "marco");

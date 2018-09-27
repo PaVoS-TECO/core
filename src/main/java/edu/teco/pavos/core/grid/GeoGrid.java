@@ -31,6 +31,8 @@ import edu.teco.pavos.transfer.data.ObservationData;
  */
 public abstract class GeoGrid {
 	
+	private final Object polygonsLock = new Object();
+	private final Object sensorsAndLocationsLock = new Object();
 	private final Rectangle2D.Double mapBounds;
 	private final int rows;
 	private final int columns;
@@ -39,7 +41,7 @@ public abstract class GeoGrid {
 	protected volatile List<GeoPolygon> polygons = new ArrayList<>();
 	protected volatile Map<String, Point2D.Double> sensorsAndLocations = new HashMap<>();
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
-	private static final int CYCLES_UNTIL_RESET = 0;
+	private static final Integer CYCLES_UNTIL_RESET = 0;
 	private static volatile GeoGridManager manager = GeoGridManager.getInstance();
 	private volatile int cyclesDone = 0;
 	
@@ -58,7 +60,6 @@ public abstract class GeoGrid {
 		this.columns = columns;
 		this.maxLevel = maxLevel;
 		this.id = gridID;
-		
 		manager.addGeoGrid(this);
 	}
 	
@@ -68,16 +69,20 @@ public abstract class GeoGrid {
 	 * @param location The {@link Point2D.Double} point on the map
 	 * @param observation {@link ObservationData}
 	 */
-	public synchronized void addObservation(Point2D.Double location, ObservationData observation) {
+	public void addObservation(Point2D.Double location, ObservationData observation) {
+		logger.info("Adding ObservationData to Grid..");
 		GeoPolygon targetPolygon = null;
 		try {
 			targetPolygon = getPolygonContaining(location, maxLevel);
 			targetPolygon.addObservation(observation);
-			this.sensorsAndLocations.put(observation.getSensorID(), location);
+			synchronized (sensorsAndLocationsLock) {
+				this.sensorsAndLocations.put(observation.getSensorID(), location);
+			}
 		} catch (PointNotOnMapException e) {
 			logger.warn("Could not add Observation to map. Point '" + location 
 					+ "' not in map boundaries! SensorID: " + observation.getSensorID() + " ", e);
 		}
+		logger.info(targetPolygon.getID());
 	}
 	
 	/**
@@ -110,11 +115,11 @@ public abstract class GeoGrid {
 	 * since it is only a single feature and no feature-collection.
 	 * @param clusterID {@link String}
 	 * @param observationType {@link String}
-	 * @param value {@link String}
+	 * @param value {@link double}
 	 * @return geoJson {@link String}
 	 * @throws ClusterNotFoundException The cluster is not recognized by the grid
 	 */
-	public String getArchivedClusterGeoJson(String clusterID, String observationType, String value)
+	public String getArchivedClusterGeoJson(String clusterID, String observationType, double value)
 			throws ClusterNotFoundException {
 		
 			GeoPolygon geoPolygon = null;
@@ -204,7 +209,7 @@ public abstract class GeoGrid {
 		Collection<ObservationData> observations = getGridObservations();
 		for (ObservationData observation : observations) {
 			// TODO - Add Vector support
-			for (String key : observation.getDoubleObservations().keySet()) {
+			for (String key : observation.getSingleObservations().keySet()) {
 				observedTypes.add(key);
 			}
 		}
@@ -216,7 +221,7 @@ public abstract class GeoGrid {
 	 * @return sensorObservations {@link Collection} of {@link ObservationData}
 	 */
 	public Collection<ObservationData> getGridSensorObservations() {
-		synchronized (polygons) {
+		synchronized (polygonsLock) {
 			Collection<ObservationData> observations = new ArrayList<>();
 			for (GeoPolygon polygon : polygons) {
 				synchronized (polygon) {
@@ -341,8 +346,10 @@ public abstract class GeoGrid {
 	 * This way, we achieve the most realistic representation of our data.
 	 */
 	public void updateObservations() {
-		for (GeoPolygon polygon : polygons) {
-			polygon.updateObservations();
+		synchronized (polygonsLock) {
+			for (GeoPolygon polygon : polygons) {
+				polygon.updateObservations();
+			}
 		}
 	}
 	
@@ -354,12 +361,14 @@ public abstract class GeoGrid {
 	 * Waits until enough invocation-cycles have been completed, before removing the data.
 	 */
 	public void resetObservations() {
-		if (cyclesDone == CYCLES_UNTIL_RESET) {
-			resetObservationsNow();
-			this.sensorsAndLocations.clear();
-			cyclesDone = 0;
-		} else {
-			cyclesDone++;
+		synchronized (sensorsAndLocationsLock) {
+			if (cyclesDone == CYCLES_UNTIL_RESET) {
+				resetObservationsNow();
+				this.sensorsAndLocations.clear();
+				cyclesDone = 0;
+			} else {
+				cyclesDone++;
+			}
 		}
 	}
 	
@@ -371,8 +380,10 @@ public abstract class GeoGrid {
 	 * Removes the data instantly.
 	 */
 	public void resetObservationsNow() {
-		for (GeoPolygon polygon : polygons) {
-			polygon.resetObservations();
+		synchronized (polygonsLock) {
+			for (GeoPolygon polygon : polygons) {
+				polygon.resetObservations();
+			}
 		}
 	}
 	
