@@ -176,7 +176,7 @@ public class GeoRectangleTest {
 		check.forEach((d) -> {
 			assertFalse(d.getSingleObservations().isEmpty());
 			assertTrue(d.getSingleObservations().containsKey(property));
-			assertTrue(d.getSingleObservations().get(property).equals("24.0"));
+			assertTrue(d.getSingleObservations().get(property).equals(24.0));
 		});
 	}
 	

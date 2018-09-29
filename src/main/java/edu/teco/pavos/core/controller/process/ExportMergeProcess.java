@@ -21,11 +21,9 @@ import edu.teco.pavos.core.properties.KafkaPropertiesFileManager;
 import edu.teco.pavos.core.properties.KafkaTopicAdmin;
 
 /**
- * @author Patrick
- * 
- *         This Class generates a Merged Topic from
- *         Observations,Thing,Datastream,ObservedProperty and FeatureOfInterest
- *
+ * The {@link ExportMergeProcess} merges the contents of multiple Kafka-Topics
+ * into a single one from Observations, Thing,Datastream, ObservedProperty and
+ * FeatureOfInterest.
  */
 public class ExportMergeProcess extends KafkaStreamsProcess {
 	private static final String FOI_DOUBLE_PARSE_EXCEPTION = "Could not parse FeatureOfInterest value to double.";
@@ -37,26 +35,29 @@ public class ExportMergeProcess extends KafkaStreamsProcess {
 	private final String sensorsTopic;
 	private final String observedPropertiesTopic;
 	private final String outputTopic;
+	private StreamsBuilder builder;
 
 	/**
 	 * Creates a new {@link ExportMergeProcess} with the specified topics.
-	 * @param observationsTopic Kafka Topic of observations
-	 * @param featureOfInterestTopic Kafka Topic of featuresOfInterest
-	 * @param thingsTopic Kafka Topic of things
-	 * @param datastreamsTopic Kafka Topic of datastreams
-	 * @param sensorsTopic Kafka Topic of sensors
+	 * 
+	 * @param observationsTopic       Kafka Topic of observations
+	 * @param featureOfInterestTopic  Kafka Topic of featuresOfInterest
+	 * @param thingsTopic             Kafka Topic of things
+	 * @param datastreamsTopic        Kafka Topic of datastreams
+	 * @param sensorsTopic            Kafka Topic of sensors
 	 * @param observedPropertiesTopic Kafka Topic of observed properties
-	 * @param outputTopic Kafka Topic of this processes results
+	 * @param outputTopic             Kafka Topic of this processes results
 	 */
 	public ExportMergeProcess(String observationsTopic, String featureOfInterestTopic, String thingsTopic,
 			String datastreamsTopic, String sensorsTopic, String observedPropertiesTopic, String outputTopic) {
 		KafkaTopicAdmin admin = KafkaTopicAdmin.getInstance();
-		if (!admin.existsTopic(observationsTopic)) admin.createTopic(observationsTopic);
-		if (!admin.existsTopic(featureOfInterestTopic)) admin.createTopic(featureOfInterestTopic);
-		if (!admin.existsTopic(thingsTopic)) admin.createTopic(thingsTopic);
-		if (!admin.existsTopic(datastreamsTopic)) admin.createTopic(datastreamsTopic);
-		if (!admin.existsTopic(sensorsTopic)) admin.createTopic(sensorsTopic);
-		if (!admin.existsTopic(observedPropertiesTopic)) admin.createTopic(observedPropertiesTopic);
+		admin.createTopic(observationsTopic);
+		admin.createTopic(featureOfInterestTopic);
+		admin.createTopic(thingsTopic);
+		admin.createTopic(datastreamsTopic);
+		admin.createTopic(sensorsTopic);
+		admin.createTopic(observedPropertiesTopic);
+		
 		this.observationsTopic = observationsTopic;
 		this.featureOfInterestTopic = featureOfInterestTopic;
 		this.thingsTopic = thingsTopic;
@@ -64,37 +65,76 @@ public class ExportMergeProcess extends KafkaStreamsProcess {
 		this.sensorsTopic = sensorsTopic;
 		this.observedPropertiesTopic = observedPropertiesTopic;
 		this.outputTopic = outputTopic;
-		
+
 		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();
 		this.props = propManager.getExportStreamProperties();
 		logger.info("Creating thread: {}", threadName);
 	}
-	
+
 	/**
-	 * Creates a new {@link ExportMergeProcess}.<p>
-	 * Sets {@code observationsTopic} to {@code "Observations"}<br>,
-	 * {@code featureOfInterestTopic} to {@code "FeaturesOfInterest"}<br>,
-	 * {@code thingsTopic} to {@code "Things"}<br>,
-	 * {@code datastreamsTopic} to {@code "Datastreams"}<br>,
-	 * {@code sensorsTopic} to {@code "Sensors"}<br>
+	 * Creates a new {@link ExportMergeProcess}.
+	 * <p>
+	 * Sets {@code observationsTopic} to {@code "Observations"}<br>
+	 * , {@code featureOfInterestTopic} to {@code "FeaturesOfInterest"}<br>
+	 * , {@code thingsTopic} to {@code "Things"}<br>
+	 * , {@code datastreamsTopic} to {@code "Datastreams"}<br>
+	 * , {@code sensorsTopic} to {@code "Sensors"}<br>
 	 * {@code observedPropertiesTopic} to {@code "ObservedProperties"}<br>
 	 * and {@code outputTopic} to {@code "AvroExport"}
 	 */
 	public ExportMergeProcess() {
-		this("Observations", "FeaturesOfInterest", "Things", "Datastreams",
-				"Sensors", "ObservedProperties", "AvroExport");
+		this("Observations", "FeaturesOfInterest", "Things", "Datastreams", "Sensors", "ObservedProperties",
+				"AvroExport");
 	}
 
 	@Override
 	public void execute(StreamsBuilder builder) {
-		final KStream<String, GenericRecord> observationStream = builder.stream(observationsTopic);
-		final KTable<String, GenericRecord> foITable = builder.table(featureOfInterestTopic);
+		this.builder = builder;
+		final Serde<String> stringSerde = Serdes.String();
+		
+		generateOutputStream(stringSerde);
 
-		final KStream<String, GenericRecord> obsStreamKey = observationStream
-				.map((key, value) -> KeyValue.pair(value.get("FeatureOfInterest").toString(), value));
+		stringSerde.close();
+		this.builder = null;
+	}
+	
+	private void generateOutputStream(Serde<String> stringSerde) {
 
-		final KStream<String, GenericRecord> mergedFoIObs = obsStreamKey.join(foITable, (value, location) -> {
+		// *********************************************
+		// LEITFADEN : MINDERHEIT = TABLE
+		// KStream neu mappen auf key von minderheit
+		// dann joinen
+		// ********************************************
 
+		final KStream<String, GenericRecord> mergedFoIObsDataThingSensorKey =
+				getMergedFoIObsDataThingSensorKey(
+						getThingTableJson(getStream(observationsTopic)),
+						getTable(sensorsTopic));
+		
+		final KStream<String, String> outputStream =
+				tableJoinThingsWithMerged(getTable(observedPropertiesTopic), mergedFoIObsDataThingSensorKey);
+		outputStream.to(outputTopic, Produced.with(stringSerde, stringSerde));
+	}
+	
+	private KStream<String, GenericRecord> getThingTableJson(KStream<String, GenericRecord> observationStream) {
+		KStream<String, GenericRecord> tmpStream = streamMapSimple(observationStream, "FeatureOfInterest");
+		tmpStream = streamJoinObsFoiCheckLocation(tmpStream, getTable(featureOfInterestTopic));
+		tmpStream = streamMapSimple(tmpStream, DATASTREAM);
+		tmpStream = streamJoinTableSimple(tmpStream, getTable(datastreamsTopic));
+		tmpStream = streamMapToJsonAndValue(tmpStream, "Thing");
+		return streamJoinTableJson(tmpStream, getTable(thingsTopic), "Thing");
+	}
+	
+	private KStream<String, GenericRecord> getMergedFoIObsDataThingSensorKey(KStream<String, GenericRecord> thingStream,
+			KTable<String, GenericRecord> sensorStream) {
+		KStream<String, GenericRecord> tmpStream = streamMapToJsonAndValue(thingStream, "Sensor");
+		tmpStream = streamLeftJoinTableJson(tmpStream, sensorStream, "Sensor");
+		return streamMapToJsonAndValue(tmpStream, "ObservedProperty");
+	}
+	
+	private KStream<String, GenericRecord> streamJoinObsFoiCheckLocation(KStream<String, GenericRecord> obsStreamKey,
+			KTable<String, GenericRecord> foITable) {
+		return obsStreamKey.join(foITable, (value, location) -> {
 			GenericRecord obj = (GenericRecord) location.get("feature");
 			String point = obj.get("coordinates").toString();
 			double coord1 = Double.parseDouble(point.split(",")[0]);
@@ -110,91 +150,73 @@ public class ExportMergeProcess extends KafkaStreamsProcess {
 			value.put("FeatureOfInterest", location.toString());
 			return value;
 		});
-
-		// *********************************************
-		// LEITFADEN : MINDERHEIT = TABLE
-		// KStream neu mappen auf key von minderheit
-		// dann joinnen
-		// ********************************************
-
-		final KTable<String, GenericRecord> dataTable = builder.table(datastreamsTopic);
-
-//		   Transform merged to Equals Keys to DataStream.Iot
-		final KStream<String, GenericRecord> mergedKey = mergedFoIObs
-				.map((key, value) -> KeyValue.pair(value.get(DATASTREAM).toString(), value));
-
-//		   Join the DataStream with MergedStream
-		final KStream<String, GenericRecord> mergedFoIObsData = mergedKey.join(dataTable, (value, data) -> {
-
+	}
+	
+	private KStream<String, GenericRecord> streamJoinTableJson(KStream<String, GenericRecord> stream,
+			KTable<String, GenericRecord> table, String jsonKey) {
+		return stream.join(table, (value, thing) -> streamAnyJoinTableMapping(value, thing, jsonKey));
+	}
+	
+	private KStream<String, GenericRecord> streamLeftJoinTableJson(KStream<String, GenericRecord> stream,
+			KTable<String, GenericRecord> table, String jsonKey) {
+		return stream.leftJoin(table, (value, thing) -> streamAnyJoinTableMapping(value, thing, jsonKey));
+	}
+	
+	private KStream<String, GenericRecord> streamJoinTableSimple(KStream<String, GenericRecord> stream,
+			KTable<String, GenericRecord> table) {
+		return stream.join(table, (value, data) -> {
 			value.put(DATASTREAM, data.toString());
 			return value;
+		});
+	}
+	
+	private GenericRecord streamAnyJoinTableMapping(GenericRecord record1, GenericRecord record2, String jsonKey) {
+		JSONObject ds = toJson(record1, DATASTREAM);
+		if (record2 != null) {
+			jsonPut(ds, jsonKey, record2.toString());
+			record1.put(DATASTREAM, ds.toString());
+		} else {
+			record1.put(DATASTREAM, "NO VALUE FOUND");
+		}
+		return record1;
+	}
+	
+	private KStream<String, GenericRecord> getStream(String topic) {
+		return builder.stream(topic);
+	}
+	
+	private KTable<String, GenericRecord> getTable(String topic) {
+		return builder.table(topic);
+	}
+	
+	private KStream<String, GenericRecord> streamMapSimple(KStream<String, GenericRecord> stream, String mappingKey) {
+		return stream.map((key, value) -> KeyValue.pair(value.get(mappingKey).toString(), value));
+	}
+	
+	private KStream<String, GenericRecord> streamMapToJsonAndValue(KStream<String, GenericRecord> stream,
+			String jsonKey) {
+		return stream.map((key, value) -> KeyValue.pair(toJson(value, DATASTREAM, jsonKey), value));
+	}
+
+	private KStream<String, String> tableJoinThingsWithMerged(KTable<String, GenericRecord> thingsTable,
+			KStream<String, GenericRecord> mergedStream) {
+		return mergedStream.join(thingsTable, (value, thing) -> {
+
+			if (thing != null) {
+				JSONObject ds = toJson(value, DATASTREAM);
+				jsonPut(ds, "ObservedProperty", thing.toString());
+				value.put(DATASTREAM, ds.toString());
+			} else {
+				value.put(DATASTREAM, "NO ObservedProperty VALUE FOUND");
+			}
+			return toJson(value).toJSONString();
 
 		});
+	}
 
-		final KTable<String, GenericRecord> thingStream = builder.table(thingsTopic);
-
-//		   Tranfrom mergedFoIObsData to Equals Key to Things
-		final KStream<String, GenericRecord> mergedKeyThing = mergedFoIObsData
-				.map((key, value) -> KeyValue.pair(toJson(value, DATASTREAM, "Thing"), value));
-
-//		   Join ThingsStream with MergedStream
-		final KStream<String, GenericRecord> mergedFoIObsDataThing = mergedKeyThing.join(thingStream,
-				(value, thing) -> {
-					JSONObject ds = toJson(value, DATASTREAM);
-					ds.put("Thing", thing.toString());
-
-					value.put(DATASTREAM, ds.toString());
-
-					return value;
-
-				});
-
-//		get SensorStream
-		final KTable<String, GenericRecord> sensorStream = builder.table(sensorsTopic);
-//		Tranfrom mergedFoIObsData to Equals Key to Sensor
-		final KStream<String, GenericRecord> mergedFoIObsDataThingKey = mergedFoIObsDataThing
-				.map((key, value) -> KeyValue.pair(toJson(value, DATASTREAM, "Sensor"), value));
-
-//		Join ThingsStream with MergedStream
-		final KStream<String, GenericRecord> mergedFoIObsDataThingSensor = mergedFoIObsDataThingKey
-				.leftJoin(sensorStream, (value, thing) -> {
-					JSONObject ds = toJson(value, DATASTREAM);
-					if (thing != null) {
-						ds.put("Sensor", thing.toString());
-						value.put(DATASTREAM, ds.toString());
-					} else {
-						value.put(DATASTREAM, "NO Sensor VALUE FOUND");
-					}
-
-					return value;
-				});
-
-//			get ObsPro
-		final KTable<String, GenericRecord> propertyStream = builder.table(observedPropertiesTopic);
-//			Tranfrom mergedFoIObsData to Equals Key to Sensor
-		final KStream<String, GenericRecord> mergedFoIObsDataThingSensorKey = mergedFoIObsDataThingSensor
-				.map((key, value) -> KeyValue.pair(toJson(value, DATASTREAM, "ObservedProperty"), value));
-
-//			Join ThingsStream with MergedStream
-		final KStream<String, String> finalStream = mergedFoIObsDataThingSensorKey.join(propertyStream,
-				(value, thing) -> {
-
-					if (thing != null) {
-						JSONObject ds = toJson(value, DATASTREAM);
-						ds.put("ObservedProperty", thing.toString());
-						value.put(DATASTREAM, ds.toString());
-					} else {
-						value.put(DATASTREAM, "NO ObservedProperty VALUE FOUND");
-					}
-					return toJson(value).toJSONString();
-
-				});
-
-		final Serde<String> stringSerde = Serdes.String();
-
-		finalStream.to(outputTopic, Produced.with(stringSerde, stringSerde));
-
-		stringSerde.close();
+	@SuppressWarnings("unchecked")
+	private void jsonPut(JSONObject json, String key, String value) {
+		json.put(key, value);
 	}
 
 	/**

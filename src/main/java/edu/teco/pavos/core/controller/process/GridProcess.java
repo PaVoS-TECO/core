@@ -42,7 +42,8 @@ public class GridProcess extends BasicProcess {
 	 */
 	public GridProcess(String inputTopic) {
 		KafkaTopicAdmin admin = KafkaTopicAdmin.getInstance();
-		if (admin.existsTopic(inputTopic)) admin.createTopic(inputTopic);
+		admin.createTopic(inputTopic);
+		
 		this.inputTopic = inputTopic;
 		
 		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();

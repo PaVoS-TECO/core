@@ -34,12 +34,9 @@ public class MergeObsToFoiProcess extends KafkaStreamsProcess {
 	public MergeObsToFoiProcess(String observationTopic, String featureOfInterestTopic,
 			String outputTopic, String key) {
 		KafkaTopicAdmin kAdmin = KafkaTopicAdmin.getInstance();
-		
-		if (!kAdmin.existsTopic(observationTopic, featureOfInterestTopic, outputTopic)) {
-			kAdmin.createTopic(observationTopic);
-			kAdmin.createTopic(featureOfInterestTopic);
-			kAdmin.createTopic(outputTopic);
-		}
+		kAdmin.createTopic(observationTopic);
+		kAdmin.createTopic(featureOfInterestTopic);
+		kAdmin.createTopic(outputTopic);
 		
 		this.observationTopic = observationTopic;
 		this.featureOfInterestTopic = featureOfInterestTopic;
