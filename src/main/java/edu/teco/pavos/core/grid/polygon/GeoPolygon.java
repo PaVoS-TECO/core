@@ -18,6 +18,7 @@ import edu.teco.pavos.core.grid.exceptions.ClusterNotFoundException;
 import edu.teco.pavos.core.grid.geojson.GeoJsonConverter;
 import edu.teco.pavos.core.grid.geojson.data.ClusterGeoJson;
 import edu.teco.pavos.core.grid.geojson.data.ObservationGeoJson;
+import edu.teco.pavos.core.grid.polygon.math.ArrayListCalc;
 import edu.teco.pavos.core.grid.polygon.math.Tuple2D;
 import edu.teco.pavos.core.grid.polygon.math.Tuple3D;
 import edu.teco.pavos.transfer.data.ObservationData;
@@ -385,13 +386,13 @@ public abstract class GeoPolygon {
 			entry.updateObservations();
 		}
 		
-		Collection<Tuple3D<String, Integer, Double>> values = getPropertyWeight();
+		Collection<Tuple3D<String, Integer, ArrayList<Double>>> values = getPropertyWeight();
 		Collection<String> properties = getProperties();
 		
 		setWeightedObservationForCluster(values, properties);
 	}
 	
-	private void setWeightedObservationForCluster(Collection<Tuple3D<String, Integer, Double>> values,
+	private void setWeightedObservationForCluster(Collection<Tuple3D<String, Integer, ArrayList<Double>>> values,
 			Collection<String> properties) {
 		synchronized (observationDataLock) {
 			boolean anyEntry = false;
@@ -409,15 +410,15 @@ public abstract class GeoPolygon {
 		}
 	}
 	
-	private boolean weightProperty(String property, Collection<Tuple3D<String, Integer, Double>> values,
+	private boolean weightProperty(String property, Collection<Tuple3D<String, Integer, ArrayList<Double>>> values,
 			ObservationData output) {
-		double value = 0;
+		ArrayList<Double> value = new ArrayList<>();
 		int totalSensors = 0;
 		boolean anyEntry = false;
 		
-		for (Tuple3D<String, Integer, Double> tuple : values) {
+		for (Tuple3D<String, Integer, ArrayList<Double>> tuple : values) {
 			if (tuple.getFirstValue().equals(property)) {
-				Tuple2D<Double, Integer> weight = addWeightedData(tuple, value, totalSensors);
+				Tuple2D<ArrayList<Double>, Integer> weight = addWeightedData(tuple, value, totalSensors);
 				if (weight != null && weight.getFirstValue() != null && weight.getSecondValue() != null) {
 					value = weight.getFirstValue();
 					totalSensors = weight.getSecondValue();
@@ -425,17 +426,21 @@ public abstract class GeoPolygon {
 				}
 			}
 		}
-		value = (totalSensors != 0) ? value / (double) totalSensors : value;
-		output.addSingleObservation(property, anyEntry ? value : null);
-		// TODO - Add Vector support
+		value = (totalSensors != 0) ? ArrayListCalc.divideArrayValue(value, (double) totalSensors) : value;
+		if (value.size() == 1) {
+			output.addSingleObservation(property, anyEntry ? value.get(0) : null);
+		} else {
+			output.addVectorObservation(property, anyEntry ? value : null);
+		}
 		return anyEntry;
 	}
 	
-	private Tuple2D<Double, Integer> addWeightedData(Tuple3D<String, Integer, Double> tuple,
-			double value, int totalSensors) {
+	private Tuple2D<ArrayList<Double>, Integer> addWeightedData(Tuple3D<String, Integer, ArrayList<Double>> tuple,
+			ArrayList<Double> value, int totalSensors) {
 		if (tuple.getFirstValue() == null || tuple.getSecondValue() == null 
-				|| tuple.getThirdValue() == null) return null; 
-		return new Tuple2D<>(value + tuple.getThirdValue().doubleValue() * tuple.getSecondValue().doubleValue(), 
+				|| tuple.getThirdValue() == null) return null;
+		return new Tuple2D<>(ArrayListCalc.sumArrayArray(
+				value, ArrayListCalc.multiplyArrayValue(tuple.getThirdValue(), tuple.getSecondValue())),
 				totalSensors + tuple.getSecondValue().intValue());
 	}
 	
@@ -487,24 +492,34 @@ public abstract class GeoPolygon {
 		return result;
 	}
 	
-	private Collection<Tuple3D<String, Integer, Double>> getPropertyWeight() {
-		Collection<Tuple3D<String, Integer, Double>> values = new HashSet<>();
+	private Collection<Tuple3D<String, Integer, ArrayList<Double>>> getPropertyWeight() {
+		Collection<Tuple3D<String, Integer, ArrayList<Double>>> values = new HashSet<>();
 		for (GeoPolygon polygon : this.subPolygons) {
-			// TODO - Add Vector support
 			for (Entry<String, Double> entry : polygon.observationData.getSingleObservations().entrySet()) {
-				values.add(new Tuple3D<String, Integer, Double>(entry.getKey(),
+				ArrayList<Double> valueArray = new ArrayList<>();
+				valueArray.add(entry.getValue());
+				values.add(new Tuple3D<String, Integer, ArrayList<Double>>(entry.getKey(),
 						Integer.valueOf(polygon.getNumberOfSensors(entry.getKey())), 
-						// TODO - Add Vector support
-						Double.valueOf(polygon.observationData.getSingleObservations().get(entry.getKey()))));
+						valueArray));
+			}
+			for (Entry<String, ArrayList<Double>> entry : polygon.observationData.getVectorObservations().entrySet()) {
+				values.add(new Tuple3D<String, Integer, ArrayList<Double>>(entry.getKey(),
+						Integer.valueOf(polygon.getNumberOfSensors(entry.getKey())),
+						entry.getValue()));
 			}
 		}
 		for (ObservationData observation : this.sensorValues.values()) {
-			// TODO - Add Vector support
 			for (Entry<String, Double> entry : observation.getSingleObservations().entrySet()) {
-				values.add(new Tuple3D<String, Integer, Double>(entry.getKey(),
+				ArrayList<Double> valueArray = new ArrayList<>();
+				valueArray.add(entry.getValue());
+				values.add(new Tuple3D<String, Integer, ArrayList<Double>>(entry.getKey(),
 						Integer.valueOf(1),
-						// TODO - Add Vector support
-						Double.valueOf(observation.getSingleObservations().get(entry.getKey()))));
+						valueArray));
+			}
+			for (Entry<String, ArrayList<Double>> entry : observation.getVectorObservations().entrySet()) {
+				values.add(new Tuple3D<String, Integer, ArrayList<Double>>(entry.getKey(),
+						Integer.valueOf(1),
+						entry.getValue()));
 			}
 		}
 		return values;
