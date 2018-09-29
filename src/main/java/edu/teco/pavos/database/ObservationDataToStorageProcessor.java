@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -158,15 +157,18 @@ public class ObservationDataToStorageProcessor {
 			if (properties == null) {
 				properties = new HashSet<>();
 			}
-			// TODO - Add Vector support
-			for (String key : observationData.getSingleObservations().keySet()) {
-				properties.add(key);
+			for (String property : observationData.getSingleObservations().keySet()) {
+				properties.add(property);
 			}
-			// TODO - Add Vector support
+			for (String property : observationData.getVectorObservations().keySet()) {
+				if (!properties.contains(property)) properties.add(property);
+			}
+			
 			cli.set(gridID, dataExp, properties);
 			logger.debug("Successfully added item with key {}", dataKey);
-			String keySet = String.join(", ", observationData.getSingleObservations().keySet());
-			// TODO - Add Vector support
+			String keySetSingle = String.join(", ", observationData.getSingleObservations().keySet());
+			String keySetVector = String.join(",", observationData.getVectorObservations().keySet());
+			String keySet = String.join(",", keySetSingle, keySetVector);
 			logger.debug("\tTimestamp {} and properties {}", 
 					observationData.getObservationDate(), keySet);
 		} catch (TimeoutException e) {
@@ -291,11 +293,8 @@ public class ObservationDataToStorageProcessor {
 		
 		// get value to given observedProperty
 		if (od != null) {
-			Map<String, Double> obs = od.getSingleObservations();
-			// TODO - Add Vector support
-			if (obs.containsKey(observedProperty)) {
-				return obs.get(observedProperty).toString();
-			}
+			String property = String.valueOf(observedProperty);
+			return od.getAnonObservation(property).toString();
 		}
 		return null;
 	}

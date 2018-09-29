@@ -112,14 +112,13 @@ public abstract class GeoGrid {
 	 * The GeoJson recieved from this must be part of an {@link ObservationGeoJson},
 	 * since it is only a single feature and no feature-collection.
 	 * @param clusterID {@link String}
-	 * @param observationType {@link String}
-	 * @param value {@link double}
+	 * @param observationType The {@link String} key / property of the observation. Like 'temperature_celsius'
+	 * @param valueArray {@link ArrayList} of type {@link java.lang.Double}
 	 * @return geoJson {@link String}
 	 * @throws ClusterNotFoundException The cluster is not recognized by the grid
 	 */
-	public String getArchivedClusterGeoJson(String clusterID, String observationType, double value)
-			throws ClusterNotFoundException {
-		
+	public String getArchivedClusterGeoJson(String clusterID, String observationType,
+			ArrayList<java.lang.Double> valueArray) throws ClusterNotFoundException {
 			GeoPolygon geoPolygon = null;
 			try {
 				geoPolygon = getPolygon(clusterID);
@@ -128,7 +127,7 @@ public abstract class GeoGrid {
 				+ ". Decided to skip the cluster and continue the json-building process.", e);
 			}
 			if (geoPolygon == null) throw new ClusterNotFoundException(clusterID);
-			return geoPolygon.getArchivedClusterGeoJson(observationType, value);
+			return geoPolygon.getArchivedClusterGeoJson(observationType, valueArray);
 	}
 	
 	/**
@@ -206,10 +205,8 @@ public abstract class GeoGrid {
 		Collection<String> observedTypes = new HashSet<>();
 		Collection<ObservationData> observations = getGridObservations();
 		for (ObservationData observation : observations) {
-			// TODO - Add Vector support
-			for (String key : observation.getSingleObservations().keySet()) {
-				observedTypes.add(key);
-			}
+			observation.getSingleObservations().keySet().forEach(key -> observedTypes.add(key));
+			observation.getVectorObservations().keySet().forEach(key -> observedTypes.add(key));
 		}
 		return observedTypes;
 	}

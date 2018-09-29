@@ -83,13 +83,12 @@ public abstract class GeoPolygon {
 	 * @return geoJson {@link String}
 	 */
 	public String getLiveClusterGeoJson(String observationType) {
-		Double value = this.observationData.getSingleObservations().get(observationType);
-		// TODO - Add Vector support
+		ArrayList<Double> valueArray = this.observationData.getAnonObservation(observationType);
 		synchronized (clusterGeoJsonLock) {
 			if (clusterGeoJson == null) {
-				this.clusterGeoJson = new ClusterGeoJson(value, this.id, subPolygons, getPoints());
+				this.clusterGeoJson = new ClusterGeoJson(valueArray, this.id, subPolygons, getPoints());
 			}
-			clusterGeoJson.setValue(value);
+			clusterGeoJson.setValue(valueArray);
 		}
 		return clusterGeoJson.getGeoJson();
 	}
@@ -99,20 +98,19 @@ public abstract class GeoPolygon {
 	 * Uses the specified value as data.
 	 * The GeoJson recieved from this must be part of an {@link ObservationGeoJson},
 	 * since it is only a single feature and no feature-collection.
-	 * @param observationType {@link String}
-	 * @param value {@link String}
+	 * @param observationType The {@link String} key / property of the observation. Like 'temperature_celsius'
+	 * @param valueArray {@link ArrayList} of type {@link Double}
 	 * @return geoJson {@link String}
 	 */
-	public String getArchivedClusterGeoJson(String observationType, Double value) {
+	public String getArchivedClusterGeoJson(String observationType, ArrayList<Double> valueArray) {
 		synchronized (clusterGeoJsonLock) {
 			if (clusterGeoJson == null) {
 				this.clusterGeoJson = new ClusterGeoJson(
-						this.observationData.getSingleObservations().get(observationType),
+						this.observationData.getAnonObservation(observationType),
 						this.id, subPolygons, getPoints());
-				// TODO - Add Vector support
 			}
 		}
-		return clusterGeoJson.getArchivedGeoJson(value);
+		return clusterGeoJson.getArchivedGeoJson(valueArray);
 	}
 	
 	@Override
@@ -137,15 +135,7 @@ public abstract class GeoPolygon {
 	 * @return observationData {@link ObservationData}
 	 */
 	public ObservationData cloneObservation() {
-		ObservationData result = new ObservationData();
-		result.setObservationDate(this.observationData.getObservationDate());
-		result.setSensorID(this.observationData.getSensorID());
-		result.setClusterID(this.observationData.getClusterID());
-		for (Map.Entry<String, ? extends Number> entry : this.observationData.getSingleObservations().entrySet()) {
-			result.addSingleObservation(entry.getKey(), entry.getValue().doubleValue());
-		}
-		// TODO - Add Vector support
-		return result;
+		return this.observationData.clone();
 	}
 	
 	/**
@@ -228,8 +218,8 @@ public abstract class GeoPolygon {
 		for (ObservationData data : this.sensorValues.values()) {
 			boolean containsAll = true;
 			for (String property : properties) {
-				if (!data.getSingleObservations().containsKey(property)) {
-					// TODO - Add Vector support
+				if (!data.getSingleObservations().containsKey(property)
+						&& !data.getVectorObservations().containsKey(property)) {
 					containsAll = false;
 				}
 			}
@@ -251,8 +241,8 @@ public abstract class GeoPolygon {
 			sum += entry.getNumberOfSensors(property);
 		}
 		for (ObservationData data : this.sensorValues.values()) {
-			if (data.getSingleObservations().containsKey(property)) {
-				// TODO - Add Vector support
+			if (data.getSingleObservations().containsKey(property)
+					|| data.getVectorObservations().containsKey(property)) {
 				sum++;
 			}
 		}
@@ -365,14 +355,18 @@ public abstract class GeoPolygon {
 		Collection<String> properties = new HashSet<>();
 		for (GeoPolygon entry : this.subPolygons) {
 			for (String property : entry.observationData.getSingleObservations().keySet()) {
-				// TODO - Add Vector support
 				properties.add(property);
+			}
+			for (String property : entry.observationData.getVectorObservations().keySet()) {
+				if (!properties.contains(property)) properties.add(property);
 			}
 		}
 		for (ObservationData entry : this.sensorValues.values()) {
 			for (String property : entry.getSingleObservations().keySet()) {
-				// TODO - Add Vector support
 				properties.add(property);
+			}
+			for (String property : entry.getVectorObservations().keySet()) {
+				if (!properties.contains(property)) properties.add(property);
 			}
 		}
 		return properties;
@@ -432,7 +426,7 @@ public abstract class GeoPolygon {
 			}
 		}
 		value = (totalSensors != 0) ? value / (double) totalSensors : value;
-		output.getSingleObservations().put(property, anyEntry ? value : null);
+		output.addSingleObservation(property, anyEntry ? value : null);
 		// TODO - Add Vector support
 		return anyEntry;
 	}
@@ -454,14 +448,19 @@ public abstract class GeoPolygon {
 		Collection<String> properties = new HashSet<>();
 		for (GeoPolygon polygon : this.subPolygons) {
 			for (Entry<String, Double> entry : polygon.observationData.getSingleObservations().entrySet()) {
-				// TODO - Add Vector support
 				properties.add(entry.getKey());
+			}
+			for (Entry<String, ArrayList<Double>> entry : polygon.observationData.getVectorObservations().entrySet()) {
+				String property = entry.getKey();
+				if (!properties.contains(property)) properties.add(property);
 			}
 		}
 		for (ObservationData observation : this.sensorValues.values()) {
-			for (Entry<String, Double> entry : observation.getSingleObservations().entrySet()) {
-				// TODO - Add Vector support
-				properties.add(entry.getKey());
+			for (String property : observation.getSingleObservations().keySet()) {
+				properties.add(property);
+			}
+			for (String property : observation.getVectorObservations().keySet()) {
+				if (!properties.contains(property)) properties.add(property);
 			}
 		}
 		return properties;

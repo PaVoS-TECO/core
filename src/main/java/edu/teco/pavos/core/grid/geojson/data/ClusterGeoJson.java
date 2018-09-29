@@ -17,7 +17,7 @@ public class ClusterGeoJson {
 	private static final String COLON = ":";
 	private String geoJson;
 	
-	private Double value;
+	private ArrayList<Double> value = new ArrayList<>();
 	private final String clusterID;
 	private final String content;
 	private final String geometry;
@@ -29,7 +29,7 @@ public class ClusterGeoJson {
 	 * @param subPolygons The sub-{@link GeoPolygon}s of the cluster
 	 * @param points The points defining the form of the cluster
 	 */
-	public ClusterGeoJson(Double value, String clusterID, List<GeoPolygon> subPolygons,
+	public ClusterGeoJson(ArrayList<Double> value, String clusterID, List<GeoPolygon> subPolygons,
 			Collection<Point2D.Double> points) {
 		this.value = value;
 		this.clusterID = clusterID;
@@ -44,7 +44,7 @@ public class ClusterGeoJson {
 	 * @param value The value of the observationType
 	 * @return geoJson {@link String}
 	 */
-	public String getArchivedGeoJson(Double value) {
+	public String getArchivedGeoJson(ArrayList<Double> value) {
 		return getGeoJsonDirectly(value);
 	}
 	
@@ -52,7 +52,7 @@ public class ClusterGeoJson {
 		this.geoJson = getGeoJsonDirectly(this.value);
 	}
 	
-	private String getGeoJsonDirectly(Double value2) {
+	private String getGeoJsonDirectly(ArrayList<Double> value2) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");
 		builder.append(String.join(COMMA, GeoJsonBuilder.toSProperty("type", "Feature"),
@@ -98,10 +98,10 @@ public class ClusterGeoJson {
 		return builder.toString();
 	}
 	
-	private String buildProperties(Double value) {
+	private String buildProperties(ArrayList<Double> value2) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");
-		builder.append(String.join(COMMA, GeoJsonBuilder.toNProperty("value", value.toString()),
+		builder.append(String.join(COMMA, GeoJsonBuilder.toNProperty("value", value2.toString()),
 				GeoJsonBuilder.toSProperty("clusterID", clusterID),
 				String.join(COLON, GeoJsonBuilder.toEntry("content"), content)
 				));
@@ -119,14 +119,14 @@ public class ClusterGeoJson {
 	/**
 	 * @return the value
 	 */
-	public Double getValue() {
+	public ArrayList<Double> getValue() {
 		return value;
 	}
 
 	/**
 	 * @param value the value to set
 	 */
-	public void setValue(Double value) {
+	public void setValue(ArrayList<Double> value) {
 		this.value = value;
 		update();
 	}

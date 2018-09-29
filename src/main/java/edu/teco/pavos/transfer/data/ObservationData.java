@@ -11,7 +11,7 @@ import java.util.Vector;
 /**
  * A serializable object that contains the observed data.
  */
-public class ObservationData implements Serializable {
+public class ObservationData implements Serializable, Cloneable {
 	
 	/**
 	 * The unique identifier of this object
@@ -46,6 +46,19 @@ public class ObservationData implements Serializable {
      *  Vector values.
      */
     private Map<String, ArrayList<Double>> vectorObservations = new HashMap<>();
+    
+    @Override
+    public ObservationData clone() {
+    	ObservationData result = new ObservationData();
+		result.setObservationDate(this.getObservationDate());
+		result.setSensorID(this.getSensorID());
+		result.setClusterID(this.getClusterID());
+		this.getSingleObservations().entrySet().forEach(
+				entry -> result.addSingleObservation(entry.getKey(), entry.getValue()));
+		this.getVectorObservations().entrySet().forEach(
+				entry -> result.addVectorObservation(entry.getKey(), entry.getValue()));
+		return result;
+    }
     
     /**
      * Returns all observations of type {@link Double}.
@@ -139,6 +152,26 @@ public class ObservationData implements Serializable {
     	for (Entry<String, ArrayList<? extends Number>> entry : observationsToAdd.entrySet()) {
     		addVectorObservation(entry.getKey(), entry.getValue());
     	}
+    }
+    
+    /**
+     * Returns an {@link ArrayList} of type {@link Double}.
+     * If the observation is a single observation, it will be converted to
+     * an {@link ArrayList} with a single entry.
+     * If the observation is a vector observation, it will be the exact 
+     * {@link ArrayList} entry.
+     * @param observationType The {@link String} key / property of the observation. Like 'temperature_celsius'
+     * @return valueArray {@link ArrayList} of type {@link Double}
+     */
+    public ArrayList<Double> getAnonObservation(String observationType) {
+    	Double value = getSingleObservations().get(observationType);
+		ArrayList<Double> valueArray = new ArrayList<>();
+		if (value == null) {
+			valueArray.addAll(getVectorObservations().get(observationType));
+		} else {
+			valueArray.add(value);
+		}
+		return valueArray;
     }
     
 	/**

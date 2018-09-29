@@ -30,6 +30,7 @@ import edu.teco.pavos.core.grid.geojson.GeoJsonConverter;
 import edu.teco.pavos.core.grid.geojson.data.ObservationGeoJson;
 import edu.teco.pavos.core.visualization.GradientManager;
 import edu.teco.pavos.core.visualization.gradients.MultiGradient;
+import edu.teco.pavos.core.web.util.ArrayListParser;
 import edu.teco.pavos.database.Facade;
 import edu.teco.pavos.transfer.sender.util.TimeUtil;
 
@@ -355,7 +356,7 @@ public class WebWorker implements Runnable {
 		for (String clusterID : clusterIDs) {
 			String value = database.getObservationData(clusterID, currentTimestamp, observationType);
 			try {
-				features.add(grid.getArchivedClusterGeoJson(clusterID, observationType, Double.parseDouble(value)));
+				features.add(grid.getArchivedClusterGeoJson(clusterID, observationType, ArrayListParser.parse(value)));
 			} catch (ClusterNotFoundException e) {
 				statusCode = HttpStatus.SC_BAD_REQUEST;
 				throw new IllegalArgumentException(); 
