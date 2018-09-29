@@ -26,12 +26,13 @@ import edu.teco.pavos.core.grid.GeoGridManager;
 import edu.teco.pavos.core.grid.exceptions.ClusterNotFoundException;
 import edu.teco.pavos.core.grid.exceptions.PointNotOnMapException;
 import edu.teco.pavos.core.grid.exceptions.SensorNotFoundException;
-import edu.teco.pavos.core.grid.geojson.GeoJsonConverter;
 import edu.teco.pavos.core.grid.geojson.data.ObservationGeoJson;
+import edu.teco.pavos.core.grid.geojson.data.SensorGeoJson;
 import edu.teco.pavos.core.visualization.GradientManager;
 import edu.teco.pavos.core.visualization.gradients.MultiGradient;
 import edu.teco.pavos.core.web.util.ArrayListParser;
 import edu.teco.pavos.database.Facade;
+import edu.teco.pavos.transfer.data.ObservationData;
 import edu.teco.pavos.transfer.sender.util.TimeUtil;
 
 /**
@@ -280,8 +281,10 @@ public class WebWorker implements Runnable {
 		Point2D.Double point = null;
 		try {
 			point = grid.getSensorLocation(sensorID);
-			return GeoJsonConverter.convertSensorObservations(
-					grid.getSensorObservation(sensorID, point), keyProperty, point);
+			ObservationData data = grid.getSensorObservation(sensorID, point);
+			String sensorGeoJson = new SensorGeoJson(data.getAnonObservation(keyProperty),
+					data.getSensorID(), point).getGeoJson();
+			return new ObservationGeoJson(TimeUtil.getUTCDateTimeNowString(), keyProperty, sensorGeoJson).getGeoJson();
 		} catch (PointNotOnMapException | SensorNotFoundException | NullPointerException e) {
 			statusCode = HttpStatus.SC_BAD_REQUEST;
 		}

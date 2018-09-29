@@ -15,7 +15,6 @@ import java.util.Map.Entry;
 import org.joda.time.DateTime;
 
 import edu.teco.pavos.core.grid.exceptions.ClusterNotFoundException;
-import edu.teco.pavos.core.grid.geojson.GeoJsonConverter;
 import edu.teco.pavos.core.grid.geojson.data.ClusterGeoJson;
 import edu.teco.pavos.core.grid.geojson.data.ObservationGeoJson;
 import edu.teco.pavos.core.grid.polygon.math.ArrayListCalc;
@@ -178,15 +177,6 @@ public abstract class GeoPolygon {
 	 */
 	public Collection<String> getDirectSensorIDs() {
 		return this.sensorValues.keySet();
-	}
-	
-	/**
-	 * Returns the current {@link GeoPolygon} as GeoJson-String
-	 * @param observationType {@link String}.
-	 * @return geoJson {@link String}
-	 */
-	public String getGeoJson(String observationType) {
-		return GeoJsonConverter.convert(this, observationType);
 	}
 	
 	/**
