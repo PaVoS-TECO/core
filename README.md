@@ -3,6 +3,22 @@
 
 The program and surrounding elements are written for the [TECO Research Group](teco.edu) as part of the SS2018 PSE project *"Visualizing & Mining of Geospatial Sensorstreams with Apache Kafka"*.
 
+## Quality assurance
+![quality-gate](https://sonarcloud.io/api/project_badges/quality_gate?project=pavos-source)  
+
+### Statistics
+![coverage](https://sonarcloud.io/api/project_badges/measure?project=pavos-source&metric=coverage)  
+![lines of code](https://sonarcloud.io/api/project_badges/measure?project=pavos-source&metric=ncloc)  
+![duplicated lines](https://sonarcloud.io/api/project_badges/measure?project=pavos-source&metric=duplicated_lines_density)  
+![maintainability](https://sonarcloud.io/api/project_badges/measure?project=pavos-source&metric=sqale_rating)  
+![reliability](https://sonarcloud.io/api/project_badges/measure?project=pavos-source&metric=reliability_rating)  
+![security](https://sonarcloud.io/api/project_badges/measure?project=pavos-source&metric=security_rating)  
+![bugs](https://sonarcloud.io/api/project_badges/measure?project=pavos-source&metric=bugs)  
+![code smells](https://sonarcloud.io/api/project_badges/measure?project=pavos-source&metric=code_smells)  
+![vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pavos-source&metric=vulnerabilities)  
+![technical debt](https://sonarcloud.io/api/project_badges/measure?project=pavos-source&metric=sqale_index)  
+  
+[Click here to view PaVoS-Core on Sonarcloud!](https://sonarcloud.io/dashboard?id=pavos-source)
 ## Authors
 The authors of this project are (alphabetically sorted):
 - [Erik Wessel](https://github.com/erikwessel)
