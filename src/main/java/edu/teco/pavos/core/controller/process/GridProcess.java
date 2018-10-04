@@ -28,24 +28,27 @@ import edu.teco.pavos.transfer.data.ObservationData;
 import edu.teco.pavos.transfer.sender.util.TimeUtil;
 
 /**
- * The {@link GridProcess} preprocesses the incoming data and adds the sensors to the grid.
+ * The {@link GridProcess} preprocesses the incoming data and adds the sensors
+ * to the grid.
  */
 public class GridProcess extends BasicProcess {
 	private static final String KEY = "FeatureOfInterest";
 	private final String inputTopic;
 	private boolean doProcessing = true;
 	private volatile GeoGrid grid;
-	
+
 	/**
 	 * Creates a new {@link GridProcess}.
-	 * @param inputTopic The name of the topic which provides the data to feed to the grid
+	 * 
+	 * @param inputTopic The name of the topic which provides the data to feed to
+	 *                   the grid
 	 */
 	public GridProcess(String inputTopic) {
 		KafkaTopicAdmin admin = KafkaTopicAdmin.getInstance();
 		admin.createTopic(inputTopic);
-		
+
 		this.inputTopic = inputTopic;
-		
+
 		KafkaPropertiesFileManager propManager = KafkaPropertiesFileManager.getInstance();
 		this.props = propManager.getGridStreamProperties();
 		logger.info("Creating thread: {}", threadName);
@@ -58,10 +61,12 @@ public class GridProcess extends BasicProcess {
 	public GridProcess() {
 		this("ObservationsMergesGeneric");
 	}
-	
+
 	/**
 	 * 
-	 * Convert a {@link JSONObject} to a {@link Map} with both key and value as {@link String}.
+	 * Convert a {@link JSONObject} to a {@link Map} with both key and value as
+	 * {@link String}.
+	 * 
 	 * @param json {@link JSONObject}
 	 * @return map {@link Map}
 	 */
@@ -81,15 +86,16 @@ public class GridProcess extends BasicProcess {
 		}
 		return map;
 	}
-	
+
 	@Override
 	public boolean stop() {
 		this.doProcessing = false;
 		boolean result = super.stop();
-		if (grid != null) grid.close();
+		if (grid != null)
+			grid.close();
 		return result;
 	}
-	
+
 	// TODO - FIX Tempeture
 	@Override
 	public void execute() throws InterruptedException {
@@ -99,11 +105,10 @@ public class GridProcess extends BasicProcess {
 			GridPropertiesFileManager.getInstance();
 			GeoGridManager gridManager = GeoGridManager.getInstance();
 			grid = gridManager.getNewestGrid();
-			
+
 			TimeUnit.SECONDS.sleep(1);
 
 			while (this.doProcessing) {
-
 				final ConsumerRecords<String, GenericRecord> observations = consumer.poll(100);
 				observations.forEach(record1 -> {
 					GenericRecord value = (record1.value());
@@ -128,19 +133,8 @@ public class GridProcess extends BasicProcess {
 						grid.addObservation(location, data);
 					} catch (ParseException e) {
 						logger.warn("Could not parse FeatureOfInterest value to double.", e);
-					} catch (ClassCastException e2) {
-						String sensorID = record1.value().get("Datastream").toString();
-						ObservationData data = new ObservationData();
-
-						data.setObservationDate(time);
-						data.setSensorID(sensorID);
-						data.addSingleObservation("Temperature", Double.parseDouble(resultValue));
-					
-						double coord1 = Double.parseDouble(value.get(KEY).toString().split(",")[0]);
-						double coord2 = Double.parseDouble(value.get(KEY).toString().split(",")[1]);
-
-						Point2D.Double location = new Point2D.Double(coord1, coord2);
-						grid.addObservation(location, data);
+					} catch (ClassCastException e) {
+						logger.warn("Could not cast value to JSONObject.", e);
 					}
 				});
 			}
@@ -162,5 +156,5 @@ public class GridProcess extends BasicProcess {
 	public void execute(StreamsBuilder builder) throws InterruptedException {
 		execute();
 	}
-	
+
 }

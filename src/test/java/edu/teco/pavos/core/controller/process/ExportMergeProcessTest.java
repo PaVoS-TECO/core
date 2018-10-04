@@ -10,7 +10,7 @@ import org.junit.Test;
 import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 
 /**
- * Tests {@link GridProcess}.
+ * Tests {@link ExportMergeProcess}.
  */
 public class ExportMergeProcessTest {
 	

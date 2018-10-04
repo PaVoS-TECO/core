@@ -42,7 +42,6 @@ public abstract class GeoGrid {
 	protected volatile Map<String, Point2D.Double> sensorsAndLocations = new HashMap<>();
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static final Integer CYCLES_UNTIL_RESET = 0;
-	private static volatile GeoGridManager manager = GeoGridManager.getInstance();
 	private volatile int cyclesDone = 0;
 	
 	/**
@@ -60,7 +59,7 @@ public abstract class GeoGrid {
 		this.columns = columns;
 		this.maxLevel = maxLevel;
 		this.id = gridID;
-		manager.addGeoGrid(this);
+		GeoGridManager.getInstance().addGeoGrid(this);
 	}
 	
 	/**
@@ -79,7 +78,7 @@ public abstract class GeoGrid {
 			}
 		} catch (PointNotOnMapException e) {
 			logger.warn("Could not add Observation to map. Point '" + location 
-					+ "' not in map boundaries! SensorID: " + observation.getSensorID() + " ", e);
+					+ "' not in map boundaries! SensorID: " + observation.getSensorID());
 		}
 	}
 	
@@ -100,7 +99,7 @@ public abstract class GeoGrid {
 				geoPolygon = getPolygon(clusterID);
 			} catch (ClusterNotFoundException e) {
 				logger.warn("Could not find cluster: " + e.getCluster() 
-				+ ". Decided to skip the cluster and continue the json-building process.", e);
+				+ ". Decided to skip the cluster and continue the json-building process.");
 			}
 			if (geoPolygon == null) throw new ClusterNotFoundException(clusterID); 
 			return geoPolygon.getLiveClusterGeoJson(observationType);
@@ -124,7 +123,7 @@ public abstract class GeoGrid {
 				geoPolygon = getPolygon(clusterID);
 			} catch (ClusterNotFoundException e) {
 				logger.warn("Could not find cluster: " + e.getCluster() 
-				+ ". Decided to skip the cluster and continue the json-building process.", e);
+				+ ". Decided to skip the cluster and continue the json-building process.");
 			}
 			if (geoPolygon == null) throw new ClusterNotFoundException(clusterID);
 			return geoPolygon.getArchivedClusterGeoJson(observationType, valueArray);
@@ -134,7 +133,7 @@ public abstract class GeoGrid {
 	 * Closes this grid, deleting it from the {@link GeoGridManager}.
 	 */
 	public void close() {
-		manager.removeGeoGrid(this);
+		GeoGridManager.getInstance().removeGeoGrid(this);
 	}
 	
 	@Override
@@ -275,7 +274,7 @@ public abstract class GeoGrid {
 			
 			return result;
 			
-		} catch (NullPointerException e) {
+		} catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
 			throw new ClusterNotFoundException(clusterID);
 		}
 	}

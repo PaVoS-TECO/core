@@ -102,7 +102,7 @@ public class ObservationData implements Serializable, Cloneable {
     	Map<String, ArrayList<Double>> convertedMap = new HashMap<>();
     	for (Entry<String, ArrayList<? extends Number>> entry : observationsToSet.entrySet()) {
     		ArrayList<Double> convertedList = new ArrayList<>();
-    		entry.getValue().forEach(number -> number.doubleValue());
+    		entry.getValue().forEach(number -> convertedList.add(number.doubleValue()));
     		convertedMap.put(entry.getKey(), convertedList);
     	}
     	vectorObservations.putAll(convertedMap);
@@ -167,11 +167,28 @@ public class ObservationData implements Serializable, Cloneable {
     	Double value = getSingleObservations().get(observationType);
 		ArrayList<Double> valueArray = new ArrayList<>();
 		if (value == null) {
-			valueArray.addAll(getVectorObservations().get(observationType));
+			ArrayList<Double> vectorFetchedData = getVectorObservations().get(observationType);
+			if (vectorFetchedData != null) valueArray.addAll(vectorFetchedData);
 		} else {
 			valueArray.add(value);
 		}
 		return valueArray;
+    }
+    
+    /**
+     * Adds an entry based on the length of the {@link ArrayList}.
+     * A single entry relates to a single observation.
+     * Anything else will be interpreted as a vector observation.
+     * @param observationType The {@link String} type of the observation
+     * @param values {@link ArrayList} of type {@link Double}
+     */
+    public void addAnonObservation(String observationType, ArrayList<Double> values) {
+    	if (values == null || values.isEmpty()) return;
+    	if (values.size() == 1) {
+    		addSingleObservation(observationType, values.get(0));
+    	} else {
+    		addVectorObservation(observationType, values);
+    	}
     }
     
 	/**
@@ -220,10 +237,10 @@ public class ObservationData implements Serializable, Cloneable {
     public String toString() {
     	StringBuilder builder = new StringBuilder();
     	builder.append("{");
-    	builder.append("clusterID=" + clusterID + ", ");
-    	builder.append("sensorID=" + sensorID + ", ");
-    	builder.append("observationDate=" + observationDate + ", ");
-    	builder.append("singleObservations=" + singleObservations.toString() + ", ");
+    	builder.append("clusterID=" + clusterID + ",");
+    	builder.append("sensorID=" + sensorID + ",");
+    	builder.append("observationDate=" + observationDate + ",");
+    	builder.append("singleObservations=" + singleObservations.toString() + ",");
     	builder.append("vectorObservations=" + vectorObservations.toString());
     	builder.append("}");
     	return builder.toString();

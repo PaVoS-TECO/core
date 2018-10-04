@@ -31,7 +31,7 @@ import edu.teco.pavos.core.grid.geojson.data.SensorGeoJson;
 import edu.teco.pavos.core.visualization.GradientManager;
 import edu.teco.pavos.core.visualization.gradients.MultiGradient;
 import edu.teco.pavos.core.web.util.ArrayListParser;
-import edu.teco.pavos.database.Facade;
+import edu.teco.pavos.database.ObservationDataToStorageProcessor;
 import edu.teco.pavos.transfer.data.ObservationData;
 import edu.teco.pavos.transfer.sender.util.TimeUtil;
 
@@ -40,17 +40,20 @@ import edu.teco.pavos.transfer.sender.util.TimeUtil;
  */
 public class WebWorker implements Runnable {
 	
+	private ObservationDataToStorageProcessor database;
 	Socket clientSocket;
 	private int statusCode = HttpStatus.SC_OK;
 	private String[] req;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	/**
+    
+    /**
 	 * Creates a new {@link WebWorker} that handles a single request of the client-socket.
 	 * @param socket {@link Socket} of the client
+	 * @param database {@link Facade} of the database
 	 */
-    public WebWorker(Socket socket) {
-        clientSocket = socket;
+    public WebWorker(Socket socket, ObservationDataToStorageProcessor database) {
+        this.clientSocket = socket;
+        this.database = database;
     }
 	
 	@Override
@@ -183,8 +186,7 @@ public class WebWorker implements Runnable {
 	
 	private void getObservationTypes(PrintWriter out) {
 		String gridID = getParameter("gridID");
-		Facade f = Facade.getInstance();
-		Set<String> properties = f.getObservedProperties(gridID);
+		Set<String> properties = database.getObservedProperties(gridID);
 		StringBuilder builder = new StringBuilder();
 		builder.append("[ ");
 		Iterator<String> it = properties.iterator();
@@ -255,7 +257,7 @@ public class WebWorker implements Runnable {
 			String stepsString = getParameter("steps");
 			steps = Integer.valueOf(stepsString);
 		} catch (IllegalArgumentException e) {
-			if (time.length != 1) throw new IllegalArgumentException();
+			if (time.length != 1) throw new IllegalArgumentException("steps");
 		}
 		return steps;
 	}
@@ -349,15 +351,13 @@ public class WebWorker implements Runnable {
 	
 	private Collection<String> getDBFeaturesSingleDateTime(String gridID, String[] clusterIDs,
 			String currentTimestamp, String observationType) {
-		Facade database = Facade.getInstance();
 		
 		Collection<String> features = new ArrayList<>();
 		GeoGridManager manager = GeoGridManager.getInstance();
 		GeoGrid grid = manager.getGrid(gridID);
-		logger.debug("getDBFeaturesSingleDateTime");
 		
 		for (String clusterID : clusterIDs) {
-			String value = database.getObservationData(clusterID, currentTimestamp, observationType);
+			String value = database.get(clusterID, currentTimestamp, observationType);
 			try {
 				features.add(grid.getArchivedClusterGeoJson(clusterID, observationType, ArrayListParser.parse(value)));
 			} catch (ClusterNotFoundException e) {

@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.teco.pavos.database.ObservationDataToStorageProcessor;
+
 /**
  * A server based on the {@link ServerSocket}.
  * Handles http-requests and sends a http-answer.
@@ -18,6 +20,23 @@ public class WebServer implements Runnable {
 	private static final int BACKLOG = 10000;
 	private volatile boolean shutdown = false;
 	private static Logger logger = LoggerFactory.getLogger(WebServer.class);
+	
+	private ObservationDataToStorageProcessor database;
+	
+	/**
+	 * Default constructor.
+	 */
+	public WebServer() {
+		
+	}
+	
+	/**
+	 * Constructor with preset database connection for testing.
+	 * @param database {@link ObservationDataToStorageProcessor}
+	 */
+	public WebServer(ObservationDataToStorageProcessor database) {
+		this.database = database;
+	}
 	
 	/**
 	 * Allows to be started without any other components.
@@ -31,6 +50,7 @@ public class WebServer implements Runnable {
 	@Override
 	public void run() {
 		shutdown = false;
+		if (database == null) database = new ObservationDataToStorageProcessor("pavos.oliver.pw", 11211);
 		try (ServerSocket serverSocket = new ServerSocket(PORT, BACKLOG)) {
 			logger.info("WebServer for GeoGrid-informations has started. IP={} PORT={}", 
 					serverSocket.getInetAddress(), PORT);
@@ -44,7 +64,7 @@ public class WebServer implements Runnable {
 	
 	private void processClients(ServerSocket serverSocket) {
 		try {
-			Thread t = new Thread(new WebWorker(serverSocket.accept()));
+			Thread t = new Thread(new WebWorker(serverSocket.accept(), database));
 			t.start();
 		} catch (IOException e) {
 			logger.error("Client-socket closed with an exception.", e);

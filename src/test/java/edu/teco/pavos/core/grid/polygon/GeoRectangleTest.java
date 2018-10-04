@@ -25,6 +25,92 @@ import edu.teco.pavos.transfer.sender.util.TimeUtil;
 public class GeoRectangleTest {
 	
 	/**
+	 * Tests the getProperties() method.
+	 */
+	@Test
+	public void testProperties() {
+		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 2, 2, 1, "test");
+		
+		ObservationData data = new ObservationData();
+		data.setSensorID("sensorA");
+		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
+		String singleType = "temperature_celsius";
+		data.addSingleObservation(singleType, 27.0);
+		
+		ArrayList<Double> windDirection = new ArrayList<>();
+		windDirection.add(1.0);
+		windDirection.add(0.0);
+		windDirection.add(0.0);
+		String vectorType = "wind_direction";
+		data.addVectorObservation(vectorType, windDirection);
+		
+		rect.addObservation(data);
+		try {
+			GeoPolygon sub = rect.getSubPolygon("test-1_0");
+			sub.addObservation(data);
+		} catch (ClusterNotFoundException e) {
+			fail("Cluster test-1_0 is missing!");
+		}
+		
+		rect.updateObservations();
+		
+		Collection<String> observationTypes = rect.getObservationTypes();
+		System.out.println(observationTypes);
+		assertTrue(observationTypes.contains(singleType));
+		assertTrue(observationTypes.contains(vectorType));
+	}
+	
+	/**
+	 * Tests the getSubPolygon() method.
+	 */
+	@Test
+	public void testGetSubPolygon() {
+		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 2, 2, 1, "test");
+		
+		try {
+			rect.getSubPolygon("invalidClusterID");
+			fail("Invalid cluster must throw an exception!");
+		} catch (ClusterNotFoundException e) {
+			
+		}
+	}
+	
+	/**
+	 * Tests the getNumberOfSensors() method.
+	 */
+	@Test
+	public void testGetNumberOfSensors() {
+		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 2, 2, 1, "test");
+		
+		String observationType = "pM_10";
+		
+		assertTrue(rect.getNumberOfSensors() == 0);
+		assertTrue(rect.getNumberOfSensors(observationType) == 0);
+		assertTrue(rect.getNumberOfSensors(getCollectionFromString(observationType)) == 0);
+		
+		ObservationData data = new ObservationData();
+		data.setSensorID("sensorA");
+		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
+		data.addSingleObservation(observationType, 1.7);
+		rect.addObservation(data);
+		
+		assertTrue(rect.getNumberOfSensors() == 1);
+		assertTrue(rect.getNumberOfSensors(observationType) == 1);
+		assertTrue(rect.getNumberOfSensors(getCollectionFromString(observationType)) == 1);
+	}
+	
+	/**
+	 * Tests the toString method.
+	 */
+	@Test
+	public void testToString() {
+		String gridID = "testGrid";
+		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 2, 2, 1, gridID);
+		
+		assertTrue(rect.toString().equals(gridID));
+	}
+	
+	/**
 	 * Tests generation of geoJson {@link String}s.
 	 */
 	@Test
@@ -40,9 +126,16 @@ public class GeoRectangleTest {
 		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(
 				start.getX(), start.getY(), dim.getX(), dim.getY()), 1, 1, 0, "test");
 		assertEquals(points, rect.getPoints());
-		System.out.println(rect.getLiveClusterGeoJson("pM10"));
-		assertTrue(rect.getLiveClusterGeoJson("pM10").equals("{\"type\":\"Feature\",\"properties\":"
-				+ "{\"value\":null,\"clusterID\":\"test\",\"content\":[]},\"geometry\":"
+		
+		assertTrue(rect.getLiveClusterGeoJson("pM10").equals(
+				"{\"type\":\"Feature\",\"properties\":"
+				+ "{\"value\":[],\"clusterID\":\"test\",\"content\":[]},\"geometry\":"
+				+ "{\"type\":\"Polygon\",\"coordinates\":[[[2.3,1.7], [12.3,1.7], [12.3,6.7],"
+				+ " [2.3,6.7], [2.3,1.7]]]}}"));
+		
+		assertTrue(rect.getArchivedClusterGeoJson("pM10", getArrayListFromValue(20.0)).equals(
+				"{\"type\":\"Feature\",\"properties\":"
+				+ "{\"value\":[20.0],\"clusterID\":\"test\",\"content\":[]},\"geometry\":"
 				+ "{\"type\":\"Polygon\",\"coordinates\":[[[2.3,1.7], [12.3,1.7], [12.3,6.7],"
 				+ " [2.3,6.7], [2.3,1.7]]]}}"));
 	}
@@ -109,7 +202,12 @@ public class GeoRectangleTest {
 	public void searchForPoint() {
 		GeoRectangle rect = new GeoRectangle(new Rectangle2D.Double(0.0, 0.0, 10.0, 5.0), 2, 2, 1, "test");
 		rect.getSubPolygons();
+		
 		boolean contains = rect.contains(new Point2D.Double(1.4, 3.3), false);
+		assertTrue(contains);
+		if (!contains) fail("Incorrect Shape created.");
+		
+		contains = rect.contains(new Point2D.Double(1.4, 3.3), true);
 		assertTrue(contains);
 		if (!contains) fail("Incorrect Shape created.");
 	}
@@ -171,13 +269,27 @@ public class GeoRectangleTest {
 		rect.addObservation(data2);
 		
 		rect.updateObservations();
+		rect.resetObservations();
 		
 		Collection<ObservationData> check = rect.getClusterObservations();
+		System.out.println(check);
 		check.forEach((d) -> {
 			assertFalse(d.getSingleObservations().isEmpty());
 			assertTrue(d.getSingleObservations().containsKey(property));
 			assertTrue(d.getSingleObservations().get(property).equals(24.0));
 		});
+	}
+	
+	private Collection<String> getCollectionFromString(String s) {
+		ArrayList<String> result = new ArrayList<>();
+		result.add(s);
+		return result;
+	}
+	
+	private ArrayList<Double> getArrayListFromValue(Double value) {
+		ArrayList<Double> result = new ArrayList<>();
+		result.add(value);
+		return result;
 	}
 	
 }

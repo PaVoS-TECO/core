@@ -2,6 +2,7 @@ package edu.teco.pavos.transfer.sender.connection;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import org.slf4j.Logger;
@@ -29,7 +30,9 @@ public class SocketManager {
 		this.port = port;
 		
 		try {
-			socket = new Socket(host, port);
+			InetSocketAddress adress = new InetSocketAddress(host, port);
+			socket = new Socket();
+			socket.connect(adress, 2000);
 		} catch (IOException e) {
 			logger.error("Could not initialize socket to Graphite. Using internal Socket to prevent failure.");
 			socket = new Socket();

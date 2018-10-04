@@ -6,20 +6,23 @@ package edu.teco.pavos.database;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assume.assumeTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.BeforeClass;
+import org.joda.time.LocalDateTime;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.teco.pavos.transfer.data.ObservationData;
+import edu.teco.pavos.transfer.sender.util.TimeUtil;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClient;
 import net.rubyeye.xmemcached.exception.MemcachedException;
@@ -30,20 +33,65 @@ import net.rubyeye.xmemcached.exception.MemcachedException;
  *
  */
 public class ObservationDataToStorageProcessorTest {
-
-	private static ObservationDataToStorageProcessor odtsp;
-	private static MemcachedClient cli;
+	
+	@Autowired
+	private ObservationDataToStorageProcessor processor;
+	
+	private MemcachedClient memcachedClient;
 	
 	/**
 	 * Set up a direct client to the database and an {@link ObservationDataToStorageProcessor} object.
-	 * @throws java.lang.Exception The {@link XMemcachedClient} could not be established
+	 * @throws Exception The {@link XMemcachedClient} could not be established
 	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		cli = new XMemcachedClient("192.168.56.101", 11211);
-		assumeTrue(!cli.isShutdown());
-		odtsp = new ObservationDataToStorageProcessor("192.168.56.101", 11211);
-		assumeTrue(odtsp.isConnected());
+	@Before
+	public void setUpBeforeTest() throws Exception {
+		memcachedClient = mock(MemcachedClient.class);
+		
+		processor = new ObservationDataToStorageProcessor(memcachedClient);
+	}
+	
+	/**
+	 * Test the add() method.
+	 * @throws MemcachedException 
+	 * @throws InterruptedException 
+	 * @throws TimeoutException 
+	 */
+	@Test
+	public void testAdd() throws TimeoutException, InterruptedException, MemcachedException {
+		when(memcachedClient.get("testGrid-1_1_1:0_0")).thenReturn(0L);
+		
+		ObservationData od = new ObservationData();
+		od.setClusterID("testGrid-1_1_1:0_0");
+		od.setObservationDate(TimeUtil.getUTCDateTimeNowString());
+		od.setSensorID("testSensor");
+		od.addSingleObservation("temperature_celsius", 17.2);
+		od.addSingleObservation("pM_10", 2.5);
+		processor.add(od);
+	}
+	
+	/**
+	 * Test the get() method.
+	 * @throws MemcachedException 
+	 * @throws InterruptedException 
+	 * @throws TimeoutException 
+	 */
+	@Test
+	public void testGet() throws TimeoutException, InterruptedException, MemcachedException {
+		ObservationData od = new ObservationData();
+		od.setClusterID("testGrid-1_1_1:0_0");
+		od.setObservationDate(TimeUtil.getUTCDateTimeNowString());
+		od.setSensorID("testSensor");
+		String observationType = "temperature_celsius";
+		od.addSingleObservation("temperature_celsius", 17.2);
+		
+		// No Exception
+		when(memcachedClient.get(od.getClusterID())).thenReturn(0L);
+		when(memcachedClient.get(od.getClusterID() + "|0")).thenReturn(od);
+		processor.get(od.getClusterID(), od.getObservationDate(), observationType);
+		
+		// ClassCastException
+		when(memcachedClient.get(od.getClusterID() + "|0")).thenThrow(ClassCastException.class);
+		processor.get(od.getClusterID(), od.getObservationDate(), observationType);
 	}
 	
 	/**
@@ -77,11 +125,11 @@ public class ObservationDataToStorageProcessorTest {
 		od.setSensorID(null);
 		od.addSingleObservation("test", 1.0);
 		od.addSingleObservation("marco", 2.0);
-		odtsp.add(od);
-		assertNull(cli.get("a|b"));
-		assertNull(cli.get("a|b|0"));
-		cli.delete("a|b");
-		cli.delete("a|b|0");
+		processor.add(od);
+		assertNull(memcachedClient.get("a|b"));
+		assertNull(memcachedClient.get("a|b|0"));
+		memcachedClient.delete("a|b");
+		memcachedClient.delete("a|b|0");
 	}
 	
 	/**
@@ -114,24 +162,26 @@ public class ObservationDataToStorageProcessorTest {
 		String notADateTimeEither = null;
 		String dawnOfDateTime = "0000-00-00T00:00:00Z";
 		
-		LocalDateTime validDateTimeResult = (LocalDateTime) method.invoke(odtsp, validDateTime);
-		LocalDateTime before1970DateTimeResult = (LocalDateTime) method.invoke(odtsp, before1970DateTime);
-		LocalDateTime missingZDateTimeResult = (LocalDateTime) method.invoke(odtsp, missingZDateTime);
-		LocalDateTime missingTDateTimeResult = (LocalDateTime) method.invoke(odtsp, missingTDateTime);
+		LocalDateTime validDateTimeResult = (LocalDateTime) method.invoke(processor, validDateTime);
+		LocalDateTime before1970DateTimeResult = (LocalDateTime) method.invoke(processor, before1970DateTime);
+		LocalDateTime missingZDateTimeResult = (LocalDateTime) method.invoke(processor, missingZDateTime);
+		LocalDateTime missingTDateTimeResult = (LocalDateTime) method.invoke(processor, missingTDateTime);
 		LocalDateTime monthOutOfBoundsDateTimeLowResult
-		= (LocalDateTime) method.invoke(odtsp, monthOutOfBoundsDateTimeLow);
+		= (LocalDateTime) method.invoke(processor, monthOutOfBoundsDateTimeLow);
 		LocalDateTime monthOutOfBoundsDateTimeHighResult
-		= (LocalDateTime) method.invoke(odtsp, monthOutOfBoundsDateTimeHigh);
+		= (LocalDateTime) method.invoke(processor, monthOutOfBoundsDateTimeHigh);
 		LocalDateTime dayOutOfBoundsDateTimeLowResult
-		= (LocalDateTime) method.invoke(odtsp, dayOutOfBoundsDateTimeLow);
+		= (LocalDateTime) method.invoke(processor, dayOutOfBoundsDateTimeLow);
 		LocalDateTime dayOutOfBoundsDateTimeHighResult
-		= (LocalDateTime) method.invoke(odtsp, dayOutOfBoundsDateTimeHigh);
-		LocalDateTime hourOutOfBoundsDateTimeResult = (LocalDateTime) method.invoke(odtsp, hourOutOfBoundsDateTime);
-		LocalDateTime minuteOutOfBoundsDateTimeResult = (LocalDateTime) method.invoke(odtsp, minuteOutOfBoundsDateTime);
-		LocalDateTime secondOutOfBoundsDateTimeResult = (LocalDateTime) method.invoke(odtsp, secondOutOfBoundsDateTime);
-		LocalDateTime notADateTimeResult = (LocalDateTime) method.invoke(odtsp, notADateTime);
-		LocalDateTime notADateTimeEitherResult = (LocalDateTime) method.invoke(odtsp, notADateTimeEither);
-		LocalDateTime dawnOfDateTimeResult = (LocalDateTime) method.invoke(odtsp, dawnOfDateTime);
+		= (LocalDateTime) method.invoke(processor, dayOutOfBoundsDateTimeHigh);
+		LocalDateTime hourOutOfBoundsDateTimeResult = (LocalDateTime) method.invoke(processor, hourOutOfBoundsDateTime);
+		LocalDateTime minuteOutOfBoundsDateTimeResult =
+				(LocalDateTime) method.invoke(processor, minuteOutOfBoundsDateTime);
+		LocalDateTime secondOutOfBoundsDateTimeResult =
+				(LocalDateTime) method.invoke(processor, secondOutOfBoundsDateTime);
+		LocalDateTime notADateTimeResult = (LocalDateTime) method.invoke(processor, notADateTime);
+		LocalDateTime notADateTimeEitherResult = (LocalDateTime) method.invoke(processor, notADateTimeEither);
+		LocalDateTime dawnOfDateTimeResult = (LocalDateTime) method.invoke(processor, dawnOfDateTime);
 
 		assertEquals(LocalDateTime.parse("2018-03-23T11:11:11"), validDateTimeResult);
 		assertEquals(LocalDateTime.parse("1969-01-01T00:00:00"), before1970DateTimeResult);
@@ -159,28 +209,38 @@ public class ObservationDataToStorageProcessorTest {
 	@Test
 	public void testAddValidObservationDataTwice() throws TimeoutException, InterruptedException, MemcachedException {
 		ObservationData od = new ObservationData();
-		od.setClusterID("testCluster:1_0-0_1");
+		String gridID = "testGrid";
+		String clusterID = gridID + ":1_0-0_1";
+		od.setClusterID(clusterID);
 		od.setObservationDate("2012-03-04T05:06:07Z");
 		od.setSensorID(null);
 		od.addSingleObservation("test", 1.0);
 		od.addSingleObservation("marco", 2.0);
-		odtsp.add(od);
-		String result1 = odtsp.get(od.getClusterID(), od.getObservationDate(), "test");
-		String result2 = odtsp.get(od.getClusterID(), od.getObservationDate(), "marco");
-		Set<String> actualProperties = odtsp.getObservedProperties(od.getClusterID().split(":")[0]);
+		
+		when(memcachedClient.get(od.getClusterID())).thenReturn(0L);
+		processor.add(od);
+		
+		when(memcachedClient.get(od.getClusterID() + "|0")).thenReturn(od);
+		String result1 = processor.get(od.getClusterID(), od.getObservationDate(), "test");
+		String result2 = processor.get(od.getClusterID(), od.getObservationDate(), "marco");
+		
 		HashSet<String> expectedProperties = new HashSet<>();
 		expectedProperties.add("test");
 		expectedProperties.add("marco");
-		assertEquals("1.0", result1);
-		assertEquals("2.0", result2);
+		
+		when(memcachedClient.get(gridID)).thenReturn(expectedProperties);
+		Set<String> actualProperties = processor.getObservedProperties(od.getClusterID().split(":")[0]);
+		
+		assertEquals("[1.0]", result1);
+		assertEquals("[2.0]", result2);
 		assertEquals(expectedProperties, actualProperties);
-		assertEquals((Long) 0L, (Long) cli.get("testCluster:1_0-0_1"));
-		odtsp.add(od);
-		assertEquals((Long) 1L, (Long) cli.get("testCluster:1_0-0_1"));
-		cli.delete("testCluster:1_0-0_1");
-		cli.delete("testCluster:1_0-0_1|0");
-		cli.delete("testCluster:1_0-0_1|1");
-		cli.delete(od.getClusterID().split(":")[0]);
+		
+		assertEquals((Long) 0L, (Long) memcachedClient.get(clusterID));
+		
+		processor.add(od);
+		
+		when(memcachedClient.get(od.getClusterID())).thenReturn(1L);
+		assertEquals((Long) 1L, (Long) memcachedClient.get(clusterID));
 	}
 	
 	/**
@@ -191,12 +251,12 @@ public class ObservationDataToStorageProcessorTest {
 	 */
 	@Test
 	public void testGetInvalidParameters() throws TimeoutException, InterruptedException, MemcachedException {
-		odtsp.get(null, null, null);
-		odtsp.get(String.valueOf(new Random().nextLong()), "2012-12-12T12:12:12Z", "something");
-		cli.set("testGetInvalidParameters", 1000, 0L);
-		odtsp.get("testGetInvalidParameters", "invalidTimestamp", "something");
-		odtsp.get("testGetInvalidParameters", "2012-12-12T12:12:12Z", "something");
-		cli.delete("testGetInvalidParameters");
+		processor.get(null, null, null);
+		processor.get(String.valueOf(new Random().nextLong()), "2012-12-12T12:12:12Z", "something");
+		memcachedClient.set("testGetInvalidParameters", 1000, 0L);
+		processor.get("testGetInvalidParameters", "invalidTimestamp", "something");
+		processor.get("testGetInvalidParameters", "2012-12-12T12:12:12Z", "something");
+		memcachedClient.delete("testGetInvalidParameters");
 	}
 
 	/**
@@ -204,7 +264,7 @@ public class ObservationDataToStorageProcessorTest {
 	 */
 	@Test
 	public void testReconnect() {
-		odtsp.reconnect();
+		processor.reconnect();
 	}
 	
 	/**
@@ -212,7 +272,7 @@ public class ObservationDataToStorageProcessorTest {
 	 */
 	@Test
 	public void testAddServer() {
-		odtsp.addServer("192.168.56.101", 11211);
+		processor.addServer("192.168.56.101", 11211);
 	}
 
 }

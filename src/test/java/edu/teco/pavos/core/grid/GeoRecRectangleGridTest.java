@@ -1,15 +1,18 @@
 package edu.teco.pavos.core.grid;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
 import org.joda.time.LocalDateTime;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.teco.pavos.core.grid.config.Seperators;
@@ -17,7 +20,8 @@ import edu.teco.pavos.core.grid.config.WorldMapData;
 import edu.teco.pavos.core.grid.exceptions.ClusterNotFoundException;
 import edu.teco.pavos.core.grid.exceptions.PointNotOnMapException;
 import edu.teco.pavos.core.grid.exceptions.SensorNotFoundException;
-import edu.teco.pavos.core.grid.geojson.GeoJsonConverter;
+import edu.teco.pavos.core.grid.geojson.data.ObservationGeoJson;
+import edu.teco.pavos.core.grid.geojson.data.SensorGeoJson;
 import edu.teco.pavos.core.grid.polygon.GeoPolygon;
 import edu.teco.pavos.transfer.data.ObservationData;
 import edu.teco.pavos.transfer.sender.util.TimeUtil;
@@ -28,12 +32,204 @@ import edu.teco.pavos.transfer.sender.util.TimeUtil;
 public class GeoRecRectangleGridTest {
 	
 	/**
+	 * Tests the getSensorObservations() method.
+	 */
+	@Test
+	public void testGetSensorObservations() {
+		GeoGrid grid = createBasicGrid();
+		
+		ObservationData data = new ObservationData();
+		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
+		String sensorID = "testSensorID";
+		data.setSensorID(sensorID);
+		String observationType = "temperature_celsius";
+		data.addSingleObservation(observationType, 14.0);
+		
+		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
+		
+		try {
+			assertFalse(grid.getSensorObservation(sensorID, location1).equals(data));
+		} catch (PointNotOnMapException | SensorNotFoundException e) { }
+		
+		grid.addObservation(location1, data);
+		
+		try {
+			assertTrue(grid.getSensorObservation(sensorID, location1).equals(data));
+		} catch (PointNotOnMapException | SensorNotFoundException e) {
+			fail("Sensor, was not found on the GeoGrid!");
+		}
+	}
+	
+	/**
+	 * Tests the getSensorLocation() method.
+	 */
+	@Test
+	public void testGetSensorLocation() {
+		GeoGrid grid = createBasicGrid();
+		
+		ObservationData data = new ObservationData();
+		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
+		String sensorID = "testSensorID";
+		data.setSensorID(sensorID);
+		String observationType = "temperature_celsius";
+		data.addSingleObservation(observationType, 14.0);
+		
+		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
+		grid.addObservation(location1, data);
+		
+		try {
+			assertTrue(grid.getSensorLocation(sensorID).equals(location1));
+		} catch (SensorNotFoundException e) {
+			fail("Latest location of added Sensor, was not found on the GeoGrid!");
+		}
+	}
+	
+	/**
+	 * Tests the getOutputTopic() method.
+	 */
+	@Test
+	public void testGetOutputTopic() {
+		GeoGrid grid = createBasicGrid();
+		
+		assertTrue(grid.getOutputTopic().contains(grid.getID()));
+	}
+	
+	/**
+	 * Tests the updateObservations(), transferSensorDataDirectly(), updateDatabase() and resetObservations() method.
+	 */
+	@Test
+	public void testUpdateCycle() {
+		GeoGrid grid = createBasicGrid();
+		
+		ObservationData data = new ObservationData();
+		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
+		data.setSensorID("testSensorID");
+		String observationType = "temperature_celsius";
+		data.addSingleObservation(observationType, 14.0);
+		
+		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
+		grid.addObservation(location1, data);
+		
+		grid.updateObservations();
+		grid.transferSensorDataDirectly();
+		grid.updateDatabase();
+		grid.resetObservations();
+	}
+	
+	/**
+	 * Tests the getClusterID() method.
+	 */
+	@Test
+	public void testGetClusterID() {
+		GeoGrid grid = createBasicGrid();
+		Rectangle2D.Double bounds = grid.getMapBounds();
+		Point2D.Double goodPoint = new Point2D.Double((bounds.getMaxX() - bounds.getMinX()) / 4,
+				(bounds.getMaxY() - bounds.getMinY()) / 4);
+		
+		try {
+			grid.getClusterID(goodPoint, 1);
+		} catch (PointNotOnMapException e) {
+			fail("Grid could not locate existing cluster!");
+		}
+		
+		try {
+			grid.getClusterID(new Point2D.Double(bounds.getMaxX() * 2,
+					bounds.getMaxY() * 2), 1);
+			fail("Grid located nonexisting cluster outside of the maps boundaries!");
+		} catch (PointNotOnMapException e) { }
+	}
+	
+	/**
+	 * Tests the closeGrid() method.
+	 */
+	@Test
+	public void testCloseGrid() {
+		GeoGrid grid = createBasicGrid();
+		grid.close();
+		assertEquals(GeoGridManager.getInstance().getGrid(grid.getID()), null);
+	}
+	
+	/**
+	 * Tests the getLiveClusterGeoJson() method.
+	 */
+	@Test
+	public void testGetLiveClusterGeoJson() {
+		GeoGrid grid = createBasicGrid();
+		
+		try {
+			System.out.println(grid.getLiveClusterGeoJson(grid.getID() + ":0_0-0_0", "pM_10"));
+			assertTrue(grid.getLiveClusterGeoJson(grid.getID() + ":0_0-0_0", "pM_10").matches(
+					"(\\{\"type\":\"Feature\",\"properties\":\\{\"value\":\\[\\],\"clusterID\":"
+					+ "\"recursiveRectangleGrid-2_2_3:0_0-0_0\",\"content\":"
+					+ "\\[\"recursiveRectangleGrid-2_2_3:0_0-0_0-0_0\","
+					+ " \"recursiveRectangleGrid-2_2_3:0_0-0_0-0_1\","
+					+ " \"recursiveRectangleGrid-2_2_3:0_0-0_0-1_0\","
+					+ " \"recursiveRectangleGrid-2_2_3:0_0-0_0-1_1\"\\]\\},\"geometry\":\\{\"type\":\"Polygon\","
+					+ "\"coordinates\":\\[\\[\\[-180.0,-85.0\\], \\[-90.0,-85.0\\],"
+					+ " \\[-90.0,-42.5\\], \\[-180.0,-42.5\\], \\[-180.0,-85.0\\]\\]\\]\\}\\})"));
+		} catch (ClusterNotFoundException e) {
+			fail("Existing cluster could not be interpreted as ClusterGeoJson!");
+		}
+		
+		try {
+			grid.getLiveClusterGeoJson("aNonExistingCluster", "pM_10");
+			fail("Nonexisting cluster was interpreted as ClusterGeoJson but must throw ClusterNotFoundException!");
+		} catch (ClusterNotFoundException e) { }
+		
+	}
+	
+	/**
+	 * Tests the getArchivedClusterGeoJson() method.
+	 */
+	@Test
+	public void testGetArchivedClusterGeoJson() {
+		GeoGrid grid = createBasicGrid();
+		ArrayList<Double> values = new ArrayList<>();
+		values.add(1.0);
+		values.add(0.0);
+		try {
+			assertTrue(grid.getArchivedClusterGeoJson(grid.getID() + ":0_0", "pM_10", values).matches(
+					"(\\{\"type\":\"Feature\",\"properties\":\\{\"value\":\\[1.0, 0.0\\],\"clusterID\":"
+					+ "\"recursiveRectangleGrid-2_2_3:0_0\",\"content\":\\[\"recursiveRectangleGrid-2_2_3:0_0-0_0\","
+					+ " \"recursiveRectangleGrid-2_2_3:0_0-0_1\", \"recursiveRectangleGrid-2_2_3:0_0-1_0\","
+					+ " \"recursiveRectangleGrid-2_2_3:0_0-1_1\"\\]\\},\"geometry\":\\{\"type\":\"Polygon\","
+					+ "\"coordinates\":\\[\\[\\[-180.0,-85.0\\], \\[0.0,-85.0\\], \\[0.0,0.0\\],"
+					+ " \\[-180.0,0.0\\], \\[-180.0,-85.0\\]\\]\\]\\}\\})"));
+		} catch (ClusterNotFoundException e) {
+			fail("Existing cluster could not be interpreted as ClusterGeoJson!");
+		}
+		
+		try {
+			grid.getArchivedClusterGeoJson("aNonExistingCluster", "pM_10", values);
+			fail("Nonexisting cluster was interpreted as ClusterGeoJson but must throw ClusterNotFoundException!");
+		} catch (ClusterNotFoundException e) { }
+		
+	}
+	
+	/**
+	 * Tests the addObservation() method.
+	 */
+	@Test
+	public void testAddObservation() {
+		GeoGrid grid = createBasicGrid();
+		
+		ObservationData data = new ObservationData();
+		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
+		data.setSensorID("testSensorID");
+		String observationType = "temperature_celsius";
+		data.addSingleObservation(observationType, 14.0);
+		
+		Point2D.Double location1 = new  Point2D.Double(-150.0, 40.0);
+		grid.addObservation(location1, data);
+		grid.addObservation(new Point2D.Double(99999.0, -99999.0), data);
+	}
+	
+	/**
 	 * Tests the {@link GeoGrid} for observationTypes.
 	 */
 	@Test
-	public void checkObservationTypes() {
-		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
-				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),  2, 2, 3);
+	public void testObservationTypes() {
+		GeoGrid grid = createBasicGrid();
 		
 		ObservationData startData = new ObservationData();
 		startData.setObservationDate(TimeUtil.getUTCDateTimeNowString());
@@ -73,24 +269,33 @@ public class GeoRecRectangleGridTest {
 	 * Tests sending data to Graphite.
 	 */
 	@Test
-	public void sendToGraphite() {
-		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
-				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),  2, 2, 3);
+	public void testSendToGraphite() {
+		GeoGrid grid = createBasicGrid();
 		
 		grid.updateObservations();
+		grid.resetObservations();
+		
 		grid.transferSensorDataDirectly();
 	}
 	
 	/**
 	 * Tests if two objects are equal.
 	 */
+	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	public void testEquals() {
-		GeoGrid grid1 = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
-				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),  2, 2, 3);
-		
-		GeoGrid grid2 = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
-				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),  2, 2, 3);
+		GeoGrid grid1 = createBasicGrid();
+		GeoGrid grid2 = createBasicGrid();
+		String gridWrongClass = "notAGrid";
+		GeoGrid gridOtherSubClass = new GeoGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
+				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),
+				1, 1, 1, "") {
+			@Override
+			protected void generateGeoPolygons() {
+				// TODO Auto-generated method stub
+				
+			}
+		};
 		
 		ObservationData startData = new ObservationData();
 		startData.setObservationDate(TimeUtil.getUTCDateTimeNowString());
@@ -102,15 +307,17 @@ public class GeoRecRectangleGridTest {
 		grid1.addObservation(location1, startData);
 		
 		assertTrue(grid1.equals(grid2));
+		assertFalse(grid1.equals(null));
+		assertFalse(grid1.equals(gridWrongClass));
+		assertFalse(grid1.equals(gridOtherSubClass));
 	}
 	
 	/**
 	 * Tests if sensors can be added to the {@link GeoGrid}.
 	 */
-	@Test
+	@Ignore
 	public void testSensorAddedToGrid() {
-		GeoGrid grid = new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
-				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),  2, 2, 3);
+		GeoGrid grid = createBasicGrid();
 		
 		ObservationData data = new ObservationData();
 		data.setObservationDate(TimeUtil.getUTCDateTimeNowString());
@@ -149,13 +356,16 @@ public class GeoRecRectangleGridTest {
 			fail(e.getMessage());
 		}
 		assertTrue(data.getObservationDate().matches(TimeUtil.getDateTimeRegex()));
-		System.out.println(GeoJsonConverter.convertSensorObservations(
-				data, property, new  Point2D.Double(260.0, 80.0)));
-		assertTrue(GeoJsonConverter.convertSensorObservations(data, property, new  Point2D.Double(260.0, 80.0)).matches(
-				"\\{ \"type\":\"FeatureCollection\", \"timestamp\":\"" + TimeUtil.getDateTimeRegex() + "\", "
-				+ "\"observationType\":\"temperature_celsius\", \"features\": \\[ \\{ \"type\":\"Feature\", "
-				+ "\"properties\": \\{ \"value\":28.0, \"sensorID\":\"testSensorID2\"\\}, \"geometry\": "
-				+ "\\{ \"type\":\"Point\", \"coordinates\": \\[ 260.0, 80.0\\]\\} \\}\\] \\}"));
+		
+		SensorGeoJson sensorGeoJson = new SensorGeoJson(data.getAnonObservation(property),
+				"testSensorID2", new Point2D.Double(260.0, 80.0));
+		ObservationGeoJson obsGeoJson = new ObservationGeoJson(data.getObservationDate(),
+				property, sensorGeoJson.getGeoJson());
+		assertTrue(obsGeoJson.getGeoJson().matches(
+				"(\\{\"type\":\"FeatureCollection\",\"timestamp\":\"" + TimeUtil.getDateTimeRegex() + "\","
+				+ "\"observationType\":\"temperature_celsius\",\"features\":\\[\\{\"type\":\"Feature\","
+				+ "\"properties\":\\{\"value\":\\[28.0\\],\"sensorID\":\"testSensorID2\"\\},\"geometry\":"
+				+ "\\{\"type\":\"Point\",\"coordinates\":\\[260.0,80.0\\]\\}\\}\\]\\})"));
 		
 		String clusterID = null;
 		GeoPolygon poly = null;
@@ -168,43 +378,17 @@ public class GeoRecRectangleGridTest {
 		assertEquals("recursiveRectangleGrid-2_2_3:1_0-0_0-1_0", clusterID);
 		assertEquals(1, poly.getNumberOfSensors());
 		assertEquals(1, poly.getNumberOfSensors(property));
-		System.out.println(observationsToString(poly.getSensorDataList()));
 		
-		
-		for (GeoPolygon poly0 : grid.polygons) {
-			System.out.println(observationToString(poly0.cloneObservation()));
-			Collection<GeoPolygon> subPolygons0 = poly0.getSubPolygons();
-			for (GeoPolygon poly1 : subPolygons0) {
-				Collection<GeoPolygon> subPolygons1 = poly1.getSubPolygons();
-				System.out.println(observationToString(poly1.cloneObservation()));
-				for (GeoPolygon poly2 : subPolygons1) {
-					System.out.println(observationToString(poly2.cloneObservation()));
-				}
-			}
-		}
-		
-		System.out.println();
 		grid.updateObservations();
-		
-		for (GeoPolygon poly0 : grid.polygons) {
-			System.out.println(observationToString(poly0.cloneObservation()));
-			Collection<GeoPolygon> subPolygons0 = poly0.getSubPolygons();
-			for (GeoPolygon poly1 : subPolygons0) {
-				Collection<GeoPolygon> subPolygons1 = poly1.getSubPolygons();
-				System.out.println(observationToString(poly1.cloneObservation()));
-				for (GeoPolygon poly2 : subPolygons1) {
-					System.out.println(observationToString(poly2.cloneObservation()));
-				}
-			}
-		}
 		
 		GeoPolygon jsonPoly = null;
 		try {
-			jsonPoly = grid.getPolygon(grid.getID() + Seperators.GRID_CLUSTER_SEPERATOR + "0_1");
+			jsonPoly = grid.getPolygon(grid.getID()
+					+ Seperators.GRID_CLUSTER_SEPERATOR + "0_1"
+					+ Seperators.GRID_CLUSTER_SEPERATOR + "0_1");
 		} catch (ClusterNotFoundException e) {
 			fail(e.getMessage());
 		}
-		System.out.println(jsonPoly.getGeoJson(property));
 		
 		ObservationData dataClone = jsonPoly.cloneObservation();
 		dataClone.addSingleObservation(property, 10.799999999999998);
@@ -213,27 +397,14 @@ public class GeoRecRectangleGridTest {
 		dataClone.setObservationDate(TimeUtil.getUTCDateTimeString(subtracted));
 		Collection<ObservationData> observations = new HashSet<>();
 		observations.add(dataClone);
-		System.out.println(GeoJsonConverter.convertPolygonObservations(observations, property, grid));
 		
-		Collection<ObservationData> observations2 = grid.getGridObservations();
-		for (ObservationData data2 : observations2) {
-			System.out.println(data2.getClusterID());
-			System.out.println(data2.getSingleObservations().get(property));
-		}
+		grid.getGridObservations();
 		
 	}
 	
-	private String observationToString(ObservationData data) {
-		return "ObservationData: " + data.getObservationDate() + ", " 
-				+ data.getSensorID() + ", " + data.getClusterID() + ", " + data.getSingleObservations();
+	private GeoGrid createBasicGrid() {
+		return new GeoRecRectangleGrid(new Rectangle2D.Double(-WorldMapData.LNG_RANGE, 
+				-WorldMapData.LAT_RANGE, WorldMapData.LNG_RANGE * 2, WorldMapData.LAT_RANGE * 2),  2, 2, 3);
 	}
 	
-	private String observationsToString(Collection<ObservationData> collection) {
-		String result = "";
-		for (ObservationData data : collection) {
-			result = result + observationToString(data) + "\n";
-		}
-		return result;
-	}
-
 }

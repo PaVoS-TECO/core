@@ -18,9 +18,9 @@ public final class ArrayListParser {
 	 * @return valueArray {@link ArrayList} of type {@link Double}
 	 */
 	public static ArrayList<Double> parse(String arrayListAsString) {
-		String replaced = arrayListAsString.replace("[", "");
-		replaced = arrayListAsString.replace("]", "");
-		replaced = arrayListAsString.replace(" ", "");
+		String replaced = arrayListAsString.replaceAll("\\[", "")
+				.replaceAll("\\]", "")
+				.replaceAll(" ", "");
 		String[] stringValues = replaced.split(",");
 		ArrayList<Double> valueArray = new ArrayList<>();
 		for (int i = 0; i < stringValues.length; i++) {

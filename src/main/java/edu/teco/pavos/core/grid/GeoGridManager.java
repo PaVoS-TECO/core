@@ -27,16 +27,16 @@ public final class GeoGridManager {
 	private ScheduledExecutorService execUpdate = Executors.newSingleThreadScheduledExecutor();
 	
 	private GeoGridManager() {
-		new Thread(() -> 
-			execUpdate.scheduleAtFixedRate(() -> {
+		new Thread(() -> execUpdate.scheduleAtFixedRate(() -> {
+			synchronized (grids) {
 				for (GeoGrid grid : grids) {
 					grid.updateObservations();
 					grid.transferSensorDataDirectly();
 					grid.updateDatabase();
 					grid.resetObservations();
 				}
-			}, 10, 10, TimeUnit.SECONDS)
-		).start();
+			}
+		}, 10, 10, TimeUnit.SECONDS)).start();
 	}
 	
 	/**
@@ -73,7 +73,9 @@ public final class GeoGridManager {
 	 */
 	public void addGeoGrid(GeoGrid grid) {
 		synchronized (grids) {
-			grids.add(0, grid);
+			if (!grids.contains(grid)) {
+				grids.add(0, grid);
+			}
 		}
 	}
 	
@@ -83,12 +85,14 @@ public final class GeoGridManager {
 	 * @return grid {@link GeoGrid}
 	 */
 	public GeoGrid getGrid(String gridID) {
-		for (GeoGrid entry : grids) {
-			if (entry.getID().equals(gridID)) {
-				return entry;
+		synchronized (grids) {
+			for (GeoGrid entry : grids) {
+				if (entry.getID().equals(gridID)) {
+					return entry;
+				}
 			}
+			return null;
 		}
-		return null;
 	}
 	
 	/**
@@ -125,7 +129,10 @@ public final class GeoGridManager {
 	 */
 	public boolean removeGeoGrid(GeoGrid grid) {
 		synchronized (grids) {
-			return grids.remove(grid);
+			if (grids.contains(grid)) {
+				return grids.remove(grid);
+			}
+			return false;
 		}
 	}
 	

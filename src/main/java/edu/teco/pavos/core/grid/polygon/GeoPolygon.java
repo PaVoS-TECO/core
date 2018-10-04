@@ -377,7 +377,7 @@ public abstract class GeoPolygon {
 		}
 		
 		Collection<Tuple3D<String, Integer, ArrayList<Double>>> values = getPropertyWeight();
-		Collection<String> properties = getProperties();
+		Collection<String> properties = getObservationTypes();
 		
 		setWeightedObservationForCluster(values, properties);
 	}
@@ -417,11 +417,7 @@ public abstract class GeoPolygon {
 			}
 		}
 		value = (totalSensors != 0) ? ArrayListCalc.divideArrayValue(value, (double) totalSensors) : value;
-		if (value.size() == 1) {
-			output.addSingleObservation(property, anyEntry ? value.get(0) : null);
-		} else {
-			output.addVectorObservation(property, anyEntry ? value : null);
-		}
+		output.addAnonObservation(property, value);
 		return anyEntry;
 	}
 	
@@ -439,7 +435,7 @@ public abstract class GeoPolygon {
 	 * since the last invocation of {@code resetObservations()}.
 	 * @return observationTypes {@link Collection} of {@link String}
 	 */
-	public Collection<String> getProperties() {
+	public Collection<String> getObservationTypes() {
 		Collection<String> properties = new HashSet<>();
 		for (GeoPolygon polygon : this.subPolygons) {
 			for (Entry<String, Double> entry : polygon.observationData.getSingleObservations().entrySet()) {

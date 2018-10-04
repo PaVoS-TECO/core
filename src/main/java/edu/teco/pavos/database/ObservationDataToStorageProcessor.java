@@ -1,17 +1,20 @@
 package edu.teco.pavos.database;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.joda.time.IllegalFieldValueException;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import edu.teco.pavos.transfer.data.ObservationData;
+import edu.teco.pavos.transfer.sender.util.TimeUtil;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClientBuilder;
 import net.rubyeye.xmemcached.exception.MemcachedException;
@@ -20,11 +23,16 @@ import net.rubyeye.xmemcached.exception.MemcachedException;
  * This class provides methods to add or get ObservationData objects to or from the storage solution.
  */
 public class ObservationDataToStorageProcessor {
+	
+	@Autowired
+	@Qualifier("xmemcachedClient")
+	private MemcachedClient memcachedClient;
+	
 	private static final String TEST_CONNECTION = "testConnection";
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private MemcachedClient cli;
     private final String host;
     private final int port;
+    private final boolean useDummy;
     private boolean isConnected = false;
 
     /**
@@ -35,31 +43,49 @@ public class ObservationDataToStorageProcessor {
     public ObservationDataToStorageProcessor(String host, int port) {
     	this.host = host;
     	this.port = port;
-    	setIsConnected(connect());
+    	this.useDummy = false;
+    	setIsConnected(connect(host, port));
     }
     
-    private boolean connect() {
-    	try {
-    		XMemcachedClientBuilder builder = new XMemcachedClientBuilder(
-    				String.join(":", String.valueOf(host), String.valueOf(port)));
-    		builder.setEnableHealSession(false);
-    		builder.setConnectTimeout(1000);
-    		builder.setOpTimeout(1000);
-            cli = builder.build();
-            
-            cli.set(TEST_CONNECTION, 1000, "TEST");
-            if (cli.get(TEST_CONNECTION) == null) {
-            	return false;
-            } else {
-            	cli.delete(TEST_CONNECTION);
-            	return true;
-            }
-        } catch (IOException | TimeoutException | InterruptedException | MemcachedException e) {
-        	isConnected = false;
-            logger.error("Could not connect to memcached client!", e);
-            if (e.getClass().equals(InterruptedException.class)) Thread.currentThread().interrupt(); 
-            return false;
-        }
+    /**
+     * DUMMY memcached constructor
+     * @param memcachedClient {@link MemcachedClient}
+     */
+    public ObservationDataToStorageProcessor(MemcachedClient memcachedClient) {
+    	this.host = "dummyHost";
+    	this.port = 11211;
+    	this.useDummy = true;
+    	this.memcachedClient = memcachedClient;
+    	this.isConnected = true;
+    }
+    
+	private boolean connect(String host, int port) {
+    	if (useDummy) {
+			return true;
+    	} else {
+			try {
+				XMemcachedClientBuilder builder = new XMemcachedClientBuilder(
+						String.join(":", String.valueOf(host), String.valueOf(port)));
+				builder.setEnableHealSession(false);
+				builder.setConnectTimeout(1000);
+				builder.setOpTimeout(1000);
+				memcachedClient = builder.build();
+
+				memcachedClient.set(TEST_CONNECTION, 1000, "TEST");
+				if (memcachedClient.get(TEST_CONNECTION) == null) {
+					return false;
+				} else {
+					memcachedClient.delete(TEST_CONNECTION);
+					return true;
+				}
+			} catch (IOException | TimeoutException | InterruptedException | MemcachedException e) {
+				isConnected = false;
+				logger.error("Could not connect to memcached client!", e);
+				if (e.getClass().equals(InterruptedException.class))
+					Thread.currentThread().interrupt();
+				return false;
+			}
+    	}
     }
     
     private void setIsConnected(boolean status) {
@@ -80,7 +106,7 @@ public class ObservationDataToStorageProcessor {
      */
     public boolean reconnect() {
     	if (!isConnected()) {
-    		setIsConnected(connect());
+    		setIsConnected(connect(this.host, this.port));
     	}
     	return isConnected();
     }
@@ -90,7 +116,7 @@ public class ObservationDataToStorageProcessor {
      */
     public void shutdown() {
     	try {
-			cli.shutdown();
+			memcachedClient.shutdown();
 		} catch (IOException e) {
 			logger.warn("Shutdown failed", e);
 		}
@@ -121,7 +147,7 @@ public class ObservationDataToStorageProcessor {
 		Long counter = null;
 		
 		try {
-			counter = cli.get(observationData.getClusterID());
+			counter = memcachedClient.get(observationData.getClusterID());
 		} catch (TimeoutException | InterruptedException | MemcachedException e) {
 			if (e.getClass().equals(InterruptedException.class)) Thread.currentThread().interrupt();
 			logger.warn("Could not get counter to clusterID " + observationData.getClusterID(), e);
@@ -149,11 +175,11 @@ public class ObservationDataToStorageProcessor {
 		
 		try {
 			// set observationData entry
-			cli.set(dataKey, dataExp, observationData);
+			memcachedClient.set(dataKey, dataExp, observationData);
 			// set observationData counter entry
-			cli.set(observationData.getClusterID(), counterExp, counter);
+			memcachedClient.set(observationData.getClusterID(), counterExp, counter);
 			// update observedProperties list
-			HashSet<String> properties = cli.get(gridID);
+			HashSet<String> properties = memcachedClient.get(gridID);
 			if (properties == null) {
 				properties = new HashSet<>();
 			}
@@ -164,7 +190,7 @@ public class ObservationDataToStorageProcessor {
 				if (!properties.contains(property)) properties.add(property);
 			}
 			
-			cli.set(gridID, dataExp, properties);
+			memcachedClient.set(gridID, dataExp, properties);
 			logger.debug("Successfully added item with key {}", dataKey);
 			String keySetSingle = String.join(", ", observationData.getSingleObservations().keySet());
 			String keySetVector = String.join(",", observationData.getVectorObservations().keySet());
@@ -186,25 +212,16 @@ public class ObservationDataToStorageProcessor {
 	 * @return A LocalDateTime object representing the time in the timestamp
 	 */
 	private LocalDateTime getTime(String timestamp) {
-		// Remove Z
-		String obsTime = timestamp;
-		if (obsTime != null && obsTime.length() >= 1 && obsTime.charAt(obsTime.length() - 1) == 'Z') {
-			obsTime = obsTime.substring(0, obsTime.length() - 1);
-		} else {
-			logger.warn("Given timestamp is invalid: {}", timestamp);
-			return null;
-		}
-		
-		// Parse time to LocalDateTime format and check validity
-		LocalDateTime time = null;
 		try {
-			time = LocalDateTime.parse(obsTime);
-		} catch (DateTimeParseException e) {
-			logger.warn("Could not parse given time {}", timestamp);
-			return null;
+			if (timestamp.matches(TimeUtil.getDateTimeRegex())) {
+				return TimeUtil.getUTCDateTime(timestamp);
+			}
+		} catch (IllegalFieldValueException | NullPointerException e) {
+			logger.warn("Could not parse given time {}. Invalid Parameters.", timestamp);
 		}
-		
-		return time;
+		logger.warn("Could not parse given time {}. " + "The specified format does not match the internal format.",
+				timestamp);
+		return null;
 	}
 
 	/**
@@ -235,7 +252,7 @@ public class ObservationDataToStorageProcessor {
 		Long counter = null;
 		
 		try {
-			counter = cli.get(clusterID);
+			counter = memcachedClient.get(clusterID);
 		} catch (TimeoutException | InterruptedException | MemcachedException e) {
 			if (e.getClass().equals(InterruptedException.class)) Thread.currentThread().interrupt();
 			logger.warn("Could not get counter to clusterID " + clusterID, e);
@@ -265,7 +282,7 @@ public class ObservationDataToStorageProcessor {
 		try {
 			for (long i = counter; i >= 0; i--) {
 				String dataKey = String.join("|", clusterID, String.valueOf(i));
-				od = cli.get(dataKey);
+				od = memcachedClient.get(dataKey);
 				// entry expired, return null
 				if (od == null) {
 					return null;
@@ -306,7 +323,7 @@ public class ObservationDataToStorageProcessor {
 	 */
 	public void addServer(String address, int port) {
 		try {
-			cli.addServer(address, port);
+			memcachedClient.addServer(address, port);
 		} catch (IOException | IllegalArgumentException e) {
 			logger.warn("Could not add Memcached server", e);
 		}
@@ -325,7 +342,7 @@ public class ObservationDataToStorageProcessor {
 		}
 		
 		try {
-			Set<String> set = cli.get(gridID);
+			Set<String> set = memcachedClient.get(gridID);
 			if (set != null) {
 				return set;
 			}

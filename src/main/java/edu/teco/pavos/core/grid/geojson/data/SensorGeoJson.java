@@ -29,6 +29,7 @@ public class SensorGeoJson {
 		this.value = value;
 		this.sensorID = sensorID;
 		this.geometry = buildGeometry(point);
+		update();
 	}
 	
 	/**

@@ -35,6 +35,7 @@ public class ClusterGeoJson {
 		this.clusterID = clusterID;
 		this.content = buildContent(subPolygons);
 		this.geometry = buildGeometry(points);
+		update();
 	}
 	
 	/**

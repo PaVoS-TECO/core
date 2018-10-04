@@ -1,14 +1,10 @@
 package edu.teco.pavos.core.controller.process;
 
 import org.apache.avro.generic.GenericRecord;
-import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
-import org.apache.kafka.streams.kstream.Produced;
 
 import edu.teco.pavos.core.properties.KafkaPropertiesFileManager;
 import edu.teco.pavos.core.properties.KafkaTopicAdmin;
@@ -59,45 +55,6 @@ public class MergeObsToFoiProcess extends KafkaStreamsProcess {
 		this("Observations", "FeaturesOfInterest", "ObservationsMergeGeneric", FOI);
 	}
 
-	/**
-	 * Starts the process with {@link String}-Serializer.
-	 * @return operationSuccessful {@link Boolean}
-	 */
-	public boolean startWithStringSerializer() {
-		final Serde<String> stringSerde = Serdes.String();
-
-		StreamsBuilder builder = new StreamsBuilder();
-		final KStream<String, GenericRecord> foIT = builder.stream(featureOfInterestTopic);
-		final KTable<String, GenericRecord> obsT = builder.table(observationTopic);
-		final KStream<String, GenericRecord> transformfoIT = foIT
-				.map((key, value) -> KeyValue.pair(value.get(keyEqual).toString(), value));
-
-		final KStream<String, String> transformfoITTable = transformfoIT.join(obsT, (location, value) -> {
-
-			if (value != null) {
-				GenericRecord obj = (GenericRecord) location.get("feature");
-				if (obj != null) {
-					value.put(FOI, obj.get("coordinates").toString());
-				} else {
-					// Observation ohne Location ?
-					return value.toString();
-				}
-
-				return value.toString();
-			}
-			return null;
-
-		});
-
-		transformfoITTable.to(outputTopic, Produced.with(stringSerde, stringSerde));
-
-		kafkaStreams = new KafkaStreams(builder.build(), props);
-		kafkaStreams.start();
-		
-		stringSerde.close();
-		return true;
-	}
-
 	@Override
 	public void execute(StreamsBuilder builder) {
 		final KStream<String, GenericRecord> obsT = builder.stream(observationTopic);
@@ -110,7 +67,6 @@ public class MergeObsToFoiProcess extends KafkaStreamsProcess {
 		//		.map((key, value) -> KeyValue.pair(value.get(keyEqual).toString(), value));
 
 		final KStream<String, GenericRecord> transformfoITTable = tranformObsT.join(foIT, (value, location) -> {
-
 			if (value != null) {
 				GenericRecord obj = (GenericRecord) location.get("feature");
 				if (obj != null) {
@@ -119,11 +75,9 @@ public class MergeObsToFoiProcess extends KafkaStreamsProcess {
 					// TODO - Observation ohne Location ?
 					return value;
 				}
-
 				return value;
 			}
 			return null;
-
 		});
 
 		transformfoITTable.to(outputTopic);

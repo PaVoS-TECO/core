@@ -22,10 +22,16 @@ public final class ArrayListCalc {
 	public static ArrayList<Double> sumArrayArray(ArrayList<? extends Number>... lists) {
 		if (!isSameType(lists)) throw new IllegalArgumentException();
 		ArrayList<Double> result = new ArrayList<>();
-		for (int i = 0; i < lists[0].size(); i++) {
+		int maxSize = getMaxSize(lists);
+		
+		for (int i = 0; i < maxSize; i++) {
 			double value = 0;
 			for (int j = 0; j < lists.length; j++) {
-				value += lists[j].get(i).doubleValue();
+				try {
+					if (lists[j].get(i) != null) value += lists[j].get(i).doubleValue();
+				} catch (IndexOutOfBoundsException e) {
+					// skip
+				}
 			}
 			result.add(value);
 		}
@@ -54,6 +60,15 @@ public final class ArrayListCalc {
 		ArrayList<Double> result = new ArrayList<>();
 		list.forEach(value -> result.add(value.doubleValue() / factor.doubleValue()));
 		return result;
+	}
+	
+	@SafeVarargs
+	private static final int getMaxSize(ArrayList<? extends Number>... lists) {
+		int max = lists[0].size();
+		for (int i = 1; i < lists.length; i++) {
+			max = Math.max(max, lists[i].size());
+		}
+		return max;
 	}
 	
 	@SafeVarargs
