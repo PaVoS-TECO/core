@@ -78,6 +78,9 @@ See [Wiki: Data transfer](https://github.com/PaVoS-TECO/pavos-source/wiki/Data-t
 
 ## Starting the modules
 ### Import
+1. `git clone https://github.com/PaVoS-TECO/FROST-import.git`
+2. `cd FROST-import`
+3. `mvn clean install`
 
 ### Bridge
 See README at [PaVoS-TECO/java-mqtt-kafka-bridge](https://github.com/PaVoS-TECO/java-mqtt-kafka-bridge/)
@@ -97,3 +100,6 @@ To log console output into a logfile:
 ### Webinterface
 
 ### Export
+1. `git clone https://github.com/PaVoS-TECO/Export-docker.git`
+2. `cd Export-docker`
+3. `sudo docker-compose -f dcomp.yml up --build -d`
