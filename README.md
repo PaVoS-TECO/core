@@ -78,9 +78,11 @@ See [Wiki: Data transfer](https://github.com/PaVoS-TECO/pavos-source/wiki/Data-t
 
 ## Starting the modules
 ### Import
+Note that this is a standalone desktop application and cannot be run in a text-only environment.
 1. `git clone https://github.com/PaVoS-TECO/FROST-import.git`
 2. `cd FROST-import`
 3. `mvn clean install`
+4. Run the jar in the target folder.
 
 ### Bridge
 See README at [PaVoS-TECO/java-mqtt-kafka-bridge](https://github.com/PaVoS-TECO/java-mqtt-kafka-bridge/)
@@ -98,8 +100,10 @@ To log console output into a logfile:
 - `java -jar target/*.jar 2>&1 | tee logfile`
 
 ### Webinterface
+The webinterface can be called as is via `index.jsp` of [the repo](https://github.com/PaVoS-TECO/webinterface). You may also generate a .war file via `mvn clean install` which can be used as a webapp with a Tomcat server (for example).
 
 ### Export
 1. `git clone https://github.com/PaVoS-TECO/Export-docker.git`
 2. `cd Export-docker`
 3. `sudo docker-compose -f dcomp.yml up --build -d`
+4. The export docker is now started and can be accessed from the webinterface to start and manage exports.
