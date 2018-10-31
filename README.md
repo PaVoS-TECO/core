@@ -115,7 +115,7 @@ To ensure a fast and simple way to access all data that is currently managed by 
 An ObservationData object consists of the following variables and appropriate methods to access them:
 - sensorID - the unique string identificator of the sensor  
 - clusterID - the unique string identificator of the polygon, which contains the sensor (will be set by the system)  
-- observationData - the date-time of the observation (format-string: "yyyy-MM-dd'T'HH:mm:ss'Z'") (needs to be parsed back)  
+- observationData - the date-time of the observation (format-string: "yyyy-MM-dd'T'HH:mm:ss'Z'") (needs to be parsed via TimeUtil class)  
 - singleObservations - the list of observed properties with a single dimension of data (e.g.: int, float, double, char, string)  
 - vectorObservations - the list of observed properties with multiple dimensions of data (e.g.: vector, list) (no dimension-limit)  
   
