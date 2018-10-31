@@ -107,3 +107,24 @@ The webinterface can be called as is via `index.jsp` of [the repo](https://githu
 2. `cd Export-docker`
 3. `sudo docker-compose -f dcomp.yml up --build -d`
 4. The export docker is now started and can be accessed from the webinterface to start and manage exports.
+
+## Data-Management
+### Core-Internal
+To ensure a fast and simple way to access all data that is currently managed by the core (especially the grid), PaVoS uses a uniform data-class, called "ObservationData".  
+#### Structure
+An ObservationData object consists of the following variables and appropriate methods to access them:
+- sensorID - the unique string identificator of the sensor  
+- clusterID - the unique string identificator of the polygon, which contains the sensor (will be set by the system)  
+- observationData - the date-time of the observation (format-string: "yyyy-MM-dd'T'HH:mm:ss'Z'") (needs to be parsed back)  
+- singleObservations - the list of observed properties with a single dimension of data (e.g.: int, float, double, char, string)  
+- vectorObservations - the list of observed properties with multiple dimensions of data (e.g.: vector, list) (no dimension-limit)  
+  
+For simple reconstruction of data from a database or other input methods, the ObservationData class provides getter and setter methods for all variables.  
+Even more, it provides an abstraction to dimensional control and methods to add new elements to the existing dataset.  
+#### Usability with Kafka
+For convenience, the ObservationData class comes with a deserializer and a serializer to ensure compatibility with Kafka.
+The process of serializing/deserializing is done by a mapper that creates a JSON from the contents of the ObservationData object.  
+#### Special data-transformations for other software
+Since Graphite and Grafana do not support the java internal data format for efficient transfer, we have to convert our ObservationData object, by the use of an converter, to python metrics.  
+These metrics will then be packed with **cpickle** and sent to graphite.
+Grafana simply accesses the data that was collected and stored by graphite.
