@@ -128,3 +128,17 @@ The process of serializing/deserializing is done by a mapper that creates a JSON
 Since Graphite and Grafana do not support the java internal data format for efficient transfer, we have to convert our ObservationData object, by the use of an converter, to python metrics.  
 These metrics will then be packed with **cpickle** and sent to graphite.
 Grafana simply accesses the data that was collected and stored by graphite.
+
+## Webserver
+To enable communication between core and webinterface, we decided to use a server, which accepts client connections and answers HTTP-requests.  
+The WebServer runs WebWorker threads for the clients. Per default, the maximum amount of simultaneous is capped at 10'000 requests.  
+A WebWorker is created for every request and not for each client.
+### Structure
+The WebServer uses the java.net library for the ServerSocket and the ClientSocket (Socket).  
+It is executed last in the initialization of the programm and continues to run on a thread.
+Since the default java.net library does not include a simple way to read HTTP-requests and send HTTP-answers, these two important steps were created manually for the WebWorker.  
+Inside the WebWorkers processing of a request, we check for patterns that match a simple specified form:  
+**requestType?param1=value1&param2=value2**  
+- requestType stands for the name of the request we want to have answered  
+- the questionmark is important! If there is no questionmark, the WebWorker will ignore the request and return a HTTP-400 bad request error.  
+- parameters and values are used to inform the server of selected settings of the client. They are separated by a **&** sign.  
